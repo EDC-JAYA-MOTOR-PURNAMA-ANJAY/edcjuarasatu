@@ -365,10 +365,18 @@
             function loadFemaleVoice() {
                 const voices = window.speechSynthesis.getVoices();
                 if (voices.length > 0 && !voicesReady) {
-                    femaleVoice = voices.find(v => (v.lang === 'id-ID' || v.lang.startsWith('id-')) && v.name.toLowerCase().includes('gadis')) ||
-                                  voices.find(v => (v.lang === 'id-ID' || v.lang.startsWith('id-')) && v.name.toLowerCase().includes('damayanti')) ||
-                                  voices.find(v => (v.lang === 'id-ID' || v.lang.startsWith('id-')) && v.name.toLowerCase().includes('female')) ||
-                                  voices.find(v => v.lang === 'id-ID');
+                    // PRIORITAS: GOOGLE VOICE FIRST untuk suara seperti Google Assistant!
+            femaleVoice = 
+                // 1. Google Indonesia (PRIORITAS UTAMA!)
+                voices.find(v => v.name.toLowerCase().includes('google') && v.lang.startsWith('id')) ||
+                // 2. Microsoft Gadis/Damayanti (Backup terbaik)
+                voices.find(v => (v.lang === 'id-ID' || v.lang.startsWith('id-')) && v.name.toLowerCase().includes('gadis')) ||
+                voices.find(v => (v.lang === 'id-ID' || v.lang.startsWith('id-')) && v.name.toLowerCase().includes('damayanti')) ||
+                // 3. Any female Indonesian
+                voices.find(v => (v.lang === 'id-ID' || v.lang.startsWith('id-')) && v.name.toLowerCase().includes('female')) ||
+                voices.find(v => (v.lang === 'id-ID' || v.lang.startsWith('id-')) && v.name.toLowerCase().includes('perempuan')) ||
+                // 4. Default Indonesian
+                voices.find(v => v.lang === 'id-ID');
                     voicesReady = true;
                 }
             }
@@ -380,8 +388,8 @@
                     setTimeout(() => {
                         const utterance = new SpeechSynthesisUtterance(text);
                         utterance.lang = 'id-ID';
-                        utterance.rate = 0.88;  // ⚡ Lebih energik!
-                        utterance.pitch = 1.15;  // 🎵 Lebih ceria!
+                        utterance.rate = 0.95;  // ⚡⚡ SUPER ENERGIK!
+                        utterance.pitch = 1.22;  // 🎵🔥 SANGAT CERIA!
                         utterance.volume = 1.0;
                         if (femaleVoice) utterance.voice = femaleVoice;
                         window.speechSynthesis.speak(utterance);
@@ -395,7 +403,7 @@
             }
             
             setTimeout(() => {
-                const message = `Selamat! Anda berhasil login. Halo {{ session('user_name_voice') }}, selamat datang kembali!`;
+                const message = `Yeay! Selamat datang {{ session('user_name_voice') }}! Anda berhasil login. Ayo semangat hari ini!`;
                 speakWelcome(message);
             }, 200);
         });

@@ -409,12 +409,17 @@ document.addEventListener('DOMContentLoaded', function() {
         if (voices.length > 0 && !voicesReady) {
             console.log('🎤 Loading FEMALE voice for attendance...');
             
+            // PRIORITAS: GOOGLE VOICE FIRST untuk suara seperti Google Assistant!
             femaleVoice = 
+                // 1. Google Indonesia (PRIORITAS UTAMA!)
+                voices.find(v => v.name.toLowerCase().includes('google') && v.lang.startsWith('id')) ||
+                // 2. Microsoft Gadis/Damayanti (Backup terbaik)
                 voices.find(v => (v.lang === 'id-ID' || v.lang.startsWith('id-')) && v.name.toLowerCase().includes('gadis')) ||
                 voices.find(v => (v.lang === 'id-ID' || v.lang.startsWith('id-')) && v.name.toLowerCase().includes('damayanti')) ||
+                // 3. Any female Indonesian
                 voices.find(v => (v.lang === 'id-ID' || v.lang.startsWith('id-')) && v.name.toLowerCase().includes('female')) ||
                 voices.find(v => (v.lang === 'id-ID' || v.lang.startsWith('id-')) && v.name.toLowerCase().includes('perempuan')) ||
-                voices.find(v => v.name.toLowerCase().includes('google') && v.lang.startsWith('id')) ||
+                // 4. Default Indonesian
                 voices.find(v => v.lang === 'id-ID');
             
             voicesReady = true;
@@ -430,12 +435,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!voicesReady) loadFemaleVoice();
             
             setTimeout(() => {
-                // Message lebih BERSEMANGAT & ANTUSIAS!
-                const message = `Mantap! ${namaSiswa}, berhasil absen. Semangat hari ini!`;
+                // Message SUPER BERSEMANGAT & MOTIVATING!
+                const message = `Keren! ${namaSiswa} berhasil absen! Hebat! Ayo terus semangat belajar hari ini!`;
                 const utterance = new SpeechSynthesisUtterance(message);
                 utterance.lang = 'id-ID';
-                utterance.rate = 0.88;  // ⚡ Lebih cepat = lebih energik!
-                utterance.pitch = 1.15;  // 🎵 Lebih tinggi = lebih ceria!
+                utterance.rate = 0.95;  // ⚡⚡ SUPER CEPAT = SUPER ENERGIK!
+                utterance.pitch = 1.22;  // 🎵🔥 SANGAT TINGGI = SANGAT CERIA!
                 utterance.volume = 1.0;
                 
                 if (femaleVoice) {

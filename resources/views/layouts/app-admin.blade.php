@@ -87,8 +87,8 @@
                     setTimeout(() => {
                         const utterance = new SpeechSynthesisUtterance(text);
                         utterance.lang = 'id-ID';
-                        utterance.rate = 0.88;  // ⚡ Lebih energik!
-                        utterance.pitch = 1.15;  // 🎵 Lebih ceria!
+                        utterance.rate = 0.95;  // ⚡ Lebih energik!
+                        utterance.pitch = 1.22;  // 🎵 Lebih ceria!
                         utterance.volume = 1.0;
                         if (femaleVoice) utterance.voice = femaleVoice;
                         window.speechSynthesis.speak(utterance);
