@@ -1,0 +1,38 @@
+INSTRUKSI MANUAL: Tambahkan Logout Button ke siswa-sidebar.blade.php
+
+File: resources/views/components/sidebar/siswa-sidebar.blade.php
+
+Cari baris ini (sekitar line 133-139):
+
+                    <li>
+                        <a href="{{ route('student.profile') }}" 
+                           class="flex items-center space-x-3 rounded-lg px-3 py-2 text-gray-700 transition-colors hover:bg-gray-100">
+                            <img src="/icons/pengaturan-icon.png" alt="Pengaturan" class="h-5 w-5">
+                            <span>Pengaturan</span>
+                        </a>
+                    </li>
+                </ul>
+
+Ganti dengan:
+
+                    <li>
+                        <a href="{{ route('student.profile') }}" 
+                           class="flex items-center space-x-3 rounded-lg px-3 py-2 text-gray-700 transition-colors hover:bg-gray-100">
+                            <img src="/icons/pengaturan-icon.png" alt="Pengaturan" class="h-5 w-5">
+                            <span>Pengaturan</span>
+                        </a>
+                    </li>
+                    
+                    <!-- Logout Button -->
+                    <li>
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="w-full flex items-center space-x-3 rounded-lg px-3 py-2 text-red-600 transition-colors hover:bg-red-50">
+                                <i class="fas fa-sign-out-alt h-5 w-5"></i>
+                                <span>Keluar</span>
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+
+Save file dan test!
