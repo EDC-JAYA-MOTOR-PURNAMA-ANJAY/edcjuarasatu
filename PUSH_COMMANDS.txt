@@ -1,0 +1,37 @@
+# ============================================
+# COMMANDS UNTUK PUSH KE GITHUB
+# ============================================
+# Copy paste command ini ke Terminal VS Code
+# GANTI "YOUR_USERNAME" dengan username GitHub Anda!
+# ============================================
+
+# 1. Add remote repository
+git remote add origin https://github.com/YOUR_USERNAME/sistem_bk.git
+
+# 2. Verify remote (optional)
+git remote -v
+
+# 3. Push ke GitHub
+git push -u origin main
+
+# ============================================
+# SELESAI! Project sudah di GitHub! 🎉
+# ============================================
+
+# ============================================
+# UNTUK UPDATE SELANJUTNYA (setelah edit code):
+# ============================================
+
+# Check status
+git status
+
+# Add perubahan
+git add .
+
+# Commit dengan message
+git commit -m "Update: deskripsi perubahan"
+
+# Push
+git push
+
+# ============================================
