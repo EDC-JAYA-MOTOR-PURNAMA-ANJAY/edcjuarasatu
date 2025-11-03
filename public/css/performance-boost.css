@@ -1,0 +1,277 @@
+/* ⚡ PERFORMANCE BOOST - Loading & Smooth Transitions */
+
+/* 1. PAGE LOADING OVERLAY - UPGRADED WITH LOGO! */
+.page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.page-loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Logo Container */
+.loader-logo-container {
+    position: relative;
+    width: 200px;
+    height: auto;
+    margin-bottom: 30px;
+}
+
+.loader-logo {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+}
+
+/* ANIMATION STYLE 1: PULSE + GLOW (DEFAULT - RECOMMENDED!) */
+.loader-logo.pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 10px 30px rgba(255, 255, 255, 0.3));
+    }
+    50% {
+        transform: scale(1.1);
+        filter: drop-shadow(0 15px 50px rgba(255, 255, 255, 0.8)) 
+                drop-shadow(0 0 30px rgba(103, 126, 234, 0.8));
+    }
+}
+
+/* ANIMATION STYLE 2: PATH DRAWING */
+.loader-logo.path-draw {
+    animation: pathDraw 3s ease-in-out infinite;
+}
+
+@keyframes pathDraw {
+    0% {
+        opacity: 0;
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+    }
+    50% {
+        opacity: 1;
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 0;
+    }
+    100% {
+        opacity: 1;
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 0;
+    }
+}
+
+/* ANIMATION STYLE 3: ROTATE 3D + SCALE */
+.loader-logo.rotate-3d {
+    animation: rotate3D 2.5s ease-in-out infinite;
+    transform-style: preserve-3d;
+}
+
+@keyframes rotate3D {
+    0% {
+        transform: scale(0.8) rotateY(0deg);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(1.2) rotateY(180deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.8) rotateY(360deg);
+        opacity: 0.7;
+    }
+}
+
+/* Loading Text */
+.loader-text {
+    color: white;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: fadeInOut 1.5s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* Loading Bar */
+.loader-bar {
+    width: 200px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.loader-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #fff, #ffd700, #fff);
+    background-size: 200% 100%;
+    animation: loadingBar 1.5s ease-in-out infinite;
+    border-radius: 10px;
+}
+
+@keyframes loadingBar {
+    0% {
+        width: 0%;
+        background-position: 0% 50%;
+    }
+    50% {
+        width: 70%;
+        background-position: 100% 50%;
+    }
+    100% {
+        width: 100%;
+        background-position: 0% 50%;
+    }
+}
+
+/* Old spinner (fallback) */
+.loader-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 2. SMOOTH PAGE TRANSITIONS */
+.page-transition {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 3. SKELETON LOADERS untuk konten yang loading */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 4px;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-text {
+    height: 16px;
+    margin-bottom: 8px;
+}
+
+.skeleton-card {
+    height: 120px;
+    margin-bottom: 16px;
+}
+
+/* 4. SMOOTH HOVER EFFECTS (optimized) */
+.smooth-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    will-change: transform;
+}
+
+.smooth-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 5. OPTIMIZE IMAGES */
+img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+img[loading="lazy"] {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+img[loading="lazy"].loaded {
+    opacity: 1;
+}
+
+/* 6. PRELOAD HINT */
+.preload-link {
+    cursor: pointer;
+    position: relative;
+}
+
+.preload-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    transition: background 0.2s;
+}
+
+.preload-link:hover::before {
+    background: rgba(59, 130, 246, 0.05);
+}
+
+/* 7. SMOOTH SCROLL */
+html {
+    scroll-behavior: smooth;
+}
+
+/* 8. HARDWARE ACCELERATION untuk animasi */
+.accelerate {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* 9. REDUCE MOTION untuk users yang prefer */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* 10. OPTIMIZE TABLE RENDERING */
+table {
+    table-layout: fixed;
+}
+
+/* 11. CONTENT VISIBILITY (modern browsers) */
+.lazy-section {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 500px;
+}
