@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Dashboard Siswa - Educounsel')</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- ⚡ PERFORMANCE BOOST -->
+    <link href="{{ asset('css/performance-boost.css') }}" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -355,9 +357,12 @@
         });
     </script>
     
-    <!-- Welcome Voice Script -->
+    <!-- ⚡ Performance Boost JS -->
+    <script src="{{ asset('js/performance-boost.js') }}" defer></script>
+
+    <!-- Welcome Voice Script (Deferred) -->
     @if(session('login_success_voice') && session('user_name_voice'))
-    <script>
+    <script defer>
         document.addEventListener('DOMContentLoaded', function() {
             let femaleVoice = null;
             let voicesReady = false;

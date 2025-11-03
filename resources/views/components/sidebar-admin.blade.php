@@ -79,27 +79,18 @@
             </div>
         </div>
 
-        <!-- Monitoring & Statistik -->
-        <div class="mb-2">
-            <a href=""
-               class="monitoring-menu flex items-center px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg mb-1 transition-colors duration-200 group">
-                <img src="{{ asset('images/icon/moni.png') }}" alt="Monitoring & Statistik" class="w-4 h-4 mr-3">
-                <span class="text-sm font-medium">Monitoring & Statistik</span>
-            </a>
-        </div>
-
         <!-- Setting Section -->
         <div class="mb-2">
             <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Setting</div>
 
-            <a href=""
-               class="panduan-menu flex items-center px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg mb-1 transition-colors duration-200 group">
+            <a href="{{ route('admin.panduan') }}"
+               class="panduan-menu flex items-center px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg mb-1 transition-colors duration-200 group {{ request()->routeIs('admin.panduan') ? 'bg-purple-100 text-purple-700' : '' }}">
                 <img src="{{ asset('images/icon/tanya.png') }}" alt="Panduan Bantuan" class="w-4 h-4 mr-3">
                 <span class="text-sm font-medium">Panduan Bantuan</span>
             </a>
 
-            <a href=""
-               class="pengaturan-menu flex items-center px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg mb-1 transition-colors duration-200 group">
+            <a href="{{ route('admin.pengaturan') }}"
+               class="pengaturan-menu flex items-center px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg mb-1 transition-colors duration-200 group {{ request()->routeIs('admin.pengaturan') ? 'bg-purple-100 text-purple-700' : '' }}">
                 <img src="{{ asset('images/icon/setting.png') }}" alt="Pengaturan" class="w-4 h-4 mr-3">
                 <span class="text-sm font-medium">Pengaturan</span>
             </a>

@@ -5,227 +5,6 @@
 @push('styles')
 <!-- Google Fonts: Roboto -->
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-@endpush
-
-@section('content')
-<div class="min-h-screen bg-[#F9FAFB] pt-16 font-['Roboto']">
-    <!-- Header Section -->
-    <div class="px-6 py-6 flex justify-center">
-        <div class="bg-[#EDE1FA] rounded-xl p-6 w-full max-w-[1024px] flex flex-col md:flex-row items-center justify-between gap-4">
-            <!-- Back Button + Title -->
-            <div class="flex items-center space-x-3">
-                <a href="#" class="text-gray-700 hover:text-gray-900">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </a>
-                <div>
-                    <h1 class="text-xl font-semibold text-gray-900">Ajukan Konseling</h1>
-                    <p class="text-sm text-gray-600 mt-1">Ajukan konseling dengan guru bk di halaman ini</p>
-                </div>
-            </div>
-
-            <!-- Chat Illustration (160x160) -->
-            <div class="w-[160px] h-[160px] flex-shrink-0">
-                <img src="{{ asset('images/ilustrasi_chat.png') }}" alt="Ilustrasi Chat" class="w-full h-full object-contain">
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Form Card -->
-    <div class="px-6 pb-8 flex justify-center">
-        <div class="bg-white rounded-xl shadow-[0px_4px_16px_rgba(0,0,0,0.08)] p-8 w-full max-w-[1024px]">
-            <!-- Section Title -->
-            <h2 class="text-lg font-bold text-[#6A4C93] mb-6">Buat Jadwal Konseling</h2>
-
-            <form id="counselingForm">
-                <div class="space-y-6">
-
-                    <!-- Nama -->
-                    <div>
-                        <label for="nama" class="block text-sm font-medium text-gray-900 mb-2">Nama</label>
-                        <input type="text" id="nama" name="nama"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6A4C93] focus:border-transparent transition-all duration-200"
-                               placeholder="Masukkan Nama">
-                    </div>
-
-                    <!-- Kelas & Jurusan -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="kelas" class="block text-sm font-medium text-gray-900 mb-2">Kelas</label>
-                            <div class="relative">
-                                <select id="kelas" name="kelas"
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-[#6A4C93] focus:border-transparent transition-all duration-200 bg-white">
-                                    <option value="" disabled selected>Pilih Kelas</option>
-                                    <option value="10">Kelas 10</option>
-                                    <option value="11">Kelas 11</option>
-                                    <option value="12">Kelas 12</option>
-                                </select>
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="jurusan" class="block text-sm font-medium text-gray-900 mb-2">Jurusan</label>
-                            <div class="relative">
-                                <select id="jurusan" name="jurusan"
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-[#6A4C93] focus:border-transparent transition-all duration-200 bg-white">
-                                    <option value="" disabled selected>Pilih Jurusan</option>
-                                    <option value="ipa">IPA</option>
-                                    <option value="ips">IPS</option>
-                                    <option value="bahasa">Bahasa</option>
-                                </select>
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Guru BK -->
-                    <div>
-                        <label for="guru_bk" class="block text-sm font-medium text-gray-900 mb-2">Guru BK</label>
-                        <div class="relative">
-                            <select id="guru_bk" name="guru_bk"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-[#6A4C93] focus:border-transparent transition-all duration-200 bg-white">
-                                <option value="" disabled selected>Pilih Guru BK</option>
-                                <option value="1">Bu Sari Indah, M.Psi.</option>
-                                <option value="2">Pak Budi Santoso, S.Pd.</option>
-                                <option value="3">Bu Maya Wulandari, M.Pd.</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Metode Konseling -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-900 mb-3">Metode Konseling</label>
-                        <div class="flex flex-wrap gap-6">
-                            <div class="flex items-center">
-                                <input type="radio" id="offline" name="metode" value="offline" class="hidden" checked>
-                                <label for="offline" class="flex items-center cursor-pointer">
-                                    <span class="w-5 h-5 inline-block mr-2 rounded-full border border-gray-400 flex-shrink-0 radio-custom"></span>
-                                    <span class="text-gray-700">Konseling Offline (Tatap Muka)</span>
-                                </label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="radio" id="online" name="metode" value="online" class="hidden">
-                                <label for="online" class="flex items-center cursor-pointer">
-                                    <span class="w-5 h-5 inline-block mr-2 rounded-full border border-gray-400 flex-shrink-0 radio-custom"></span>
-                                    <span class="text-gray-700">Konseling Online (Via Zoom)</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Jenis Konseling -->
-                    <div>
-                        <label for="jenis_konseling" class="block text-sm font-medium text-gray-900 mb-2">Jenis Konseling</label>
-                        <div class="relative">
-                            <select id="jenis_konseling" name="jenis_konseling"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-[#6A4C93] focus:border-transparent transition-all duration-200 bg-white">
-                                <option value="" disabled selected>Pilih Jenis Konseling</option>
-                                <option value="akademik">Konseling Akademik</option>
-                                <option value="karir">Konseling Karir</option>
-                                <option value="personal">Konseling Personal/Sosial</option>
-                                <option value="keluarga">Konseling Keluarga</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tanggal & Jam -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="tanggal" class="block text-sm font-medium text-gray-900 mb-2">Tanggal</label>
-                            <div class="relative">
-                                <input type="date" id="tanggal" name="tanggal"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6A4C93] focus:border-transparent transition-all duration-200">
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 001 1h8a1 1 0 001-1V6a1 1 0 00-1-1H7a1 1 0 00-1 1v1z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="jam" class="block text-sm font-medium text-gray-900 mb-2">Jam</label>
-                            <div class="relative">
-                                <input type="time" id="jam" name="jam"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6A4C93] focus:border-transparent transition-all duration-200">
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Cerita Singkat Masalahmu -->
-                    <div>
-                        <label for="cerita" class="block text-sm font-medium text-gray-900 mb-2">Cerita Singkat Masalahmu <span class="italic text-gray-500">(Optional)</span></label>
-                        <textarea id="cerita" name="cerita" rows="4"
-                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6A4C93] focus:border-transparent transition-all duration-200 resize-none"
-                                  placeholder="Masukkan Cerita Singkat Masalahmu"></textarea>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="flex justify-end">
-                        <button type="submit" id="submitBtn"
-                                class="bg-[#6A4C93] hover:bg-[#563D7C] text-white px-6 py-3 rounded-lg font-semibold text-base transition-all duration-200 shadow-[0px_3px_6px_rgba(106,76,147,0.25)] hover:shadow-[0px_4px_8px_rgba(106,76,147,0.3)]">
-                            Kirim
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Success Popup -->
-<div id="successPopup" class="fixed inset-0 flex items-center justify-center z-50 hidden">
-    <div class="absolute inset-0 bg-black bg-opacity-40 backdrop-blur-sm"></div>
-    <div class="bg-white rounded-xl p-8 max-w-sm w-full mx-4 shadow-[0px_4px_12px_rgba(0,0,0,0.1)] z-10">
-        <div class="flex flex-col items-center text-center">
-            <!-- Success Icon -->
-            <div class="w-20 h-20 bg-[#1CD062] rounded-full flex items-center justify-center mb-5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-            </div>
-
-            <!-- Title -->
-            <h3 class="text-xl font-bold text-black mb-2">Berhasil Dikirim!</h3>
-
-            <!-- Message -->
-            <p class="text-sm text-gray-600 mb-6">Jadwal Konseling telah diajukan.</p>
-
-            <!-- OK Button -->
-            <button id="closePopup" class="bg-[#1CD062] hover:brightness-95 text-white px-6 py-3 rounded-lg font-semibold w-full transition-all duration-200 shadow-[0_4px_12px_rgba(28,208,98,0.25)]">
-                Oke
-            </button>
-        </div>
-    </div>
-</div>
-@endsection
-
-@push('styles')
 <style>
     /* Apply Roboto globally */
     body {
@@ -243,14 +22,28 @@
     }
 
     input[type="radio"]:checked + label .radio-custom {
-        background-color: #6A4C93;
-        border-color: #6A4C93;
+        background-color: #7000CC;
+        border-color: #7000CC;
         box-shadow: inset 0 0 0 3px white;
+    }
+
+    /* Efek shine untuk tombol */
+    @keyframes shine {
+        0% {
+            transform: translateX(-100%) skewX(-12deg);
+        }
+        100% {
+            transform: translateX(200%) skewX(-12deg);
+        }
+    }
+
+    .group:hover .animate-shine {
+        animation: shine 0.7s ease-out;
     }
 
     /* Focus ring */
     input:focus, select:focus, textarea:focus {
-        box-shadow: 0 0 0 2px rgba(106, 76, 147, 0.15);
+        box-shadow: 0 0 0 2px rgba(112, 0, 204, 0.15);
     }
 
     /* Popup Animations */
@@ -264,8 +57,187 @@
     }
     .popup-show { animation: fadeIn 0.3s ease-out forwards; }
     .popup-hide { animation: fadeOut 0.3s ease-out forwards; }
+
+    /* Hapus efek hover pada input, select, dan textarea */
+    input, select, textarea {
+        transition: none !important;
+    }
+    
+    input:hover, select:hover, textarea:hover {
+        border-color: #E0E0E0 !important;
+    }
 </style>
 @endpush
+
+@section('content')
+<div class="min-h-screen bg-[#F9FAFB] pt-16 font-['Roboto']">
+    <!-- Header Section - Diperkecil -->
+    <div class="px-6 py-4 flex justify-center">
+        <div class="bg-[#E9D7FF] rounded-xl p-4 w-full max-w-[1024px] flex flex-col md:flex-row items-center justify-between gap-4">
+            <!-- Title Section -->
+            <div class="flex flex-col">
+                <h1 class="text-lg font-bold text-gray-900">Ajukan Konseling</h1>
+                <p class="text-xs text-gray-500 mt-1">Ajukan konseling dengan guru BK di halaman ini</p>
+            </div>
+
+            <!-- Chat Illustration - Diperkecil -->
+            <div class="w-[100px] h-[100px] flex-shrink-0">
+                <img src="/images/ilustrasi_chat.png" alt="Ilustrasi Chat" class="w-full h-full object-contain">
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Form Card -->
+    <div class="px-6 pb-8 flex justify-center">
+        <div class="bg-white rounded-xl shadow-[0px_2px_10px_rgba(0,0,0,0.05)] p-8 w-full max-w-[1024px]">
+            <!-- Section Title -->
+            <h2 class="text-xl font-bold text-[#7000CC] mb-6">Buat Jadwal Konseling</h2>
+
+            <form id="counselingForm">
+                @csrf
+                <div class="space-y-6">
+
+                    <!-- Nama -->
+                    <div>
+                        <label for="nama" class="block text-sm font-medium text-gray-900 mb-2">Nama</label>
+                        <input type="text" id="nama" name="nama"
+                               class="w-full px-4 py-3 border border-[#E0E0E0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7000CC] focus:border-transparent"
+                               placeholder="Masukkan Nama">
+                    </div>
+
+                    <!-- Kelas & Jurusan -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="kelas" class="block text-sm font-medium text-gray-900 mb-2">Kelas</label>
+                            <select id="kelas" name="kelas"
+                                    class="w-full px-4 py-3 border border-[#E0E0E0] rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-[#7000CC] focus:border-transparent bg-white dropdown-select">
+                                <option value="" disabled selected>Pilih Kelas</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="jurusan" class="block text-sm font-medium text-gray-900 mb-2">Jurusan</label>
+                            <select id="jurusan" name="jurusan"
+                                    class="w-full px-4 py-3 border border-[#E0E0E0] rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-[#7000CC] focus:border-transparent bg-white dropdown-select">
+                                <option value="" disabled selected>Pilih Jurusan</option>
+                                <option value="rpl">RPL</option>
+                                <option value="tkj">TKJ</option>
+                                <option value="mm">MM</option>
+                                <option value="tjkt">TJKT</option>
+                                <option value="dkv">DKV</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Guru BK -->
+                    <div>
+                        <label for="guru_bk" class="block text-sm font-medium text-gray-900 mb-2">Guru BK</label>
+                        <select id="guru_bk" name="guru_bk"
+                                class="w-full px-4 py-3 border border-[#E0E0E0] rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-[#7000CC] focus:border-transparent bg-white dropdown-select">
+                            <option value="" disabled selected>Pilih Guru BK</option>
+                            <option value="eka">Bu Eka</option>
+                            <option value="prapti">Bu Prapti</option>
+                            <option value="seto">Pak Seto</option>
+                        </select>
+                    </div>
+
+                    <!-- Metode Konseling -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-3">Metode Konseling</label>
+                        <div class="flex flex-wrap gap-6">
+                            <div class="flex items-center">
+                                <input type="radio" id="offline" name="metode" value="offline" class="hidden" checked>
+                                <label for="offline" class="flex items-center cursor-pointer">
+                                    <span class="w-5 h-5 inline-block mr-2 rounded-full border border-gray-400 flex-shrink-0 radio-custom"></span>
+                                    <span class="text-gray-700 font-medium">Konseling Offline (Tatap Muka)</span>
+                                </label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="online" name="metode" value="online" class="hidden">
+                                <label for="online" class="flex items-center cursor-pointer">
+                                    <span class="w-5 h-5 inline-block mr-2 rounded-full border border-gray-400 flex-shrink-0 radio-custom"></span>
+                                    <span class="text-gray-700 font-medium">Konseling Online (Via Zoom)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Jenis Konseling -->
+                    <div>
+                        <label for="jenis_konseling" class="block text-sm font-medium text-gray-900 mb-2">Jenis Konseling</label>
+                        <select id="jenis_konseling" name="jenis_konseling"
+                                class="w-full px-4 py-3 border border-[#E0E0E0] rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-[#7000CC] focus:border-transparent bg-white dropdown-select">
+                            <option value="" disabled selected>Pilih Jenis Konseling</option>
+                            <option value="individu">Konseling Individu</option>
+                            <option value="kelompok">Konseling Kelompok</option>
+                            <option value="minat_bakat">Minat dan Bakat</option>
+                            <option value="mediasi_kasus">Mediasi Kasus</option>
+                            <option value="karir">Konseling Karir</option>
+                        </select>
+                    </div>
+
+                    <!-- Tanggal & Jam -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="tanggal" class="block text-sm font-medium text-gray-900 mb-2">Tanggal</label>
+                            <input type="date" id="tanggal" name="tanggal"
+                                   class="w-full px-4 py-3 border border-[#E0E0E0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7000CC] focus:border-transparent">
+                        </div>
+
+                        <div>
+                            <label for="jam" class="block text-sm font-medium text-gray-900 mb-2">Jam</label>
+                            <input type="time" id="jam" name="jam"
+                                   class="w-full px-4 py-3 border border-[#E0E0E0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7000CC] focus:border-transparent">
+                        </div>
+                    </div>
+
+                    <!-- Cerita Singkat Masalahmu -->
+                    <div>
+                        <label for="cerita" class="block text-sm font-medium text-gray-900 mb-2">Cerita Singkat Masalahmu <span class="italic text-gray-500">(Optional)</span></label>
+                        <textarea id="cerita" name="cerita" rows="4"
+                                  class="w-full px-4 py-3 border border-[#E0E0E0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7000CC] focus:border-transparent resize-none"
+                                  placeholder="Masukkan Cerita Singkat Masalahmu"></textarea>
+                    </div>
+
+                    <!-- Submit Button dengan efek bayangan yang hilang saat hover -->
+                    <div class="flex justify-end">
+                        <button type="submit" id="submitBtn"
+                                class="bg-[#7000CC] text-white px-8 py-3 rounded-full font-semibold text-base transition-all duration-300 relative shadow-[0_6px_0_0_#5A00A8] hover:shadow-none hover:translate-y-1 overflow-hidden group">
+                            <span class="relative z-10">Kirim</span>
+                            <!-- Efek cahaya kaca -->
+                            <div class="absolute inset-0 overflow-hidden rounded-full">
+                                <div class="absolute -inset-full top-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform skew-x-12 group-hover:animate-shine group-hover:duration-700"></div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Success Popup -->
+<div id="successPopup" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+    <div class="absolute inset-0 bg-black bg-opacity-40 backdrop-blur-sm"></div>
+    <div class="bg-white rounded-xl p-8 max-w-sm w-full mx-4 shadow-[0px_4px_12px_rgba(0,0,0,0.1)] z-10">
+        <div class="flex flex-col items-center text-center">
+            <!-- Title -->
+            <h3 class="text-xl font-bold text-black mb-2">Berhasil Dikirim!</h3>
+
+            <!-- Message -->
+            <p class="text-sm text-gray-600 mb-6">Jadwal Konseling telah diajukan.</p>
+
+            <!-- OK Button -->
+            <button id="closePopup" class="bg-[#1CD062] hover:brightness-95 text-white px-6 py-3 rounded-lg font-semibold w-full transition-all duration-200 shadow-[0_4px_12px_rgba(28,208,98,0.25)]">
+                Oke
+            </button>
+        </div>
+    </div>
+</div>
+@endsection
 
 @push('scripts')
 <script>
@@ -285,8 +257,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             if (this.checked) {
                 const label = document.querySelector(`label[for="${this.id}"] .radio-custom`);
-                label.style.backgroundColor = '#6A4C93';
-                label.style.borderColor = '#6A4C93';
+                label.style.backgroundColor = '#7000CC';
+                label.style.borderColor = '#7000CC';
                 label.style.boxShadow = 'inset 0 0 0 3px white';
             }
         });
@@ -327,11 +299,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 el.style.boxShadow = '';
             });
             document.getElementById('offline').checked = true;
-            document.querySelector('label[for="offline"] .radio-custom').style.backgroundColor = '#6A4C93';
-            document.querySelector('label[for="offline"] .radio-custom').style.borderColor = '#6A4C93';
+            document.querySelector('label[for="offline"] .radio-custom').style.backgroundColor = '#7000CC';
+            document.querySelector('label[for="offline"] .radio-custom').style.borderColor = '#7000CC';
             document.querySelector('label[for="offline"] .radio-custom').style.boxShadow = 'inset 0 0 0 3px white';
 
-            submitBtn.innerHTML = 'Kirim';
+            submitBtn.innerHTML = '<span class="relative z-10">Kirim</span><div class="absolute inset-0 overflow-hidden rounded-full"><div class="absolute -inset-full top-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform skew-x-12 group-hover:animate-shine group-hover:duration-700"></div></div>';
             submitBtn.disabled = false;
         }, 1200);
     });

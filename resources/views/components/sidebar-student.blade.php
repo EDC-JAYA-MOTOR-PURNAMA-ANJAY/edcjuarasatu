@@ -113,7 +113,7 @@
             </div>
 
             <!-- Kuesioner -->
-            <a href=""
+            <a href="{{ route('student.questionnaire') }}"
                class="sidebar-menu group flex items-center px-4 py-3 rounded-xl transition-all duration-200 ease-in-out relative
                       {{ request()->routeIs('student.questionnaire') ? 'bg-purple-700 text-white shadow-md' : 'text-gray-900 hover:bg-purple-100 hover:text-purple-700' }}">
                 <img src="{{ asset('images/icon/kuesioner.png') }}" alt="Kuesioner"

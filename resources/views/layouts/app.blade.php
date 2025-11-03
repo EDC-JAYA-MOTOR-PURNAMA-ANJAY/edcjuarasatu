@@ -17,6 +17,9 @@
     <!-- Google Fonts: Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- ⚡ PERFORMANCE BOOST -->
+    <link href="{{ asset('css/performance-boost.css') }}" rel="stylesheet">
+
     <!-- Tailwind Config -->
     <script>
         tailwind.config = {
@@ -78,9 +81,12 @@
     <!-- Scripts -->
     @stack('scripts')
     
-    <!-- Welcome Voice Script -->
+    <!-- ⚡ Performance Boost JS -->
+    <script src="{{ asset('js/performance-boost.js') }}" defer></script>
+
+    <!-- Welcome Voice Script (Deferred) -->
     @if(session('login_success_voice') && session('user_name_voice'))
-    <script>
+    <script defer>
         document.addEventListener('DOMContentLoaded', function() {
             let femaleVoice = null;
             let voicesReady = false;

@@ -33,7 +33,7 @@ Route::prefix('absensi')->name('absensi.')->group(function () {
     })->name('pelanggaran');
     
     Route::get('/kuesioner', function () {
-        return view('siswa.kuesioner.index');
+        return view('student.questionnaire.index');
     })->name('kuesioner');
     
     Route::get('/materi', function () {
