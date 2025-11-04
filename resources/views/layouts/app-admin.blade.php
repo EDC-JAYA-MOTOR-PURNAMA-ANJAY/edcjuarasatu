@@ -60,6 +60,9 @@
         </div>
     </div>
 
+    <!-- Voice Helper (Load First) -->
+    <script src="{{ asset('js/voice-helper.js') }}"></script>
+    
     @stack('scripts')
     
     <!-- Welcome Voice Script -->

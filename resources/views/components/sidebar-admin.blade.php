@@ -16,7 +16,7 @@
 
             <!-- Dashboard -->
             <a href="{{ route('admin.dashboard') }}"
-               class="dashboard-menu flex items-center px-3 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-700 rounded-lg mb-1 transition-colors duration-200 group">
+               class="dashboard-menu flex items-center px-3 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-700 rounded-lg mb-1 transition-colors duration-200 group {{ request()->routeIs('admin.dashboard') ? 'bg-purple-100 text-purple-700' : '' }}">
                 <img src="{{ asset('images/icon/dash.png') }}" alt="Dashboard" class="w-4 h-4 mr-3">
                 <span class="text-sm font-medium flex-1">Dashboard</span>
                 <span class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-1 rounded-full">
@@ -76,7 +76,23 @@
                     <img src="{{ asset('images/icon/graduation.png') }}" alt="" class="w-4 h-4 mr-3">
                     <span>Rekap Absensi</span>
                 </a>
+
+                <a href="{{ route('admin.monitoring') }}"
+               class="monitoring-menu flex items-center px-3 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-700 rounded-lg mb-1 transition-colors duration-200 group {{ request()->routeIs('admin.monitoring') ? 'bg-purple-100 text-purple-700' : '' }}">
+                <img src="{{ asset('images/icon/moni.png') }}" alt="Monitoring & Statistik" class="w-4 h-4 mr-3">
+                <span class="text-sm font-medium">Monitoring & Statistik</span>
+            </a>
             </div>
+        </div>
+
+        <div class="mb-2">
+            <!-- Dashboard -->
+            <!-- Monitoring & Statistik -->
+            <a href="{{ route('admin.monitoring') }}"
+               class="monitoring-menu flex items-center px-3 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-700 rounded-lg mb-1 transition-colors duration-200 group {{ request()->routeIs('admin.monitoring') ? 'bg-purple-100 text-purple-700' : '' }}">
+                <img src="{{ asset('images/icon/moni.png') }}" alt="Monitoring & Statistik" class="w-4 h-4 mr-3">
+                <span class="text-sm font-medium">Monitoring & Statistik</span>
+            </a>
         </div>
 
         <!-- Setting Section -->
@@ -96,9 +112,9 @@
             </a>
 
             <!-- Logout Button -->
-            <form action="{{ route('logout') }}" method="POST" class="mt-2">
+            <form action="{{ route('logout') }}" method="POST" class="mt-2" id="logoutForm">
                 @csrf
-                <button type="submit" class="w-full flex items-center px-3 py-3 text-red-600 hover:bg-red-50 rounded-lg mb-1 transition-colors duration-200 group">
+                <button type="submit" class="w-full flex items-center px-3 py-3 text-red-600 hover:bg-red-50 rounded-lg mb-1 transition-colors duration-200 group" onclick="handleLogout(event)">
                     <i class="fas fa-sign-out-alt w-4 h-4 mr-3"></i>
                     <span class="text-sm font-medium">Keluar</span>
                 </button>
@@ -233,6 +249,21 @@
             });
         });
     });
+    
+    // 🎙️ VOICE: Logout Handler
+    function handleLogout(event) {
+        if (window.voiceHelper) {
+            event.preventDefault();
+            const userName = '{{ Auth::user()->nama ?? "" }}';
+            window.voiceHelper.speakGoodbye(userName);
+            
+            // Submit form after voice
+            setTimeout(() => {
+                document.getElementById('logoutForm').submit();
+            }, 1500);
+        }
+        // If voice not available, form submits normally
+    }
 </script>
 
 <style>

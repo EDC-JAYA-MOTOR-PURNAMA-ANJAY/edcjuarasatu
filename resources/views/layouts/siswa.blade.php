@@ -357,8 +357,11 @@
         });
     </script>
     
-    <!-- ⚡ Performance Boost JS -->
+    <!-- Performance Boost Script -->
     <script src="{{ asset('js/performance-boost.js') }}" defer></script>
+    
+    <!-- Voice Helper (Load First) -->
+    <script src="{{ asset('js/voice-helper.js') }}"></script>
 
     <!-- Welcome Voice Script (Deferred) -->
     @if(session('login_success_voice') && session('user_name_voice'))

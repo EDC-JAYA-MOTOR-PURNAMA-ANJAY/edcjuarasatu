@@ -359,16 +359,31 @@
     });
 
     function exportData() {
+        // 🎙️ VOICE: Export Started
+        if (window.voiceHelper) {
+            window.voiceHelper.speakExportStarted('Data monitoring');
+        }
+        
         const formData = new FormData(document.getElementById('filterForm'));
         const params = new URLSearchParams(formData);
         window.location.href = '/admin/monitoring/export?' + params.toString();
     }
 
     function exportPdf() {
+        // 🎙️ VOICE: Export PDF
+        if (window.voiceHelper) {
+            window.voiceHelper.speakExportStarted('PDF');
+        }
+        
         window.location.href = '{{ route("admin.monitoring.export-pdf") }}';
     }
 
     function exportExcel() {
+        // 🎙️ VOICE: Export Excel
+        if (window.voiceHelper) {
+            window.voiceHelper.speakExportStarted('Excel');
+        }
+        
         window.location.href = '{{ route("admin.monitoring.export-excel") }}';
     }
 </script>

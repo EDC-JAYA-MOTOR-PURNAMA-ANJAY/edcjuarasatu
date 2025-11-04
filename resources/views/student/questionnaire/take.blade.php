@@ -385,31 +385,221 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnNext = document.getElementById('btnNext');
     const timerDisplay = document.getElementById('timerDisplay');
 
-    // Sample Questions (In real app, fetch from backend)
+    // Answers storage
+    let answers = {};
+    
+    // 30 Soal Minat Bakat
     const questions = [
-        {
-            id: 1,
-            text: "Kegiatan apa yang paling kamu sukai?",
-            options: [
-                { label: "A", text: "Menggambar atau desain" },
-                { label: "B", text: "Membaca buku dan menulis" },
-                { label: "C", text: "Bermain musik atau menyanyi" },
-                { label: "D", text: "Bermain olahraga atau aktivitas fisik" },
-                { label: "E", text: "Memimpin tim atau organisasi" }
-            ]
-        },
-        {
-            id: 2,
-            text: "Bagaimana kamu biasanya menyelesaikan masalah?",
-            options: [
-                { label: "A", text: "Menganalisis secara logis dan sistematis" },
-                { label: "B", text: "Mendiskusikan dengan orang lain" },
-                { label: "C", text: "Menggunakan intuisi dan perasaan" },
-                { label: "D", text: "Mencoba berbagai solusi hingga berhasil" },
-                { label: "E", text: "Meneliti dan mempelajari dahulu" }
-            ]
-        },
-        // Add more questions as needed...
+        { id: 1, text: "Kegiatan apa yang paling kamu sukai?", options: [
+            { label: "A", text: "Menggambar atau desain" },
+            { label: "B", text: "Menghitung atau analisis data" },
+            { label: "C", text: "Membantu orang lain" },
+            { label: "D", text: "Mengoperasikan teknologi" },
+            { label: "E", text: "Memimpin tim atau organisasi" }
+        ]},
+        { id: 2, text: "Pelajaran favoritmu di sekolah?", options: [
+            { label: "A", text: "Seni Budaya" },
+            { label: "B", text: "Matematika / Fisika" },
+            { label: "C", text: "Sosiologi / BK" },
+            { label: "D", text: "Informatika / TIK" },
+            { label: "E", text: "PPKn / Bahasa Indonesia" }
+        ]},
+        { id: 3, text: "Kamu paling nyaman bekerja…", options: [
+            { label: "A", text: "Dengan hal kreatif" },
+            { label: "B", text: "Dengan angka" },
+            { label: "C", text: "Dengan orang lain" },
+            { label: "D", text: "Dengan teknologi" },
+            { label: "E", text: "Dalam sebuah organisasi" }
+        ]},
+        { id: 4, text: "Dalam kelompok, peran yang paling kamu suka:", options: [
+            { label: "A", text: "Pengembang ide" },
+            { label: "B", text: "Pengolah data" },
+            { label: "C", text: "Konselor / penyemangat" },
+            { label: "D", text: "Teknisi / pelaksana" },
+            { label: "E", text: "Koordinator" }
+        ]},
+        { id: 5, text: "Kamu lebih memilih kegiatan:", options: [
+            { label: "A", text: "Mendesain sesuatu" },
+            { label: "B", text: "Menyelesaikan soal logika" },
+            { label: "C", text: "Menjadi relawan sosial" },
+            { label: "D", text: "Mencoba software baru" },
+            { label: "E", text: "Menjadi ketua panitia" }
+        ]},
+        { id: 6, text: "Kamu merasa paling berbakat dalam:", options: [
+            { label: "A", text: "Seni visual atau audio" },
+            { label: "B", text: "Logika dan analisis" },
+            { label: "C", text: "Komunikasi dan empati" },
+            { label: "D", text: "Teknologi dan otomasi" },
+            { label: "E", text: "Kepemimpinan" }
+        ]},
+        { id: 7, text: "Kamu paling tidak suka:", options: [
+            { label: "A", text: "Rutinitas" },
+            { label: "B", text: "Ketidakjelasan data" },
+            { label: "C", text: "Konflik antar orang" },
+            { label: "D", text: "Kerja manual" },
+            { label: "E", text: "Diam tanpa aktivitas" }
+        ]},
+        { id: 8, text: "Kebiasaanmu saat belajar:", options: [
+            { label: "A", text: "Membuat mindmap atau poster" },
+            { label: "B", text: "Menyusun ulang data" },
+            { label: "C", text: "Diskusi dengan teman" },
+            { label: "D", text: "Nonton video edukasi teknologi" },
+            { label: "E", text: "Belajar sambil mengajar teman" }
+        ]},
+        { id: 9, text: "Kamu ingin masa depan di bidang:", options: [
+            { label: "A", text: "Seni/desain/media" },
+            { label: "B", text: "Ilmu sains/matematika" },
+            { label: "C", text: "Pendidikan/psikologi" },
+            { label: "D", text: "Teknik/IT" },
+            { label: "E", text: "Bisnis/organisasi" }
+        ]},
+        { id: 10, text: "Hobimu:", options: [
+            { label: "A", text: "Menggambar, edit foto/video" },
+            { label: "B", text: "Puzzle atau game strategi" },
+            { label: "C", text: "Menjadi pendengar curhat" },
+            { label: "D", text: "Coding/teknologi" },
+            { label: "E", text: "Event organizing" }
+        ]},
+        { id: 11, text: "Kamu merasa puas ketika…", options: [
+            { label: "A", text: "Menciptakan sesuatu yang unik" },
+            { label: "B", text: "Memecahkan masalah sulit" },
+            { label: "C", text: "Membantu seseorang merasa lebih baik" },
+            { label: "D", text: "Bisa memperbaiki sesuatu" },
+            { label: "E", text: "Proyek berjalan sukses" }
+        ]},
+        { id: 12, text: "Kamu cenderung…", options: [
+            { label: "A", text: "Imajinatif" },
+            { label: "B", text: "Analitis" },
+            { label: "C", text: "Peduli" },
+            { label: "D", text: "Praktis" },
+            { label: "E", text: "Tegas" }
+        ]},
+        { id: 13, text: "Kamu paling cocok bekerja sebagai…", options: [
+            { label: "A", text: "Desainer / Animator" },
+            { label: "B", text: "Analis / Akuntan" },
+            { label: "C", text: "Konselor / Guru" },
+            { label: "D", text: "Teknisi / Programmer" },
+            { label: "E", text: "Manajer / Leader" }
+        ]},
+        { id: 14, text: "Saat ada masalah, kamu…", options: [
+            { label: "A", text: "Cari inspirasi kreatif" },
+            { label: "B", text: "Analisis dulu" },
+            { label: "C", text: "Diskusi dengan teman" },
+            { label: "D", text: "Cari solusi praktis" },
+            { label: "E", text: "Koordinasi orang lain" }
+        ]},
+        { id: 15, text: "Kamu lebih suka tugas…", options: [
+            { label: "A", text: "Poster / presentasi" },
+            { label: "B", text: "Hitung-hitungan" },
+            { label: "C", text: "Kelompok sosial" },
+            { label: "D", text: "Teknologi" },
+            { label: "E", text: "Organisasi" }
+        ]},
+        { id: 16, text: "Kamu sering dipuji karena…", options: [
+            { label: "A", text: "Kreatif" },
+            { label: "B", text: "Pintar logika" },
+            { label: "C", text: "Suka membantu" },
+            { label: "D", text: "Tech-savvy" },
+            { label: "E", text: "Pemimpin alami" }
+        ]},
+        { id: 17, text: "Kamu paling betah di…", options: [
+            { label: "A", text: "Studio kreatif" },
+            { label: "B", text: "Lab atau ruang data" },
+            { label: "C", text: "Ruang BK atau sosial" },
+            { label: "D", text: "Bengkel / lab komputer" },
+            { label: "E", text: "Ruang OSIS / organisasi" }
+        ]},
+        { id: 18, text: "Kalau ikut lomba, kamu pilih…", options: [
+            { label: "A", text: "Poster / desain" },
+            { label: "B", text: "Karya ilmiah" },
+            { label: "C", text: "Debat / pidato" },
+            { label: "D", text: "Inovasi teknologi" },
+            { label: "E", text: "Lomba organisasi / kepemimpinan" }
+        ]},
+        { id: 19, text: "Kamu merasa kuat di bidang…", options: [
+            { label: "A", text: "Seni" },
+            { label: "B", text: "Analisis" },
+            { label: "C", text: "Sosial" },
+            { label: "D", text: "Teknik" },
+            { label: "E", text: "Bisnis" }
+        ]},
+        { id: 20, text: "Kepribadianmu lebih dekat ke…", options: [
+            { label: "A", text: "Kreator" },
+            { label: "B", text: "Pemecah masalah" },
+            { label: "C", text: "Penolong" },
+            { label: "D", text: "Teknisi" },
+            { label: "E", text: "Pemimpin" }
+        ]},
+        { id: 21, text: "Jika diberi proyek besar, kamu akan…", options: [
+            { label: "A", text: "Membuat konsep kreatifnya" },
+            { label: "B", text: "Menyusun data & perencanaannya" },
+            { label: "C", text: "Mengatur komunikasi dalam tim" },
+            { label: "D", text: "Mengurus teknis & sistemnya" },
+            { label: "E", text: "Memimpin pelaksanaannya" }
+        ]},
+        { id: 22, text: "Kamu cepat mengerti saat belajar melalui…", options: [
+            { label: "A", text: "Gambar / visual" },
+            { label: "B", text: "Rumus / angka" },
+            { label: "C", text: "Cerita / penjelasan orang lain" },
+            { label: "D", text: "Praktik langsung" },
+            { label: "E", text: "Diskusi kelompok" }
+        ]},
+        { id: 23, text: "Kamu ingin dikenal sebagai orang yang…", options: [
+            { label: "A", text: "Kreatif" },
+            { label: "B", text: "Cerdas" },
+            { label: "C", text: "Peduli" },
+            { label: "D", text: "Teknis" },
+            { label: "E", text: "Berpengaruh" }
+        ]},
+        { id: 24, text: "Kamu paling nyaman bekerja…", options: [
+            { label: "A", text: "Sendiri tetapi bebas berkreasi" },
+            { label: "B", text: "Dengan data yang jelas" },
+            { label: "C", text: "Bersama orang lain" },
+            { label: "D", text: "Dengan alat dan teknologi" },
+            { label: "E", text: "Dalam tim organisasi" }
+        ]},
+        { id: 25, text: "Jika mengikuti kegiatan sekolah, kamu memilih…", options: [
+            { label: "A", text: "Ekstrakulikuler seni" },
+            { label: "B", text: "Klub olimpiade matematika/sains" },
+            { label: "C", text: "PIK-R/PMR/psikologi" },
+            { label: "D", text: "IT Club/Teknik" },
+            { label: "E", text: "OSIS/mpk" }
+        ]},
+        { id: 26, text: "Kalau melihat orang kesulitan, kamu…", options: [
+            { label: "A", text: "Cari ide agar dia merasa lebih baik" },
+            { label: "B", text: "Analisis masalahnya" },
+            { label: "C", text: "Ajak bicara & bantu" },
+            { label: "D", text: "Cari solusi teknis" },
+            { label: "E", text: "Ajak bekerja sama" }
+        ]},
+        { id: 27, text: "Kamu paling betah membaca tentang…", options: [
+            { label: "A", text: "Seni & desain" },
+            { label: "B", text: "Logika & sains" },
+            { label: "C", text: "Psikologi manusia" },
+            { label: "D", text: "Teknologi terbaru" },
+            { label: "E", text: "Bisnis & kepemimpinan" }
+        ]},
+        { id: 28, text: "Kamu cepat bosan kalau…", options: [
+            { label: "A", text: "Tidak bisa berkreasi" },
+            { label: "B", text: "Tidak ada tantangan berpikir" },
+            { label: "C", text: "Tidak ada teman bicara" },
+            { label: "D", text: "Tidak ada teknologi" },
+            { label: "E", text: "Tidak ada tujuan besar" }
+        ]},
+        { id: 29, text: "Kamu suka tugas yang…", options: [
+            { label: "A", text: "Mengembangkan kreativitas" },
+            { label: "B", text: "Melibatkan angka" },
+            { label: "C", text: "Berkaitan dengan manusia" },
+            { label: "D", text: "Menggunakan alat/mesin" },
+            { label: "E", text: "Mengatur strategi" }
+        ]},
+        { id: 30, text: "Jika boleh memilih jurusan, kamu condong ke…", options: [
+            { label: "A", text: "Desain / DKV / Seni" },
+            { label: "B", text: "Matematika / Akuntansi / Sains" },
+            { label: "C", text: "Psikologi / Pendidikan / Sosial" },
+            { label: "D", text: "Teknik / Informatika" },
+            { label: "E", text: "Bisnis / Manajemen" }
+        ]}
     ];
 
     // Initialize Timer
@@ -506,7 +696,8 @@ document.addEventListener('DOMContentLoaded', function() {
     btnNext.addEventListener('click', function() {
         if (!selectedAnswer) return;
         
-        // Save answer (In real app, send to backend)
+        // Save answer
+        answers[currentQuestion] = selectedAnswer;
         console.log(`Question ${currentQuestion}: Answer ${selectedAnswer}`);
         
         // Move to next question
@@ -519,14 +710,50 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Calculate Scoring
+    function calculateScores() {
+        const scores = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+        
+        // Count each answer
+        Object.values(answers).forEach(answer => {
+            if (scores.hasOwnProperty(answer)) {
+                scores[answer]++;
+            }
+        });
+        
+        // Sort by count (descending)
+        const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+        
+        return {
+            scores: scores,
+            dominant: sorted[0][0],
+            dominantCount: sorted[0][1],
+            secondary: sorted[1][0],
+            secondaryCount: sorted[1][1],
+            sortedScores: sorted
+        };
+    }
+
     // Submit Questionnaire
     function submitQuestionnaire() {
         clearInterval(timerInterval);
-        alert('Kuisioner selesai! Terima kasih atas partisipasinya.');
         
-        // In real app: send data to backend
-        // Then redirect to results or thank you page
-        window.location.href = "{{ route('student.questionnaire') }}";
+        // Calculate result
+        const result = calculateScores();
+        
+        // Save to sessionStorage for result page
+        sessionStorage.setItem('questionnaireResult', JSON.stringify(result));
+        sessionStorage.setItem('questionnaireAnswers', JSON.stringify(answers));
+        
+        // Voice notification
+        if (window.voiceHelper) {
+            window.voiceHelper.speakQuestionnaireComplete();
+        }
+
+        // Redirect to result page
+        setTimeout(() => {
+            window.location.href = "{{ route('student.questionnaire') }}/result";
+        }, 2000); // Delay untuk voice selesai
     }
 
     // Handle Browser Back/Refresh

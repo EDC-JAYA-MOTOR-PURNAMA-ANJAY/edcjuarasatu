@@ -321,10 +321,23 @@ function submitForm() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(response) {
-            if (response.success) {
-                showSuccessModal();
-                form.reset();
+            // 🎙️ VOICE: Account Created
+            if (window.voiceHelper && response.user) {
+                const roleName = response.user.peran === 'guru_bk' ? 'Guru BK' : 
+                               response.user.peran === 'siswa' ? 'Siswa' : response.user.peran;
+                window.voiceHelper.speakAccountCreated(roleName, response.user.nama);
             }
+            
+            // Show success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: response.message || 'Pengguna berhasil ditambahkan',
+                showConfirmButton: false,
+                timer: 2000
+            }).then(() => {
+                window.location.href = '{{ route("admin.daftar-pengguna") }}';
+            });
         },
         error: function(xhr) {
             // Re-enable button

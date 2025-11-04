@@ -334,6 +334,23 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // 🎙️ DASHBOARD DAILY REMINDER
+    const lastVoiceDate = localStorage.getItem('dashboard_voice_date');
+    const today = new Date().toDateString();
+    
+    if (lastVoiceDate !== today) {
+        const userName = '{{ Auth::user()->nama ?? "Pengguna" }}';
+        const pendingKonseling = 0; // From controller if available
+        const pendingKuesioner = 0; // From controller if available
+        
+        setTimeout(() => {
+            if (window.voiceHelper) {
+                window.voiceHelper.speakDashboardReminder(userName, pendingKonseling, pendingKuesioner);
+                localStorage.setItem('dashboard_voice_date', today);
+            }
+        }, 1500);
+    }
+    
     // Smooth animations for cards
     const cards = document.querySelectorAll('.info-card');
     

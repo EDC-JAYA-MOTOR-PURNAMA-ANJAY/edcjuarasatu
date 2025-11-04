@@ -55,6 +55,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     // Export Absensi
     Route::get('/absensi/export', [App\Http\Controllers\Admin\AbsensiController::class, 'exportAbsensi'])->name('absensi.export');
 
+    // Monitoring & Statistik
+    Route::get('/monitoring', [App\Http\Controllers\Admin\MonitoringController::class, 'index'])->name('monitoring');
+    Route::get('/monitoring/data', [App\Http\Controllers\Admin\MonitoringController::class, 'getData'])->name('monitoring.data');
+    Route::get('/monitoring/export-pdf', [App\Http\Controllers\Admin\MonitoringController::class, 'exportPdf'])->name('monitoring.export-pdf');
+    Route::get('/monitoring/export-excel', [App\Http\Controllers\Admin\MonitoringController::class, 'exportExcel'])->name('monitoring.export-excel');
+
     // Panduan Bantuan - langsung di level admin
     Route::get('/panduan', function () {
         return view('admin.setting.panduan');
@@ -136,6 +142,10 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'role:siswa'])->
     Route::get('/questionnaire/start/{id}', function ($id) {
         return view('student.questionnaire.take', ['questionnaireId' => $id]);
     })->name('questionnaire.start');
+    
+    Route::get('/questionnaire/result', function () {
+        return view('student.questionnaire.result');
+    })->name('questionnaire.result');
 
     // Profile
     Route::get('/profile', function () {
