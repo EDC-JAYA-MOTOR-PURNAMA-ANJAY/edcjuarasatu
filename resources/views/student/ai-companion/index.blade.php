@@ -394,6 +394,9 @@
         font-size: 15px;
         line-height: 1.6;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: pre-wrap;
     }
 
     .message-user .message-content {
@@ -406,6 +409,13 @@
         background: #faf5ff;
         color: #1f2937;
         border-bottom-right-radius: 4px;
+        border-left: 3px solid #B48DFF;
+    }
+    
+    .message-ai.error .message-content {
+        background: #fef2f2;
+        border-left: 3px solid #ef4444;
+        color: #991b1b;
     }
 
     /* Input Area */
@@ -939,15 +949,23 @@ function sendMessage() {
             research_mode: isResearchMode 
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         hideTypingIndicator();
         
         if (data.success) {
-            addMessageToUI(data.message, 'assistant');
+            // Extract AI message from response
+            const aiMessage = data.ai_message?.message || data.message || 'Maaf, tidak ada respon dari AI.';
+            
+            addMessageToUI(aiMessage, 'assistant');
             conversationHistory.push(
                 { role: 'user', message: message },
-                { role: 'assistant', message: data.message }
+                { role: 'assistant', message: aiMessage }
             );
             
             // Update sidebar with new chat
@@ -955,6 +973,13 @@ function sendMessage() {
             
             // Enable export button
             document.getElementById('exportBtn').style.opacity = '1';
+            
+            // Show crisis warning if detected
+            if (data.is_crisis && data.voice_message) {
+                setTimeout(() => {
+                    showNotification('⚠️ ' + data.voice_message);
+                }, 1000);
+            }
         } else {
             addMessageToUI(data.message || 'Maaf, terjadi kesalahan. Coba lagi ya!', 'assistant');
         }
@@ -962,12 +987,25 @@ function sendMessage() {
     .catch(error => {
         hideTypingIndicator();
         console.error('Error:', error);
-        addMessageToUI('Maaf, koneksi bermasalah. Pastikan .env sudah diconfig dengan benar! 😊', 'assistant');
+        
+        // More specific error messages
+        let errorMsg = 'Maaf, terjadi kesalahan. ';
+        if (error.message.includes('401') || error.message.includes('403')) {
+            errorMsg += 'Kamu belum login. Silakan login terlebih dahulu! 🔐';
+        } else if (error.message.includes('429')) {
+            errorMsg += 'Terlalu banyak request. Tunggu sebentar ya! ⏳';
+        } else if (error.message.includes('500')) {
+            errorMsg += 'Server error. Pastikan API key sudah diconfig di .env! 🔧';
+        } else {
+            errorMsg += 'Koneksi bermasalah. Cek internet atau config .env kamu! 😊';
+        }
+        
+        addMessageToUI(errorMsg, 'assistant', true, true);
     });
 }
 
 // Add message to UI
-function addMessageToUI(message, role, scroll = true) {
+function addMessageToUI(message, role, scroll = true, isError = false) {
     const chatMessages = document.getElementById('chatMessages');
     
     // Hide empty state
@@ -976,6 +1014,11 @@ function addMessageToUI(message, role, scroll = true) {
     
     const messageDiv = document.createElement('div');
     messageDiv.className = `message message-${role}`;
+    
+    // Add error class if this is an error message
+    if (isError && role === 'assistant') {
+        messageDiv.classList.add('error');
+    }
     
     const avatar = document.createElement('div');
     avatar.className = 'message-avatar';
@@ -987,6 +1030,7 @@ function addMessageToUI(message, role, scroll = true) {
     // Format message with basic markdown-like styling
     const formattedMessage = message
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n\n/g, '<br><br>')
         .replace(/\n/g, '<br>');
     
     content.innerHTML = formattedMessage;
