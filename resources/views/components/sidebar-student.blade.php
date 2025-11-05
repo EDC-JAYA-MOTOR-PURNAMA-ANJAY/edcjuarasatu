@@ -131,6 +131,19 @@
                             {{ request()->routeIs('student.material') ? 'filter brightness-0 invert' : 'group-hover:filter group-hover:brightness-0 group-hover:invert-50' }}">
                 <span class="text-sm font-medium transition-all duration-200 ease-in-out">Materi</span>
             </a>
+
+            <!-- Sahabat AI (NEW!) -->
+            <a href="{{ route('student.ai-companion.index') }}"
+               class="sidebar-menu group flex items-center px-4 py-3 rounded-xl transition-all duration-200 ease-in-out relative
+                      {{ request()->routeIs('student.ai-companion.*') ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg' : 'text-gray-900 hover:bg-gradient-to-r hover:from-purple-100 hover:to-pink-100 hover:text-purple-700' }}">
+                <div class="w-5 h-5 mr-3 text-lg transition-all duration-200 ease-in-out">
+                    🤖
+                </div>
+                <span class="text-sm font-medium flex-1 transition-all duration-200 ease-in-out">Sahabat AI</span>
+                <span class="px-2 py-0.5 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs font-bold rounded-full">
+                    NEW
+                </span>
+            </a>
         </nav>
     </div>
 

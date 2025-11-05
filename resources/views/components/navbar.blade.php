@@ -24,16 +24,16 @@
                         @endif
                     </div>
                 </div>
-                <div class="w-10 h-10 rounded-full border-2 border-gray-200 overflow-hidden group-hover:border-primary-purple transition-colors shadow-sm">
-                    <img src="{{ asset('images/shafa.jpeg') }}" alt="Profile" class="w-full h-full object-cover">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm shadow-md group-hover:shadow-lg transition-all">
+                    {{ strtoupper(substr(auth()->user()->nama ?? 'U', 0, 2)) }}
                 </div>
             </div>
 
             <!-- Profile Dropdown -->
             <div class="absolute top-full right-0 mt-2 w-64 bg-white rounded-xl shadow-md border border-gray-100 py-4 opacity-0 invisible transition-all duration-300 transform translate-y-2" id="profileDropdown">
                 <div class="flex flex-col items-center px-4 pb-4 border-b border-gray-100">
-                    <div class="w-16 h-16 rounded-full border-2 border-gray-100 overflow-hidden mb-3 shadow-sm">
-                        <img src="{{ asset('images/shafa.jpeg') }}" alt="Profile" class="w-full h-full object-cover">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-2xl shadow-lg mb-3">
+                        {{ strtoupper(substr(auth()->user()->nama ?? 'U', 0, 2)) }}
                     </div>
                     <h3 class="font-bold text-text-primary text-lg">{{ auth()->user()->nama ?? 'User' }}</h3>
                     <p class="text-primary-purple text-sm">

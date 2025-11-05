@@ -1,0 +1,22 @@
+===========================================
+JALANKAN COMMAND INI SATU PER SATU:
+===========================================
+
+1. Clear config cache:
+php artisan config:clear
+
+2. Clear application cache:
+php artisan cache:clear
+
+3. Verify configuration:
+php artisan tinker --execute="echo 'Model: ' . config('ai.gemini.model');"
+
+HASIL HARUS: gemini-2.5-flash
+
+4. Restart server (Stop dulu dengan Ctrl+C):
+php artisan serve
+
+5. Test di browser:
+http://localhost:8000/student/ai-companion
+
+===========================================

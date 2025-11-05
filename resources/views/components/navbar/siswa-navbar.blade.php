@@ -9,12 +9,23 @@
             <!-- User Profile -->
             <div class="user-profile">
                 <div class="profile-info">
-                    <span class="user-name">Keysita Marchelina Harlie</span>
-                    <span class="user-role">Siswa</span>
+                    <span class="user-name">{{ auth()->user()->nama ?? 'User' }}</span>
+                    <span class="user-role">
+                        @if(auth()->user()->peran === 'admin')
+                            Admin
+                        @elseif(auth()->user()->peran === 'guru_bk')
+                            Guru BK
+                        @elseif(auth()->user()->peran === 'siswa')
+                            Siswa
+                        @else
+                            {{ ucfirst(auth()->user()->peran) }}
+                        @endif
+                    </span>
                 </div>
                 <div class="profile-avatar-container">
-                    <img src="{{ asset('images/key.jpeg') }}"
-                         alt="Profile" class="profile-img" id="profileAvatar">
+                    <div class="profile-img profile-initials" id="profileAvatar">
+                        {{ strtoupper(substr(auth()->user()->nama ?? 'U', 0, 2)) }}
+                    </div>
                 </div>
             </div>
 
@@ -23,14 +34,28 @@
                 <div class="profile-card-content">
                     <!-- Profile Image Large -->
                     <div class="profile-card-avatar">
-                        <img src="{{ asset('images/key.jpeg') }}"
-                             alt="Profile Large" class="profile-img-large">
+                        <div class="profile-img-large profile-initials-large">
+                            {{ strtoupper(substr(auth()->user()->nama ?? 'U', 0, 2)) }}
+                        </div>
                     </div>
 
                     <!-- User Info -->
                     <div class="profile-card-info">
-                        <h3 class="profile-card-name">Keysita Marchelina Harlie</h3>
-                        <p class="profile-card-role">Siswa</p>
+                        <h3 class="profile-card-name">{{ auth()->user()->nama ?? 'User' }}</h3>
+                        <p class="profile-card-role">
+                            @if(auth()->user()->peran === 'admin')
+                                Admin
+                            @elseif(auth()->user()->peran === 'guru_bk')
+                                Guru BK
+                            @elseif(auth()->user()->peran === 'siswa')
+                                Siswa
+                                @if(auth()->user()->kelas)
+                                    - {{ auth()->user()->kelas->nama_kelas }}
+                                @endif
+                            @else
+                                {{ ucfirst(auth()->user()->peran) }}
+                            @endif
+                        </p>
                     </div>
 
                     <!-- Action Buttons -->
@@ -148,6 +173,23 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Profile Initials Style */
+.profile-initials {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.profile-initials:hover {
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+}
+
 /* Profile Card Popup */
 .profile-card-popup {
     position: absolute;
@@ -189,6 +231,19 @@
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid #F0F0F0;
+}
+
+/* Profile Initials Large Style */
+.profile-initials-large {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 32px;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
 }
 
 /* Profile Card Info */

@@ -147,6 +147,16 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'role:siswa'])->
         return view('student.questionnaire.result');
     })->name('questionnaire.result');
 
+    // AI Companion
+    Route::prefix('ai-companion')->name('ai-companion.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Student\AiCompanionController::class, 'index'])->name('index');
+        Route::post('/chat', [App\Http\Controllers\Student\AiCompanionController::class, 'chat'])->name('chat');
+        Route::get('/history', [App\Http\Controllers\Student\AiCompanionController::class, 'history'])->name('history');
+        Route::post('/clear', [App\Http\Controllers\Student\AiCompanionController::class, 'clearHistory'])->name('clear');
+        Route::get('/stats', [App\Http\Controllers\Student\AiCompanionController::class, 'stats'])->name('stats');
+        Route::get('/export-pdf', [App\Http\Controllers\Student\AiCompanionController::class, 'exportPdf'])->name('export-pdf');
+    });
+
     // Profile
     Route::get('/profile', function () {
         return view('student.profile.index');

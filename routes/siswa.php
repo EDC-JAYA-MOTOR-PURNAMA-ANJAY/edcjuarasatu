@@ -3,6 +3,7 @@
 use App\Http\Controllers\Siswa\DashboardController;
 use App\Http\Controllers\Siswa\AbsensiController;
 use App\Http\Controllers\Siswa\KonselingController;
+use App\Http\Controllers\Student\AiCompanionController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->group(function () {
@@ -27,11 +28,21 @@ Route::prefix('absensi')->name('absensi.')->group(function () {
         Route::get('/riwayat', [KonselingController::class, 'riwayat'])->name('riwayat');
     });
     
-    // Routes lainnya...
+    // Violation/Pelanggaran
     Route::get('/pelanggaran', function () {
-        return view('siswa.pelanggaran.index');
+        return view('student.violation.index');
     })->name('pelanggaran');
     
+    // AI Companion Routes
+    Route::prefix('ai-companion')->name('ai-companion.')->group(function () {
+        Route::get('/', [AiCompanionController::class, 'index'])->name('index');
+        Route::post('/chat', [AiCompanionController::class, 'chat'])->name('chat');
+        Route::get('/history', [AiCompanionController::class, 'history'])->name('history');
+        Route::post('/clear', [AiCompanionController::class, 'clearHistory'])->name('clear');
+        Route::get('/stats', [AiCompanionController::class, 'stats'])->name('stats');
+    });
+    
+    // Routes lainnya...
     Route::get('/kuesioner', function () {
         return view('student.questionnaire.index');
     })->name('kuesioner');
