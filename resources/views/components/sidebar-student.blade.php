@@ -139,7 +139,7 @@
                 <div class="w-5 h-5 mr-3 text-lg transition-all duration-200 ease-in-out">
                     🤖
                 </div>
-                <span class="text-sm font-medium flex-1 transition-all duration-200 ease-in-out">Sahabat AI</span>
+                <span class="text-sm font-medium flex-1 transition-all duration-200 ease-in-out">EDU AI</span>
                 <span class="px-2 py-0.5 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs font-bold rounded-full">
                     NEW
                 </span>

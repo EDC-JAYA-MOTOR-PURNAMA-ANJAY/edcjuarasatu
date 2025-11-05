@@ -30,6 +30,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     })->name('dashboard');
     
     // Management Pengguna Routes
+    Route::get('/management-pengguna', function () {
+        return view('admin.management-pengguna.index');
+    })->name('management-pengguna');
+    
     Route::get('/daftar-pengguna', [App\Http\Controllers\Admin\PenggunaController::class, 'index'])->name('daftar-pengguna');
     Route::get('/tambah-akun', [App\Http\Controllers\Admin\PenggunaController::class, 'create'])->name('tambah-akun');
     Route::post('/pengguna/store', [App\Http\Controllers\Admin\PenggunaController::class, 'store'])->name('pengguna.store');
@@ -42,6 +46,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/tahun-ajaran', function () {
         return view('admin.tahun-ajaran.index');
     })->name('tahun-ajaran');
+    
+    // Tahun Ajaran New (Alternatif UI)
+    Route::get('/tahun-ajaran-new', function () {
+        return view('admin.tahun-ajaran.index-new');
+    })->name('tahun-ajaran-new');
 
     // Rekap Absensi
     Route::get('/rekap-absensi', [App\Http\Controllers\Admin\AbsensiController::class, 'rekapAbsensi'])->name('rekap-absensi');
@@ -93,6 +102,42 @@ Route::prefix('guru_bk')->name('guru_bk.')->middleware(['auth', 'role:guru_bk'])
         Route::get('/jadwal', function () {
             return view('guru_bk.konseling.jadwal');
         })->name('jadwal');
+        
+        Route::get('/hasil', function () {
+            // Get konseling data for dropdown (dummy data for now)
+            $konselings = collect([
+                (object)[
+                    'id' => 1,
+                    'judul' => 'Konseling Akademik',
+                    'tanggal_konseling' => now(),
+                    'siswa' => (object)['nama' => 'Ahmad Rizki']
+                ],
+                (object)[
+                    'id' => 2,
+                    'judul' => 'Konseling Pribadi',
+                    'tanggal_konseling' => now()->subDays(1),
+                    'siswa' => (object)['nama' => 'Siti Nurhaliza']
+                ]
+            ]);
+            
+            return view('guru_bk.konseling.hasil', compact('konselings'));
+        })->name('hasil');
+        
+        Route::post('/hasil/store', function (Illuminate\Http\Request $request) {
+            $validated = $request->validate([
+                'konseling_id' => 'required',
+                'masalah' => 'required|string',
+                'analisis' => 'required|string',
+                'rencana' => 'required|string',
+                'kategori' => 'required|string',
+            ]);
+            
+            // TODO: Save to database
+            // For now, just redirect back with success message
+            
+            return redirect()->route('guru_bk.konseling.hasil')
+                ->with('success', 'Catatan hasil konseling berhasil disimpan!');
+        })->name('hasil.store');
     });
 
     // Management Pelanggaran
@@ -101,6 +146,16 @@ Route::prefix('guru_bk')->name('guru_bk.')->middleware(['auth', 'role:guru_bk'])
             return view('guru_bk.pelanggaran.index');
         })->name('index');
     });
+    
+    // Data Siswa
+    Route::get('/data-siswa', function () {
+        return view('guru_bk.data-siswa.index');
+    })->name('data-siswa');
+    
+    // Analisis Angket
+    Route::get('/analisis', function () {
+        return view('guru_bk.analisis.index');
+    })->name('analisis');
 });
 
 // Student Routes
@@ -152,9 +207,20 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'role:siswa'])->
         Route::get('/', [App\Http\Controllers\Student\AiCompanionController::class, 'index'])->name('index');
         Route::post('/chat', [App\Http\Controllers\Student\AiCompanionController::class, 'chat'])->name('chat');
         Route::get('/history', [App\Http\Controllers\Student\AiCompanionController::class, 'history'])->name('history');
+        Route::post('/save-history', [App\Http\Controllers\Student\AiCompanionController::class, 'saveHistory'])->name('save-history');
         Route::post('/clear', [App\Http\Controllers\Student\AiCompanionController::class, 'clearHistory'])->name('clear');
         Route::get('/stats', [App\Http\Controllers\Student\AiCompanionController::class, 'stats'])->name('stats');
         Route::get('/export-pdf', [App\Http\Controllers\Student\AiCompanionController::class, 'exportPdf'])->name('export-pdf');
+        
+        // Alternatif UI
+        Route::get('/cortex-new', function () {
+            return view('student.ai-companion.index-cortex-new');
+        })->name('cortex-new');
+        
+        // Backup UI (old version)
+        Route::get('/old-backup', function () {
+            return view('student.ai-companion.index-old-backup');
+        })->name('old-backup');
     });
 
     // Profile

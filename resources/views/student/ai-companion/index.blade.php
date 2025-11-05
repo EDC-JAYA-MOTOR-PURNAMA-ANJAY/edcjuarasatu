@@ -1,361 +1,17 @@
 @extends('layouts.app')
 
-@section('title', 'Sahabat AI - Educounsel')
+@section('title', 'EDU AI - Educounsel')
 
 @push('styles')
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
     * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
-
-    body {
-        background: #ffffff;
-        overflow: hidden;
-    }
-
-    /* Main Container - 2 Column Layout */
-    .cortex-container {
-        display: flex;
-        height: 100vh;
-        margin-left: 260px;
-        padding-top: 72px;
-    }
-
-    /* LEFT SIDEBAR - Navigation Panel */
-    .cortex-sidebar {
-        width: 280px;
-        background: #ffffff;
-        border-right: 1px solid #e5e7eb;
-        display: flex;
-        flex-direction: column;
-        padding: 24px 16px;
-        overflow-y: auto;
-        box-shadow: 1px 0 10px rgba(0, 0, 0, 0.03);
-    }
-
-    /* Logo Section */
-    .cortex-logo {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 24px;
-        padding: 0 8px;
-    }
-
-    .cortex-logo-icon {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, #C9A8FF 0%, #B48DFF 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        color: white;
-        box-shadow: 0 4px 12px rgba(180, 141, 255, 0.3);
-    }
-
-    .cortex-logo-text {
-        font-size: 20px;
-        font-weight: 700;
-        color: #1f2937;
-        letter-spacing: -0.5px;
-    }
-
-    /* New Chat Button */
-    .new-chat-btn {
-        width: 100%;
-        background: #000000;
-        color: #ffffff;
-        border: none;
-        border-radius: 12px;
-        padding: 14px 20px;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        margin-bottom: 16px;
-        transition: all 0.2s;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .new-chat-btn:hover {
-        background: #1f2937;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    /* Search Box */
-    .search-box {
-        position: relative;
-        margin-bottom: 24px;
-    }
-
-    .search-box input {
-        width: 100%;
-        padding: 12px 40px 12px 16px;
-        border: 1px solid #e5e7eb;
-        border-radius: 10px;
-        font-size: 14px;
-        background: #f9fafb;
-        transition: all 0.2s;
-    }
-
-    .search-box input:focus {
-        outline: none;
-        border-color: #B48DFF;
-        background: #ffffff;
-        box-shadow: 0 0 0 3px rgba(180, 141, 255, 0.1);
-    }
-
-    .search-box i {
-        position: absolute;
-        right: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #9ca3af;
-        font-size: 14px;
-    }
-
-    /* Navigation Menu */
-    .nav-menu {
-        margin-bottom: 24px;
-    }
-
-    .nav-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 12px 16px;
-        color: #6b7280;
-        font-size: 14px;
-        font-weight: 500;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.2s;
-        margin-bottom: 4px;
-    }
-
-    .nav-item:hover {
-        background: #f3f4f6;
-        color: #1f2937;
-    }
-
-    .nav-item.active {
-        background: #faf5ff;
-        color: #B48DFF;
-    }
-
-    .nav-item i {
-        width: 18px;
-        font-size: 16px;
-    }
-
-    /* Recent Chats Section */
-    .recent-section {
-        margin-top: auto;
-        padding-top: 16px;
-        border-top: 1px solid #e5e7eb;
-    }
-
-    .recent-title {
-        font-size: 12px;
-        font-weight: 600;
-        color: #9ca3af;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 12px;
-        padding: 0 8px;
-    }
-
-    .recent-item {
-        padding: 10px 16px;
-        color: #6b7280;
-        font-size: 13px;
-        border-radius: 8px;
-        cursor: pointer;
-        margin-bottom: 4px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        transition: all 0.2s;
-    }
-
-    .recent-item:hover {
-        background: #f3f4f6;
-        color: #1f2937;
-    }
-
-    /* RIGHT MAIN AREA - Chat Workspace */
-    .cortex-main {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        background: #ffffff;
-        position: relative;
-    }
-
-    /* Top Header */
-    .cortex-header {
-        padding: 24px 32px;
-        border-bottom: 1px solid #f3f4f6;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-    }
-
-    .header-left-content {
-        flex: 1;
-    }
-
-    .header-actions {
-        display: flex;
-        gap: 12px;
-    }
-
-    /* Export & Upgrade Buttons */
-    .export-btn {
-        padding: 10px 20px;
-        background: #ffffff;
-        border: 1.5px solid #e5e7eb;
-        border-radius: 10px;
-        color: #1f2937;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .export-btn:hover {
-        border-color: #B48DFF;
-        background: #faf5ff;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(180, 141, 255, 0.15);
-    }
-
-    .upgrade-btn {
-        padding: 10px 20px;
-        background: #000000;
-        border: none;
-        border-radius: 10px;
-        color: #ffffff;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .upgrade-btn:hover {
-        background: #1f2937;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    }
-
-    /* Main Content - Empty State */
-    .cortex-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 40px;
-        overflow-y: auto;
-        background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-    }
-
-    /* Central Logo */
-    .central-logo {
-        width: 120px;
-        height: 120px;
-        background: linear-gradient(135deg, rgba(201, 168, 255, 0.3) 0%, rgba(180, 141, 255, 0.3) 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 32px;
-        position: relative;
-        box-shadow: 0 8px 32px rgba(180, 141, 255, 0.2);
-    }
-
-    .central-logo::before {
-        content: '';
-        position: absolute;
-        width: 140px;
-        height: 140px;
-        background: linear-gradient(135deg, rgba(201, 168, 255, 0.15) 0%, rgba(180, 141, 255, 0.15) 100%);
-        border-radius: 50%;
-        z-index: -1;
-        animation: pulse 2s infinite;
-    }
-
-    .central-logo i {
-        font-size: 50px;
-        color: #B48DFF;
-        filter: drop-shadow(0 4px 8px rgba(180, 141, 255, 0.3));
-    }
-
-    @keyframes pulse {
-        0% { transform: scale(1); opacity: 0.7; }
-        50% { transform: scale(1.05); opacity: 0.4; }
-        100% { transform: scale(1); opacity: 0.7; }
-    }
-
-    /* Welcome Text */
-    .welcome-text {
-        text-align: center;
-        margin-bottom: 40px;
-    }
-
-    .welcome-greeting {
-        font-size: 28px;
-        font-weight: 300;
-        color: #C9A8FF;
-        margin-bottom: 8px;
-        letter-spacing: -0.5px;
-    }
-
-    .welcome-question {
-        font-size: 36px;
-        font-weight: 700;
-        color: #1f2937;
-        letter-spacing: -1px;
-        line-height: 1.2;
-    }
-
-    /* Chat Messages Area (when has messages) */
-    .chat-messages {
-        flex: 1;
-        overflow-y: auto;
-        padding: 32px;
-        display: none;
-        background: #ffffff;
-    }
-
-    .chat-messages.active {
-        display: block;
-    }
-
-    .message {
-        margin-bottom: 24px;
-        display: flex;
-        gap: 12px;
-        animation: fadeInUp 0.3s ease-out;
-    }
-
+    
+    /* Custom animations */
     @keyframes fadeInUp {
         from {
             opacity: 0;
@@ -366,468 +22,252 @@
             transform: translateY(0);
         }
     }
-
-    .message-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        font-size: 18px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .message-user .message-avatar {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    }
-
-    .message-ai .message-avatar {
-        background: linear-gradient(135deg, #C9A8FF 0%, #B48DFF 100%);
-    }
-
-    .message-content {
-        flex: 1;
-        padding: 16px 20px;
-        border-radius: 16px;
-        font-size: 15px;
-        line-height: 1.6;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        white-space: pre-wrap;
-    }
-
-    .message-user .message-content {
-        background: #f3f4f6;
-        color: #1f2937;
-        border-bottom-left-radius: 4px;
-    }
-
-    .message-ai .message-content {
-        background: #faf5ff;
-        color: #1f2937;
-        border-bottom-right-radius: 4px;
-        border-left: 3px solid #B48DFF;
+    
+    @keyframes pulse-recording {
+        0%, 100% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+        }
+        50% {
+            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+        }
     }
     
-    .message-ai.error .message-content {
-        background: #fef2f2;
-        border-left: 3px solid #ef4444;
-        color: #991b1b;
-    }
-
-    /* Input Area */
-    .cortex-input-area {
-        padding: 24px 32px 32px;
-        border-top: 1px solid #f3f4f6;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-    }
-
-    .input-container {
-        position: relative;
-        max-width: 900px;
-        margin: 0 auto;
-    }
-
-    .main-input {
-        width: 100%;
-        padding: 18px 130px 18px 20px;
-        border: 1.5px solid #e5e7eb;
-        border-radius: 16px;
-        font-size: 15px;
-        background: #f9fafb;
-        resize: none;
-        font-family: inherit;
-        transition: all 0.2s;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    .main-input:focus {
-        outline: none;
-        border-color: #B48DFF;
-        background: #ffffff;
-        box-shadow: 0 4px 20px rgba(180, 141, 255, 0.15);
-    }
-
-    .input-actions {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        display: flex;
-        gap: 8px;
-    }
-
-    .input-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border: none;
-        background: #ffffff;
-        color: #6b7280;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .input-btn:hover {
-        background: #f3f4f6;
-        color: #1f2937;
-        transform: translateY(-1px);
-    }
-
-    .input-btn.send {
-        background: linear-gradient(135deg, #C9A8FF 0%, #B48DFF 100%);
-        color: #ffffff;
-    }
-
-    .input-btn.send:hover {
-        background: linear-gradient(135deg, #B48DFF 0%, #9f6ee8 100%);
-        transform: translateY(-1px) scale(1.05);
-    }
-
-    /* Attach File Button */
-    .attach-file {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 12px 20px;
-        margin-top: 12px;
-        color: #6b7280;
-        font-size: 14px;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.2s;
-        max-width: 900px;
-        margin: 12px auto 0;
-        width: fit-content;
-    }
-
-    .attach-file:hover {
-        background: #f3f4f6;
-        color: #1f2937;
-    }
-
-    /* Saved Prompts Section */
-    .saved-prompts {
-        max-width: 900px;
-        margin: 0 auto 24px;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 16px;
-    }
-
-    .prompt-card {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 20px;
-        cursor: pointer;
-        transition: all 0.2s;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    .prompt-card:hover {
-        border-color: #B48DFF;
-        background: #faf5ff;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(180, 141, 255, 0.15);
-    }
-
-    .prompt-icon {
-        width: 36px;
-        height: 36px;
-        background: linear-gradient(135deg, rgba(201, 168, 255, 0.2) 0%, rgba(180, 141, 255, 0.2) 100%);
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 12px;
-        color: #B48DFF;
-        font-size: 18px;
-    }
-
-    .prompt-title {
-        font-size: 15px;
-        font-weight: 600;
-        color: #1f2937;
-        margin-bottom: 6px;
-    }
-
-    .prompt-desc {
-        font-size: 13px;
-        color: #6b7280;
-        line-height: 1.5;
-    }
-
-    /* Typing Indicator */
-    .typing-indicator {
-        display: none;
-        padding: 16px 20px;
-        background: #faf5ff;
-        border-radius: 16px;
-        width: fit-content;
-        margin-bottom: 24px;
-        animation: fadeInUp 0.3s ease-out;
-    }
-
-    .typing-indicator span {
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #B48DFF;
-        margin: 0 3px;
-        animation: typing 1.4s infinite;
-    }
-
-    .typing-indicator span:nth-child(2) {
-        animation-delay: 0.2s;
-    }
-
-    .typing-indicator span:nth-child(3) {
-        animation-delay: 0.4s;
-    }
-
     @keyframes typing {
-        0%, 60%, 100% { transform: translateY(0); }
-        30% { transform: translateY(-10px); }
-    }
-
-    /* Research Mode Button */
-    .research-mode {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
-        background: #f8fafc;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        color: #6b7280;
-        font-size: 13px;
-        cursor: pointer;
-        transition: all 0.2s;
-        margin-right: 8px;
-    }
-
-    .research-mode:hover {
-        background: #f1f5f9;
-        border-color: #B48DFF;
-    }
-
-    .research-mode.active {
-        background: #faf5ff;
-        border-color: #B48DFF;
-        color: #B48DFF;
-    }
-
-    /* Scrollbar */
-    .cortex-sidebar::-webkit-scrollbar,
-    .cortex-content::-webkit-scrollbar,
-    .chat-messages::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .cortex-sidebar::-webkit-scrollbar-thumb,
-    .cortex-content::-webkit-scrollbar-thumb,
-    .chat-messages::-webkit-scrollbar-thumb {
-        background: #d1d5db;
-        border-radius: 3px;
-    }
-
-    .cortex-sidebar::-webkit-scrollbar-thumb:hover,
-    .cortex-content::-webkit-scrollbar-thumb:hover,
-    .chat-messages::-webkit-scrollbar-thumb:hover {
-        background: #9ca3af;
-    }
-
-    /* Responsive */
-    @media (max-width: 1024px) {
-        .cortex-sidebar {
-            display: none;
+        0%, 60%, 100% { 
+            transform: translateY(0); 
+            opacity: 0.4;
         }
-
-        .cortex-container {
-            margin-left: 0;
+        30% { 
+            transform: translateY(-8px); 
+            opacity: 1;
         }
     }
-
-    /* Loading Animation */
-    .loading-dots {
-        display: inline-flex;
-        gap: 4px;
+    
+    .animate-typing {
+        animation: typing 1.4s ease-in-out infinite;
     }
-
-    .loading-dots span {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: #B48DFF;
-        animation: loading 1.4s infinite ease-in-out;
-    }
-
-    .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
-    .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
-
+    
     @keyframes loading {
         0%, 80%, 100% { transform: scale(0); }
         40% { transform: scale(1); }
+    }
+    
+    @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+    
+    /* Smooth scroll for chat messages */
+    #chatMessages {
+        scroll-behavior: smooth;
+    }
+    
+    /* Empty state styling */
+    #chatMessages:empty::before {
+        content: '💬 Start chatting with EDU AI Assistant...';
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #9ca3af;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+    
+    /* Auto-resize textarea */
+    #messageInput {
+        max-height: 150px;
+        overflow-y: auto;
     }
 </style>
 @endpush
 
 @section('content')
-<div class="cortex-container">
+<div class="flex h-screen bg-gray-50">
     <!-- LEFT SIDEBAR -->
-    <div class="cortex-sidebar">
-        <!-- Logo -->
-        <div class="cortex-logo">
-            <div class="cortex-logo-icon">
-                🎓
+    <div class="w-80 bg-white border-r border-gray-200 flex flex-col h-full">
+        <!-- User Profile -->
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex flex-col items-center">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-300 to-purple-400 rounded-full flex items-center justify-center text-white text-xl mb-3">
+                    👤
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-gray-900 font-medium text-base">{{ auth()->user()->nama ?? 'Jane Cooper' }}</span>
+                    <i class="fas fa-cog text-gray-500 text-sm cursor-pointer hover:text-purple-600 transition-colors"></i>
+                </div>
             </div>
-            <div class="cortex-logo-text">Educounsel</div>
         </div>
 
-        <!-- New Chat Button -->
-        <button class="new-chat-btn" onclick="startNewChat()">
-            <i class="fas fa-plus"></i>
-            New chat
-        </button>
-
         <!-- Search Box -->
-        <div class="search-box">
-            <input type="text" placeholder="Search conversations..." id="searchInput">
-            <i class="fas fa-search"></i>
+        <div class="p-4">
+            <div class="relative">
+                <input 
+                    type="text" 
+                    placeholder="Search for chats..." 
+                    class="w-full pl-10 pr-4 py-3 bg-gray-50 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:bg-white text-gray-900 text-sm"
+                >
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm"></i>
+            </div>
         </div>
 
         <!-- Navigation Menu -->
-        <div class="nav-menu">
-            <div class="nav-item" onclick="window.location.href='{{ route('student.dashboard') }}'">
-                <i class="fas fa-compass"></i>
-                <span>Explore</span>
-            </div>
-            <div class="nav-item" onclick="window.location.href=">
-                <i class="fas fa-book"></i>
-                <span>Library</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-folder"></i>
-                <span>Files</span>
-            </div>
-            <div class="nav-item active" onclick="showHistory()">
-                <i class="fas fa-clock"></i>
-                <span>History</span>
+        <div class="px-4 pb-4">
+            <div class="space-y-1">
+                <div class="nav-item flex items-center justify-between px-4 py-3 rounded-xl bg-purple-50 text-purple-600 cursor-pointer transition-all">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-comment text-sm"></i>
+                        <span class="text-sm font-medium">Chats</span>
+                    </div>
+                    <span class="bg-purple-600 text-white text-xs px-2 py-1 rounded-full">24</span>
+                </div>
+                
+                <div class="nav-item flex items-center justify-between px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 cursor-pointer transition-all">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-book text-sm"></i>
+                        <span class="text-sm font-medium">Library</span>
+                    </div>
+                    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">12</span>
+                </div>
+                
+                <div class="nav-item flex items-center justify-between px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 cursor-pointer transition-all">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-cube text-sm"></i>
+                        <span class="text-sm font-medium">Apps</span>
+                    </div>
+                    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">8</span>
+                </div>
             </div>
         </div>
 
-        <!-- Recent Chats -->
-        <div class="recent-section">
-            <div class="recent-title">Recent Chats</div>
-            <div id="recentChats">
-                <div class="recent-item" style="color: #9ca3af; font-style: italic;">Mulai chat untuk melihat riwayat</div>
+        <!-- Pinned Section -->
+        <div class="px-4 pb-4">
+            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">Pinned</div>
+            <div class="space-y-1">
+                <div class="recent-item px-4 py-2 rounded-lg text-gray-800 hover:text-purple-600 hover:bg-purple-50 cursor-pointer transition-all text-sm">
+                    Mathematics Homework Help
+                </div>
+                <div class="recent-item px-4 py-2 rounded-lg text-gray-800 hover:text-purple-600 hover:bg-purple-50 cursor-pointer transition-all text-sm">
+                    Science Project Discussion
+                </div>
+                <div class="recent-item px-4 py-2 rounded-lg text-gray-800 hover:text-purple-600 hover:bg-purple-50 cursor-pointer transition-all text-sm">
+                    Career Guidance Session
+                </div>
             </div>
+        </div>
+
+        <!-- Chat History Section -->
+        <div class="px-4 pb-4 flex-1">
+            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">Chat History</div>
+            <div id="recentChats" class="space-y-1">
+                <div class="recent-item px-4 py-2 rounded-lg text-gray-400 italic cursor-pointer text-sm">
+                    Mulai chat untuk melihat riwayat
+                </div>
+            </div>
+        </div>
+
+        <!-- New Chat Button -->
+        <div class="p-4 border-t border-gray-200">
+            <button onclick="startNewChat()" class="new-chat-btn w-full bg-purple-600 hover:bg-purple-700 text-white rounded-xl py-3 px-4 font-semibold text-sm flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5 shadow-lg shadow-purple-500/25">
+                <i class="fas fa-plus"></i>
+                Start New Chat
+            </button>
         </div>
     </div>
 
     <!-- RIGHT MAIN AREA -->
-    <div class="cortex-main">
+    <div class="flex-1 flex flex-col bg-gray-50">
         <!-- Header -->
-        <div class="cortex-header">
-            <div class="header-left-content"></div>
-            <div class="header-actions">
-                <a href="{{ route('student.ai-companion.export-pdf') }}" class="export-btn" id="exportBtn">
-                    <i class="fas fa-download"></i>
-                    Export chat
-                </a>
-                <button class="upgrade-btn" onclick="showStats()">
-                    <i class="fas fa-chart-line"></i>
-                    Stats
-                </button>
+        <div class="bg-white border-b border-gray-200 px-10 py-6 flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Chats</h1>
+            </div>
+            <div class="relative w-80">
+                <input 
+                    type="text" 
+                    placeholder="Search for chats..." 
+                    class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-900 text-sm"
+                >
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm"></i>
             </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="cortex-content" id="cortexContent">
-            <!-- Empty State -->
-            <div id="emptyState">
-                <!-- Central Logo -->
-                <div class="central-logo">
-                    <i class="fas fa-robot"></i>
-                </div>
-
-                <!-- Welcome Text -->
-                <div class="welcome-text">
-                    <div class="welcome-greeting">Hello, {{ auth()->user()->nama ?? 'there' }}</div>
-                    <div class="welcome-question">How can I assist you today?</div>
-                </div>
-
-                <!-- Saved Prompts -->
-                <div class="saved-prompts">
-                    <div class="prompt-card" onclick="usePrompt('Aku lagi stress dengan tugas sekolah, bisakah kamu bantu aku?')">
-                        <div class="prompt-icon">
-                            <i class="fas fa-lightbulb"></i>
-                        </div>
-                        <div class="prompt-title">Curhat Stress</div>
-                        <div class="prompt-desc">Ceritakan tentang kesulitan belajar dan dapatkan dukungan</div>
-                    </div>
-                    <div class="prompt-card" onclick="usePrompt('Bagaimana cara belajar yang efektif untuk ujian?')">
-                        <div class="prompt-icon">
-                            <i class="fas fa-brain"></i>
-                        </div>
-                        <div class="prompt-title">Tips Belajar</div>
-                        <div class="prompt-desc">Dapatkan strategi belajar yang efektif dan produktif</div>
-                    </div>
-                    <div class="prompt-card" onclick="usePrompt('Aku merasa cemas menjelang ujian, apa yang harus aku lakukan?')">
-                        <div class="prompt-icon">
-                            <i class="fas fa-heart"></i>
-                        </div>
-                        <div class="prompt-title">Kelola Kecemasan</div>
-                        <div class="prompt-desc">Teknik untuk mengatasi kecemasan dan stress</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Chat Messages (initially hidden) -->
-            <div class="chat-messages" id="chatMessages">
-                <!-- Messages will be appended here -->
-            </div>
-        </div>
-
-        <!-- Input Area -->
-        <div class="cortex-input-area">
-            <div style="display: flex; justify-content: center; margin-bottom: 12px;">
-                <div class="research-mode" id="researchMode">
+        <!-- Welcome Hero Card -->
+        <div class="bg-gradient-to-r from-blue-300 to-purple-400 rounded-2xl mx-10 my-6 p-10 text-white shadow-xl shadow-blue-500/25">
+            <h2 class="text-2xl font-bold mb-2">Welcome back, {{ auth()->user()->nama ?? 'Jane' }}</h2>
+            <p class="text-white/90 text-sm mb-6">Search or ask AI for anything that you want to know</p>
+            
+            <!-- Research Mode Toggle -->
+            <div class="flex justify-center mb-4">
+                <div class="research-mode flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg text-white text-sm cursor-pointer transition-all hover:bg-white/30" id="researchMode">
                     <i class="fas fa-search"></i>
                     <span>Deeper Research</span>
                 </div>
             </div>
             
-            <div class="input-container">
+            <!-- Main Input Area -->
+            <div class="relative max-w-2xl">
                 <textarea 
-                    class="main-input" 
-                    id="messageInput" 
-                    placeholder="Ask me anything..."
+                    id="messageInput"
+                    placeholder="How can I help you?" 
                     rows="1"
-                    onkeypress="handleKeyPress(event)"></textarea>
-                <div class="input-actions">
-                    <button class="input-btn" title="Voice Input" id="voiceBtn">
-                        <i class="fas fa-microphone"></i>
+                    class="w-full px-5 py-4 pr-32 rounded-2xl border-none focus:outline-none text-gray-900 text-sm shadow-lg resize-none"
+                    onkeypress="handleKeyPress(event)"
+                ></textarea>
+                <div class="absolute right-2 top-1/2 transform -translate-y-1/2 flex gap-2">
+                    <button id="voiceBtn" class="w-10 h-10 bg-white hover:bg-gray-50 rounded-full flex items-center justify-center text-gray-600 transition-all shadow-md" title="Voice Input">
+                        <i class="fas fa-microphone text-sm"></i>
                     </button>
-                    <button class="input-btn send" onclick="sendMessage()" id="sendBtn">
-                        <i class="fas fa-paper-plane"></i>
+                    <button onclick="sendMessage()" id="sendBtn" class="w-10 h-10 bg-purple-600 hover:bg-purple-700 text-white rounded-full flex items-center justify-center transition-all transform hover:scale-105 shadow-lg shadow-purple-500/25">
+                        <i class="fas fa-paper-plane text-sm"></i>
+                    </button>
+                    <button onclick="confirmDeleteChat()" class="w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all transform hover:scale-105 shadow-lg shadow-red-500/25" title="Delete Chat">
+                        <i class="fas fa-trash text-sm"></i>
                     </button>
                 </div>
             </div>
-            <div class="attach-file" onclick="document.getElementById('fileInput').click()">
+            
+            <!-- Attach File -->
+            <div class="flex items-center justify-center gap-2 mt-4 text-white/80 text-sm cursor-pointer hover:text-white transition-colors" onclick="document.getElementById('fileInput').click()">
                 <i class="fas fa-paperclip"></i>
                 <span>Attach file</span>
-                <input type="file" id="fileInput" style="display: none;">
+                <input type="file" id="fileInput" class="hidden">
+            </div>
+        </div>
+
+        <!-- Chat Interface (Always visible) -->
+        <div id="chatInterface" class="flex-1 flex flex-col overflow-hidden">
+            <!-- Chat Header -->
+            <div class="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white text-lg shadow-sm">
+                        🤖
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">EDU AI Assistant</h3>
+                        <p class="text-xs text-gray-500">Always here to help you</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportChat()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+                        <i class="fas fa-download"></i>
+                        Export
+                    </button>
+                    <button onclick="confirmDeleteChat()" class="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+                        <i class="fas fa-trash"></i>
+                        Delete Chat
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Messages Area -->
+            <div id="chatMessages" class="flex-1 overflow-y-auto p-8 space-y-6 bg-white">
+                <!-- Messages will be dynamically added here -->
             </div>
         </div>
     </div>
@@ -836,6 +276,12 @@
 <script>
 let conversationHistory = [];
 let isResearchMode = false;
+let currentSpeech = null;
+let isSpeaking = false;
+
+// Text-to-Speech Initialization
+const synth = window.speechSynthesis;
+let utterance = null;
 
 // Load history on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -848,10 +294,15 @@ function setupEventListeners() {
     // Research mode toggle
     document.getElementById('researchMode').addEventListener('click', function() {
         isResearchMode = !isResearchMode;
-        this.classList.toggle('active', isResearchMode);
         
         if (isResearchMode) {
-            showNotification('Research mode activated - I will provide more detailed responses');
+            this.classList.add('bg-white/40', 'border-white/50');
+            this.classList.remove('bg-white/20', 'border-white/30');
+            showNotification('🔬 Research mode activated - Detailed responses');
+        } else {
+            this.classList.remove('bg-white/40', 'border-white/50');
+            this.classList.add('bg-white/20', 'border-white/30');
+            showNotification('💬 Normal mode activated');
         }
     });
     
@@ -862,30 +313,294 @@ function setupEventListeners() {
         this.style.height = (this.scrollHeight) + 'px';
     });
     
-    // Voice input button
-    document.getElementById('voiceBtn').addEventListener('click', function() {
-        showNotification('Voice input feature coming soon!');
-    });
-}
+    // Voice input button - Initialize Speech Recognition
+    const voiceBtn = document.getElementById('voiceBtn');
+    const messageInput = document.getElementById('messageInput');
+    let recognition = null;
+    let isRecording = false;
 
-// Use prompt suggestion
-function usePrompt(message) {
-    document.getElementById('messageInput').value = message;
-    document.getElementById('messageInput').focus();
-    // Don't auto-send, let user review and send manually
+    // Check if browser supports Speech Recognition
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.lang = 'id-ID'; // Bahasa Indonesia
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = function() {
+            isRecording = true;
+            voiceBtn.classList.add('bg-red-500', 'text-white', 'border-red-500');
+            voiceBtn.classList.remove('bg-white', 'text-gray-600', 'border-gray-200');
+            voiceBtn.innerHTML = '<i class="fas fa-stop text-sm"></i>';
+            showNotification('🎤 Listening... Speak now!');
+        };
+
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            messageInput.value = transcript;
+            messageInput.focus();
+            // Auto resize textarea
+            messageInput.style.height = 'auto';
+            messageInput.style.height = (messageInput.scrollHeight) + 'px';
+            showNotification('✅ Voice captured successfully!');
+        };
+
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error:', event.error);
+            isRecording = false;
+            voiceBtn.classList.remove('bg-red-500', 'text-white', 'border-red-500');
+            voiceBtn.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
+            voiceBtn.innerHTML = '<i class="fas fa-microphone text-sm"></i>';
+            
+            let errorMsg = '';
+            
+            switch(event.error) {
+                case 'no-speech':
+                    errorMsg = '⚠️ Tidak mendengar suara. Coba lagi dan bicara lebih jelas.';
+                    showNotification(errorMsg);
+                    break;
+                case 'audio-capture':
+                    errorMsg = '⚠️ Microphone tidak ditemukan. Pastikan microphone terhubung.';
+                    showNotification(errorMsg);
+                    break;
+                case 'not-allowed':
+                    // Show detailed alert for permission denied
+                    setTimeout(() => {
+                        alert('🔴 MICROPHONE AKSES DITOLAK!\n\n' +
+                            '📋 Langkah untuk mengizinkan:\n\n' +
+                            '1️⃣ Klik icon 🔒 di sebelah URL (address bar)\n' +
+                            '2️⃣ Cari pengaturan "Microphone"\n' +
+                            '3️⃣ Ubah dari "Block" ke "Allow"\n' +
+                            '4️⃣ Refresh halaman ini (F5)\n' +
+                            '5️⃣ Klik tombol 🎤 lagi\n\n' +
+                            '💡 Tip: Pastikan microphone tidak sedang digunakan aplikasi lain!\n\n' +
+                            'URL: ' + window.location.hostname);
+                    }, 100);
+                    break;
+                case 'network':
+                    errorMsg = '⚠️ Kesalahan jaringan. Periksa koneksi internet Anda.';
+                    showNotification(errorMsg);
+                    break;
+                case 'aborted':
+                    // Silent error, user probably stopped it
+                    console.log('Voice input aborted by user');
+                    break;
+                default:
+                    errorMsg = '⚠️ Kesalahan voice recognition: ' + event.error;
+                    showNotification(errorMsg);
+            }
+        };
+
+        recognition.onend = function() {
+            isRecording = false;
+            voiceBtn.classList.remove('bg-red-500', 'text-white', 'border-red-500');
+            voiceBtn.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
+            voiceBtn.innerHTML = '<i class="fas fa-microphone text-sm"></i>';
+        };
+
+        voiceBtn.addEventListener('click', async function() {
+            if (isRecording) {
+                recognition.stop();
+                showNotification('🛑 Voice input stopped');
+            } else {
+                // Debug: Check permission status
+                console.log('=== Voice Button Clicked ===');
+                console.log('Browser:', navigator.userAgent);
+                console.log('HTTPS:', window.location.protocol === 'https:');
+                
+                // Check if microphone permission API is available
+                if (navigator.permissions && navigator.permissions.query) {
+                    try {
+                        const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
+                        console.log('Microphone permission status:', permissionStatus.state);
+                        
+                        if (permissionStatus.state === 'denied') {
+                            alert('❌ MICROPHONE DI-BLOCK!\n\n' +
+                                'Permission status: DENIED\n\n' +
+                                'Cara fix:\n' +
+                                '1. Klik icon 🔒 di address bar\n' +
+                                '2. Klik "Reset izin"\n' +
+                                '3. Refresh halaman (F5)\n' +
+                                '4. Klik 🎤 lagi dan pilih "Izinkan"');
+                            return;
+                        }
+                    } catch (err) {
+                        console.log('Permission API not available:', err);
+                    }
+                }
+                
+                try {
+                    console.log('Attempting to start recognition...');
+                    recognition.start();
+                    console.log('✅ Speech recognition started successfully');
+                } catch (error) {
+                    console.error('❌ Error starting recognition:', error);
+                    console.error('Error name:', error.name);
+                    console.error('Error message:', error.message);
+                    
+                    if (error.name === 'InvalidStateError') {
+                        console.log('Recognition already running, stopping first...');
+                        // Recognition is already started, stop it first
+                        recognition.stop();
+                        setTimeout(() => {
+                            try {
+                                console.log('Retrying recognition start...');
+                                recognition.start();
+                                console.log('✅ Retry successful');
+                            } catch (e) {
+                                console.error('❌ Retry failed:', e);
+                                showNotification('⚠️ Gagal memulai voice recognition. Refresh halaman (F5).');
+                            }
+                        }, 200);
+                    } else if (error.name === 'NotAllowedError') {
+                        console.error('❌ NotAllowedError - Permission denied at start');
+                        alert('❌ PERMISSION ERROR!\n\n' +
+                            'Browser block akses microphone.\n\n' +
+                            'Solusi:\n' +
+                            '1. Tutup browser sepenuhnya\n' +
+                            '2. Buka lagi\n' +
+                            '3. Buka chatbot\n' +
+                            '4. Saat popup muncul, klik IZINKAN\n\n' +
+                            'Current permission sudah diset tapi browser masih block.');
+                    } else {
+                        showNotification('⚠️ Gagal memulai voice recognition: ' + error.name);
+                    }
+                }
+            }
+        });
+    } else {
+        // Browser doesn't support Speech Recognition
+        voiceBtn.addEventListener('click', function() {
+            showNotification('⚠️ Voice input not supported in this browser. Please use Chrome or Edge.');
+        });
+        voiceBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    }
 }
 
 // Start new chat
 function startNewChat() {
     if (conversationHistory.length === 0 || confirm('Mulai percakapan baru? Riwayat chat saat ini akan tetap tersimpan.')) {
+        stopSpeaking(); // Stop any ongoing speech
         conversationHistory = [];
         document.getElementById('chatMessages').innerHTML = '';
-        document.getElementById('chatMessages').classList.remove('active');
-        document.getElementById('emptyState').style.display = 'block';
         document.getElementById('messageInput').value = '';
-        document.getElementById('exportBtn').style.opacity = '0.5';
         
-        showNotification('New chat started');
+        showNotification('✅ New chat started');
+    }
+}
+
+// Confirm delete chat
+function confirmDeleteChat() {
+    if (conversationHistory.length === 0) {
+        showNotification('⚠️ No chat to delete');
+        return;
+    }
+    
+    if (confirm('⚠️ Are you sure you want to delete this entire chat? This action cannot be undone.')) {
+        stopSpeaking();
+        conversationHistory = [];
+        document.getElementById('chatMessages').innerHTML = '';
+        document.getElementById('messageInput').value = '';
+        
+        // Save empty history to server
+        fetch('{{ route("student.ai-companion.save-history") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ history: [] })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('🗑️ Chat deleted successfully');
+            } else {
+                showNotification('⚠️ Failed to delete chat from server');
+            }
+        })
+        .catch(error => {
+            console.error('Delete error:', error);
+            showNotification('⚠️ Error deleting chat');
+        });
+    }
+}
+
+// Export chat
+function exportChat() {
+    if (conversationHistory.length === 0) {
+        showNotification('⚠️ No chat to export');
+        return;
+    }
+    window.location.href = '{{ route("student.ai-companion.export-pdf") }}';
+    showNotification('📥 Exporting chat...');
+}
+
+// Text-to-Speech Functions
+function speakText(text, messageId) {
+    // Stop any ongoing speech first
+    stopSpeaking();
+    
+    utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'id-ID';
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+    
+    // Update UI when speaking starts
+    utterance.onstart = function() {
+        isSpeaking = true;
+        const speakBtn = document.getElementById('speak-' + messageId);
+        if (speakBtn) {
+            speakBtn.innerHTML = '<i class="fas fa-stop text-sm"></i>';
+            speakBtn.classList.add('bg-purple-600', 'text-white');
+            speakBtn.classList.remove('bg-purple-50', 'text-purple-600');
+        }
+        showNotification('🔊 Speaking...');
+    };
+    
+    // Update UI when speaking ends
+    utterance.onend = function() {
+        isSpeaking = false;
+        const speakBtn = document.getElementById('speak-' + messageId);
+        if (speakBtn) {
+            speakBtn.innerHTML = '<i class="fas fa-volume-up text-sm"></i>';
+            speakBtn.classList.remove('bg-purple-600', 'text-white');
+            speakBtn.classList.add('bg-purple-50', 'text-purple-600');
+        }
+    };
+    
+    utterance.onerror = function(event) {
+        console.error('Speech synthesis error:', event);
+        showNotification('⚠️ Failed to speak');
+        isSpeaking = false;
+    };
+    
+    currentSpeech = utterance;
+    synth.speak(utterance);
+}
+
+function stopSpeaking() {
+    if (synth.speaking || isSpeaking) {
+        synth.cancel();
+        isSpeaking = false;
+        
+        // Reset all speak buttons
+        document.querySelectorAll('[id^="speak-"]').forEach(btn => {
+            btn.innerHTML = '<i class="fas fa-volume-up text-sm"></i>';
+            btn.classList.remove('bg-purple-600', 'text-white');
+            btn.classList.add('bg-purple-50', 'text-purple-600');
+        });
+    }
+}
+
+function toggleSpeak(text, messageId) {
+    if (isSpeaking) {
+        stopSpeaking();
+        showNotification('🔇 Speech stopped');
+    } else {
+        speakText(text, messageId);
     }
 }
 
@@ -915,9 +630,6 @@ function displayHistory() {
     });
     
     if (conversationHistory.length > 0) {
-        document.getElementById('emptyState').style.display = 'none';
-        chatMessages.classList.add('active');
-        document.getElementById('exportBtn').style.opacity = '1';
         scrollToBottom();
     }
 }
@@ -971,9 +683,6 @@ function sendMessage() {
             // Update sidebar with new chat
             updateRecentChats(conversationHistory);
             
-            // Enable export button
-            document.getElementById('exportBtn').style.opacity = '1';
-            
             // Show crisis warning if detected
             if (data.is_crisis && data.voice_message) {
                 setTimeout(() => {
@@ -1007,48 +716,93 @@ function sendMessage() {
 // Add message to UI
 function addMessageToUI(message, role, scroll = true, isError = false) {
     const chatMessages = document.getElementById('chatMessages');
-    
-    // Hide empty state
-    document.getElementById('emptyState').style.display = 'none';
-    chatMessages.classList.add('active');
+    const messageId = 'msg-' + Date.now();
     
     const messageDiv = document.createElement('div');
-    messageDiv.className = `message message-${role}`;
+    messageDiv.className = `flex gap-4 ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+    messageDiv.id = messageId;
     
-    // Add error class if this is an error message
-    if (isError && role === 'assistant') {
-        messageDiv.classList.add('error');
+    if (role === 'user') {
+        messageDiv.innerHTML = `
+            <div class="flex flex-col items-end max-w-3/4">
+                <div class="bg-gray-100 text-gray-900 rounded-2xl rounded-br-md px-5 py-3 text-sm shadow-sm">
+                    ${message.replace(/\n/g, '<br>')}
+                </div>
+            </div>
+            <div class="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-sm shadow-sm flex-shrink-0">
+                👤
+            </div>
+        `;
+    } else {
+        const cleanMessage = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        messageDiv.innerHTML = `
+            <div class="w-9 h-9 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm shadow-sm flex-shrink-0">
+                🤖
+            </div>
+            <div class="flex flex-col max-w-3/4 gap-2">
+                <div class="bg-purple-50 text-gray-900 rounded-2xl rounded-bl-md px-5 py-3 text-sm border-l-4 ${isError ? 'border-red-500 bg-red-50' : 'border-purple-500'} shadow-sm">
+                    ${cleanMessage.replace(/\n/g, '<br>')}
+                </div>
+                ${!isError ? `
+                <div class="flex items-center gap-2">
+                    <button 
+                        id="speak-${messageId}"
+                        onclick="toggleSpeak(\`${message.replace(/'/g, "\\'").replace(/`/g, "\\`")}\`, '${messageId}')"
+                        class="px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-600 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 shadow-sm"
+                        title="Listen to response"
+                    >
+                        <i class="fas fa-volume-up text-sm"></i>
+                        <span>Listen</span>
+                    </button>
+                    <button 
+                        onclick="copyToClipboard(\`${message.replace(/'/g, "\\'").replace(/`/g, "\\`")}\`)"
+                        class="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 shadow-sm"
+                        title="Copy response"
+                    >
+                        <i class="fas fa-copy text-sm"></i>
+                        <span>Copy</span>
+                    </button>
+                </div>
+                ` : ''}
+            </div>
+        `;
     }
     
-    const avatar = document.createElement('div');
-    avatar.className = 'message-avatar';
-    avatar.innerHTML = role === 'user' ? '👤' : '🤖';
-    
-    const content = document.createElement('div');
-    content.className = 'message-content';
-    
-    // Format message with basic markdown-like styling
-    const formattedMessage = message
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\n\n/g, '<br><br>')
-        .replace(/\n/g, '<br>');
-    
-    content.innerHTML = formattedMessage;
-    
-    messageDiv.appendChild(avatar);
-    messageDiv.appendChild(content);
+    messageDiv.style.animation = 'fadeInUp 0.3s ease-out';
     chatMessages.appendChild(messageDiv);
     
     if (scroll) scrollToBottom();
+    
+    return messageId;
+}
+
+// Copy to clipboard
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showNotification('📋 Copied to clipboard');
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+        showNotification('⚠️ Failed to copy');
+    });
 }
 
 // Typing indicator
 function showTypingIndicator() {
     const indicator = document.createElement('div');
-    indicator.className = 'typing-indicator';
+    indicator.className = 'flex gap-4 justify-start';
     indicator.id = 'typingIndicator';
-    indicator.innerHTML = '<span></span><span></span><span></span>';
-    indicator.style.display = 'block';
+    indicator.innerHTML = `
+        <div class="w-9 h-9 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm shadow-sm">
+            🤖
+        </div>
+        <div class="bg-purple-50 text-gray-900 rounded-2xl rounded-bl-md px-5 py-4 text-sm border-l-4 border-purple-500 shadow-sm">
+            <div class="flex gap-1">
+                <span class="w-2 h-2 bg-purple-500 rounded-full animate-typing"></span>
+                <span class="w-2 h-2 bg-purple-500 rounded-full animate-typing" style="animation-delay: 0.2s"></span>
+                <span class="w-2 h-2 bg-purple-500 rounded-full animate-typing" style="animation-delay: 0.4s"></span>
+            </div>
+        </div>
+    `;
     
     document.getElementById('chatMessages').appendChild(indicator);
     scrollToBottom();
@@ -1078,7 +832,7 @@ function updateRecentChats(conversations) {
     const recentChatsDiv = document.getElementById('recentChats');
     
     if (!conversations || conversations.length === 0) {
-        recentChatsDiv.innerHTML = '<div class="recent-item" style="color: #9ca3af; font-style: italic;">Belum ada percakapan</div>';
+        recentChatsDiv.innerHTML = '<div class="recent-item px-4 py-2 rounded-lg text-gray-400 italic cursor-pointer text-sm">Belum ada percakapan</div>';
         return;
     }
     
@@ -1089,50 +843,18 @@ function updateRecentChats(conversations) {
     let html = '';
     recentMessages.forEach((msg, index) => {
         const preview = msg.message.substring(0, 40) + (msg.message.length > 40 ? '...' : '');
-        html += `<div class="recent-item" onclick="scrollToBottom()">${preview}</div>`;
+        html += `<div class="recent-item px-4 py-2 rounded-lg text-gray-800 hover:text-purple-600 hover:bg-purple-50 cursor-pointer transition-all text-sm">${preview}</div>`;
     });
     
-    recentChatsDiv.innerHTML = html || '<div class="recent-item" style="color: #9ca3af;">Belum ada percakapan</div>';
-}
-
-// Show stats
-function showStats() {
-    fetch('{{ route("student.ai-companion.stats") }}')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const stats = data.stats;
-                alert(`📊 Statistik Chat:\n\nTotal: ${stats.total_messages} pesan\nHari ini: ${stats.today_messages} pesan\nMinggu ini: ${stats.week_messages} pesan`);
-            }
-        })
-        .catch(error => {
-            console.error('Error loading stats:', error);
-        });
-}
-
-// Show history
-function showHistory() {
-    loadHistory();
-    showNotification('Menampilkan riwayat percakapan');
+    recentChatsDiv.innerHTML = html || '<div class="recent-item px-4 py-2 rounded-lg text-gray-400 italic cursor-pointer text-sm">Belum ada percakapan</div>';
 }
 
 // Show notification
 function showNotification(message) {
     // Create notification element
     const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 100px;
-        right: 30px;
-        background: #1f2937;
-        color: white;
-        padding: 12px 20px;
-        border-radius: 10px;
-        font-size: 14px;
-        z-index: 1000;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        animation: slideInRight 0.3s ease-out;
-    `;
+    notification.className = 'fixed top-24 right-8 bg-gray-900 text-white px-5 py-3 rounded-xl text-sm z-50 shadow-xl';
+    notification.style.animation = 'slideInRight 0.3s ease-out';
     notification.textContent = message;
     
     document.body.appendChild(notification);
@@ -1147,19 +869,5 @@ function showNotification(message) {
         }, 300);
     }, 3000);
 }
-
-// Add CSS for notifications
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideOutRight {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-    }
-`;
-document.head.appendChild(style);
 </script>
 @endsection

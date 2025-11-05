@@ -1,133 +1,271 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Guru BK - EduCounsel</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50">
-    <!-- Navigation -->
-    <nav class="bg-indigo-600 text-white p-4 shadow-lg">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold">EduCounsel - Guru BK</h1>
-            <div class="flex items-center gap-4">
-                <span>{{ Auth::user()->nama }}</span>
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded">
-                        Logout
-                    </button>
-                </form>
-            </div>
-        </div>
-    </nav>
+@extends('layouts.app-guru-bk')
 
-    <!-- Main Content -->
-    <div class="container mx-auto p-6">
-        <!-- Welcome Card -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">
-                Selamat Datang, {{ Auth::user()->nama }}!
-            </h2>
-            <p class="text-gray-600">Dashboard Guru BK - Sistem Bimbingan Konseling</p>
-        </div>
+@section('title', 'Dashboard - Guru BK')
 
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            <!-- Konseling Pending -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 text-sm">Konseling Pending</p>
-                        <p class="text-3xl font-bold text-yellow-500">0</p>
+@section('content')
+<!-- Main Content -->
+<div class="max-w-full mx-auto px-8 py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Side: Jadwal Konseling & Notifikasi -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Jadwal Konseling -->
+                <div class="bg-white rounded-2xl shadow-sm p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-gray-800">Jadwal Konseling</h2>
+                        <div class="flex items-center space-x-3">
+                            <span class="text-sm text-gray-600">02 - 08 Octo</span>
+                            <div class="flex space-x-2">
+                                <button class="p-1 hover:bg-gray-100 rounded">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                </button>
+                                <button class="p-1 hover:bg-gray-100 rounded">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="bg-yellow-100 p-3 rounded-full">
-                        <svg class="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+
+                    <!-- Calendar Grid -->
+                    <div class="overflow-x-auto">
+                        <div class="min-w-full">
+                            <!-- Day Headers -->
+                            <div class="grid grid-cols-8 gap-0 mb-4">
+                                <div class="text-center py-2"></div>
+                                <div class="text-center py-2">
+                                    <p class="text-xs text-gray-500">Sen</p>
+                                    <p class="text-sm font-semibold text-gray-700">02</p>
+                                </div>
+                                <div class="text-center py-2">
+                                    <p class="text-xs text-gray-500">Sel</p>
+                                    <p class="text-sm font-semibold text-gray-700">03</p>
+                                </div>
+                                <div class="text-center py-2">
+                                    <p class="text-xs text-gray-500">Rab</p>
+                                    <p class="text-sm font-semibold text-gray-700">04</p>
+                                </div>
+                                <div class="text-center py-2">
+                                    <p class="text-xs text-gray-500">Kam</p>
+                                    <p class="text-sm font-semibold text-gray-700">05</p>
+                                </div>
+                                <div class="text-center py-2">
+                                    <p class="text-xs text-gray-500">Jum</p>
+                                    <p class="text-sm font-semibold text-gray-700">06</p>
+                                </div>
+                                <div class="text-center py-2">
+                                    <p class="text-xs text-gray-500">Sab</p>
+                                    <p class="text-sm font-semibold text-gray-700">07</p>
+                                </div>
+                            </div>
+
+                            <!-- Time Slots -->
+                            <div class="space-y-0">
+                                <!-- 07:00 -->
+                                <div class="grid grid-cols-8 gap-0 min-h-[60px]">
+                                    <div class="text-sm font-medium text-gray-700 py-2 pr-4 text-right">07:00</div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                </div>
+
+                                <!-- 08:00 - Konseling with Aida -->
+                                <div class="grid grid-cols-8 gap-0 min-h-[60px]">
+                                    <div class="text-sm font-medium text-gray-700 py-2 pr-4 text-right">08:00</div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="col-span-3 border-l border-gray-200 px-2 py-2" style="border-top: 1px dashed #d1d5db;">
+                                        <div class="bg-purple-200 rounded-xl p-3 relative h-full">
+                                            <div class="flex items-center space-x-2">
+                                                <div class="w-8 h-8 rounded-full bg-white"></div>
+                                                <div>
+                                                    <p class="text-sm font-semibold text-purple-900">Konseling</p>
+                                                    <p class="text-xs text-purple-700">Aida</p>
+                                                </div>
+                                            </div>
+                                            <div class="absolute top-2 right-2 flex -space-x-2">
+                                                <div class="w-6 h-6 rounded-full bg-pink-400 border-2 border-white"></div>
+                                                <div class="w-6 h-6 rounded-full bg-blue-400 border-2 border-white"></div>
+                                                <div class="w-6 h-6 rounded-full bg-yellow-400 border-2 border-white"></div>
+                                            </div>
+                                            <p class="text-xs text-purple-700 mt-2">08:00</p>
+                                        </div>
+                                    </div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                </div>
+
+                                <!-- 09:00 - Konseling with Budi -->
+                                <div class="grid grid-cols-8 gap-0 min-h-[60px]">
+                                    <div class="text-sm font-medium text-gray-700 py-2 pr-4 text-right">09:00</div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="col-span-3 border-l border-gray-200 px-2 py-2" style="border-top: 1px dashed #d1d5db;">
+                                        <div class="bg-purple-600 rounded-xl p-3 relative h-full">
+                                            <div class="flex items-center space-x-2">
+                                                <div class="w-8 h-8 rounded-full bg-white"></div>
+                                                <div>
+                                                    <p class="text-sm font-semibold text-white">Konseling</p>
+                                                    <p class="text-xs text-purple-100">Budi</p>
+                                                </div>
+                                            </div>
+                                            <div class="absolute top-2 right-2 flex -space-x-2">
+                                                <div class="w-6 h-6 rounded-full bg-orange-400 border-2 border-white"></div>
+                                                <div class="w-6 h-6 rounded-full bg-green-400 border-2 border-white"></div>
+                                            </div>
+                                            <p class="text-xs text-purple-100 mt-2">09:00</p>
+                                        </div>
+                                    </div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                </div>
+
+                                <!-- 10:00 - Konseling with Citra -->
+                                <div class="grid grid-cols-8 gap-0 min-h-[60px]">
+                                    <div class="text-sm font-medium text-gray-700 py-2 pr-4 text-right">10:00</div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="col-span-2 border-l border-gray-200 px-2 py-2" style="border-top: 1px dashed #d1d5db;">
+                                        <div class="bg-purple-800 rounded-xl p-3 relative h-full">
+                                            <div class="flex items-center space-x-2">
+                                                <div class="w-8 h-8 rounded-full bg-white"></div>
+                                                <div>
+                                                    <p class="text-sm font-semibold text-white">Konseling</p>
+                                                    <p class="text-xs text-purple-100">Citra</p>
+                                                </div>
+                                            </div>
+                                            <div class="absolute top-2 right-2 flex -space-x-2">
+                                                <div class="w-6 h-6 rounded-full bg-red-400 border-2 border-white"></div>
+                                                <div class="w-6 h-6 rounded-full bg-teal-400 border-2 border-white"></div>
+                                            </div>
+                                            <p class="text-xs text-purple-100 mt-2">10:30</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 11:00 -->
+                                <div class="grid grid-cols-8 gap-0 min-h-[60px]">
+                                    <div class="text-sm font-medium text-gray-700 py-2 pr-4 text-right">11:00</div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                </div>
+
+                                <!-- 12:00 -->
+                                <div class="grid grid-cols-8 gap-0 min-h-[60px]">
+                                    <div class="text-sm font-medium text-gray-700 py-2 pr-4 text-right">12:00</div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                </div>
+
+                                <!-- 13:00 -->
+                                <div class="grid grid-cols-8 gap-0 min-h-[60px]">
+                                    <div class="text-sm font-medium text-gray-700 py-2 pr-4 text-right">13:00</div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                    <div class="border-l border-gray-200 px-2" style="border-top: 1px dashed #d1d5db;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifikasi -->
+                <div class="bg-white rounded-2xl shadow-sm p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Notifikasi</h2>
+                    <div class="space-y-3">
+                        <!-- Notification Item 1 -->
+                        <div class="flex items-start space-x-4 bg-purple-50 rounded-xl p-4">
+                            <div class="flex-shrink-0">
+                                <div class="w-12 h-12 bg-yellow-400 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-700">Angket yang sudah banyak diisi dan siap di analisis</p>
+                            </div>
+                        </div>
+
+                        <!-- Notification Item 2 -->
+                        <div class="flex items-start space-x-4 bg-purple-50 rounded-xl p-4">
+                            <div class="flex-shrink-0">
+                                <div class="w-12 h-12 bg-yellow-400 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-700">Angket yang sudah banyak diisi dan siap di analisis</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Konseling Hari Ini -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 text-sm">Konseling Hari Ini</p>
-                        <p class="text-3xl font-bold text-blue-500">0</p>
-                    </div>
-                    <div class="bg-blue-100 p-3 rounded-full">
-                        <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+            <!-- Right Side: Statistik Cepat -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-sm p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Statistik Cepat</h2>
+                    <div class="space-y-6">
+                        <!-- Stat 1 -->
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="w-14 h-14 rounded-2xl border-4 border-purple-600 flex items-center justify-center">
+                                    <span class="text-2xl font-bold text-purple-600">5</span>
+                                </div>
+                            </div>
+                            <div class="flex-1 pt-2">
+                                <p class="text-sm font-semibold text-gray-800">Pengajuan perunggu</p>
+                                <p class="text-sm text-gray-600">persetujuan</p>
+                            </div>
+                        </div>
+
+                        <!-- Stat 2 -->
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="w-14 h-14 rounded-2xl border-4 border-purple-600 flex items-center justify-center">
+                                    <span class="text-2xl font-bold text-purple-600">12</span>
+                                </div>
+                            </div>
+                            <div class="flex-1 pt-2">
+                                <p class="text-sm font-semibold text-gray-800">Konseling</p>
+                                <p class="text-sm text-gray-600">Minggu ini</p>
+                            </div>
+                        </div>
+
+                        <!-- Stat 3 -->
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="w-14 h-14 rounded-2xl border-4 border-purple-600 flex items-center justify-center">
+                                    <span class="text-2xl font-bold text-purple-600">35</span>
+                                </div>
+                            </div>
+                            <div class="flex-1 pt-2">
+                                <p class="text-sm font-semibold text-gray-800">Siswa ditangani</p>
+                                <p class="text-sm text-gray-600">bulan ini</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Total Siswa -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 text-sm">Total Siswa</p>
-                        <p class="text-3xl font-bold text-green-500">5</p>
-                    </div>
-                    <div class="bg-green-100 p-3 rounded-full">
-                        <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Konseling Selesai -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 text-sm">Konseling Selesai</p>
-                        <p class="text-3xl font-bold text-purple-500">0</p>
-                    </div>
-                    <div class="bg-purple-100 p-3 rounded-full">
-                        <svg class="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">Quick Actions</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <a href="{{ route('guru_bk.konseling.index') }}" class="bg-indigo-500 hover:bg-indigo-600 text-white p-4 rounded-lg text-center transition">
-                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Kelola Konseling
-                </a>
-                <a href="{{ route('guru_bk.konseling.jadwal') }}" class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-lg text-center transition">
-                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    Jadwal Konseling
-                </a>
-                <a href="#" class="bg-yellow-500 hover:bg-yellow-600 text-white p-4 rounded-lg text-center transition">
-                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                    Laporan
-                </a>
-            </div>
-        </div>
-
-        <!-- Recent Activity -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">Aktivitas Terbaru</h3>
-            <div class="text-center text-gray-500 py-8">
-                <p>Belum ada aktivitas</p>
             </div>
         </div>
     </div>
-</body>
-</html>
+@endsection

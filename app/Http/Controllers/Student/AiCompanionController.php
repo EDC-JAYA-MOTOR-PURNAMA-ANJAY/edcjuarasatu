@@ -196,6 +196,37 @@ class AiCompanionController extends Controller
     }
     
     /**
+     * Save conversation history (for manual sync/update)
+     */
+    public function saveHistory(Request $request)
+    {
+        $user = Auth::user();
+        
+        $request->validate([
+            'history' => 'required|array',
+        ]);
+        
+        $history = $request->input('history');
+        
+        // If history is empty, clear all conversations
+        if (empty($history)) {
+            $deleted = AiConversation::where('user_id', $user->id)->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => "Chat history cleared successfully.",
+                'deleted' => $deleted,
+            ]);
+        }
+        
+        // Otherwise, save the history (if needed in future)
+        return response()->json([
+            'success' => true,
+            'message' => "History saved successfully.",
+        ]);
+    }
+    
+    /**
      * Clear conversation history
      */
     public function clearHistory()
