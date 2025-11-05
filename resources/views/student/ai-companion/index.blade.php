@@ -718,17 +718,9 @@
 
         <!-- Recent Chats -->
         <div class="recent-section">
-            <div class="recent-title">Today</div>
+            <div class="recent-title">Recent Chats</div>
             <div id="recentChats">
-                <div class="recent-item">Tips belajar efektif untuk ujian</div>
-                <div class="recent-item">Mengatasi stress akademik</div>
-                <div class="recent-item">Strategi manajemen waktu</div>
-            </div>
-            
-            <div class="recent-title" style="margin-top: 20px;">Yesterday</div>
-            <div id="olderChats">
-                <div class="recent-item">Membuat jadwal belajar mingguan</div>
-                <div class="recent-item">Teknik membaca cepat</div>
+                <div class="recent-item" style="color: #9ca3af; font-style: italic;">Mulai chat untuk melihat riwayat</div>
             </div>
         </div>
     </div>
@@ -889,18 +881,18 @@ function startNewChat() {
 
 // Load conversation history
 function loadHistory() {
-    // Simulate API call
-    setTimeout(() => {
-        const sampleHistory = [
-            { role: 'user', message: 'Halo, bisa bantu saya dengan masalah belajar?' },
-            { role: 'assistant', message: 'Tentu saja! Saya di sini untuk membantu. Ceritakan lebih lanjut tentang kesulitan belajar yang Anda alami.' }
-        ];
-        
-        if (sampleHistory.length > 0) {
-            conversationHistory = sampleHistory;
-            displayHistory();
-        }
-    }, 500);
+    fetch('{{ route("student.ai-companion.history") }}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.conversations.length > 0) {
+                conversationHistory = data.conversations;
+                displayHistory();
+                updateRecentChats(data.conversations);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading history:', error);
+        });
 }
 
 // Display conversation history
@@ -935,45 +927,43 @@ function sendMessage() {
     // Show typing indicator
     showTypingIndicator();
     
-    // Simulate API call
-    setTimeout(() => {
+    // Send to real API
+    fetch('{{ route("student.ai-companion.chat") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ 
+            message: message,
+            research_mode: isResearchMode 
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
         hideTypingIndicator();
         
-        let response = generateAIResponse(message);
-        
-        addMessageToUI(response, 'assistant');
-        conversationHistory.push(
-            { role: 'user', message: message },
-            { role: 'assistant', message: response }
-        );
-        
-        // Enable export button after first response
-        if (conversationHistory.length === 2) {
+        if (data.success) {
+            addMessageToUI(data.message, 'assistant');
+            conversationHistory.push(
+                { role: 'user', message: message },
+                { role: 'assistant', message: data.message }
+            );
+            
+            // Update sidebar with new chat
+            updateRecentChats(conversationHistory);
+            
+            // Enable export button
             document.getElementById('exportBtn').style.opacity = '1';
+        } else {
+            addMessageToUI(data.message || 'Maaf, terjadi kesalahan. Coba lagi ya!', 'assistant');
         }
-    }, 1500);
-}
-
-// Generate AI response (simulated)
-function generateAIResponse(userMessage) {
-    const responses = {
-        'stress': "Saya mengerti bahwa kamu merasa stress. Coba ceritakan lebih detail apa yang membuat kamu merasa terbebani. Seringkali, membagi masalah menjadi bagian-bagian kecil bisa membuatnya lebih mudah dikelola.",
-        'belajar': "Untuk belajar yang efektif, coba teknik Pomodoro: 25 menit belajar fokus diikuti 5 menit istirahat. Setelah 4 sesi, ambil istirahat lebih panjang 15-30 menit.",
-        'cemas': "Kecemasan sebelum ujian itu normal. Coba teknik pernapasan 4-7-8: tarik napas 4 detik, tahan 7 detik, buang napas 8 detik. Ulangi 3-4 kali.",
-        'default': "Terima kasih sudah berbagi dengan saya. Saya di sini untuk mendukung perjalanan belajar kamu. Ada hal spesifik lain yang ingin kamu diskusikan?"
-    };
-    
-    const lowerMessage = userMessage.toLowerCase();
-    
-    if (lowerMessage.includes('stress') || lowerMessage.includes('tertekan')) {
-        return responses.stress + (isResearchMode ? "\n\n📚 *Rekomendasi Penelitian:* Studi menunjukkan bahwa teknik mindfulness dapat mengurangi stress akademik hingga 30%. Coba aplikasi seperti Meditasi atau Headspace untuk panduan." : "");
-    } else if (lowerMessage.includes('belajar') || lowerMessage.includes('ujian')) {
-        return responses.belajar + (isResearchMode ? "\n\n📊 *Data Efektivitas:* Penelitian membuktikan teknik Pomodoro meningkatkan retensi memori hingga 25% dibandingkan belajar marathon. Spaced repetition juga terbukti efektif untuk jangka panjang." : "");
-    } else if (lowerMessage.includes('cemas') || lowerMessage.includes('khawatir')) {
-        return responses.cemas + (isResearchMode ? "\n\n🧠 *Basis Ilmiah:* Teknik pernapasan dalam mengaktifkan sistem saraf parasimpatis yang menenangkan. Penelitian di Journal of Clinical Psychology menunjukkan efektivitasnya mengurangi gejala kecemasan." : "");
-    } else {
-        return responses.default;
-    }
+    })
+    .catch(error => {
+        hideTypingIndicator();
+        console.error('Error:', error);
+        addMessageToUI('Maaf, koneksi bermasalah. Pastikan .env sudah diconfig dengan benar! 😊', 'assistant');
+    });
 }
 
 // Add message to UI
@@ -1039,15 +1029,41 @@ function handleKeyPress(event) {
     }
 }
 
+// Update recent chats in sidebar
+function updateRecentChats(conversations) {
+    const recentChatsDiv = document.getElementById('recentChats');
+    
+    if (!conversations || conversations.length === 0) {
+        recentChatsDiv.innerHTML = '<div class="recent-item" style="color: #9ca3af; font-style: italic;">Belum ada percakapan</div>';
+        return;
+    }
+    
+    // Get unique user messages (chat sessions)
+    const userMessages = conversations.filter(conv => conv.role === 'user');
+    const recentMessages = userMessages.slice(-5).reverse(); // Last 5 chats
+    
+    let html = '';
+    recentMessages.forEach((msg, index) => {
+        const preview = msg.message.substring(0, 40) + (msg.message.length > 40 ? '...' : '');
+        html += `<div class="recent-item" onclick="scrollToBottom()">${preview}</div>`;
+    });
+    
+    recentChatsDiv.innerHTML = html || '<div class="recent-item" style="color: #9ca3af;">Belum ada percakapan</div>';
+}
+
 // Show stats
 function showStats() {
-    const stats = {
-        total_messages: conversationHistory.length,
-        today_messages: Math.min(conversationHistory.length, 8),
-        week_messages: Math.min(conversationHistory.length, 25)
-    };
-    
-    alert(`📊 Statistik Chat:\n\nTotal: ${stats.total_messages} pesan\nHari ini: ${stats.today_messages} pesan\nMinggu ini: ${stats.week_messages} pesan`);
+    fetch('{{ route("student.ai-companion.stats") }}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const stats = data.stats;
+                alert(`📊 Statistik Chat:\n\nTotal: ${stats.total_messages} pesan\nHari ini: ${stats.today_messages} pesan\nMinggu ini: ${stats.week_messages} pesan`);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading stats:', error);
+        });
 }
 
 // Show history
