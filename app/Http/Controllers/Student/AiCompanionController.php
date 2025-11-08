@@ -318,4 +318,167 @@ class AiCompanionController extends Controller
         
         return $pdf->download($filename);
     }
+    
+    /**
+     * Share conversation with Guru BK
+     */
+    public function shareWithGuruBK(Request $request)
+    {
+        try {
+            $request->validate([
+                'note' => 'nullable|string|max:500'
+            ]);
+            
+            $user = Auth::user();
+            
+            // Get recent conversation (last 2 hours)
+            $conversations = AiConversation::where('user_id', $user->id)
+                ->where('created_at', '>=', now()->subHours(2))
+                ->where('is_shared_with_guru_bk', false) // Only not-yet-shared conversations
+                ->orderBy('created_at', 'asc')
+                ->get();
+            
+            if ($conversations->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada percakapan baru yang bisa dibagikan. Pastikan Anda sudah chat dengan AI terlebih dahulu.'
+                ], 400);
+            }
+        
+        // Prepare messages for analysis
+        $messages = $conversations->map(function($conv) {
+            return [
+                'role' => $conv->role,
+                'content' => $conv->message
+            ];
+        })->toArray();
+        
+        // Analyze conversation
+        $analyzer = new \App\Services\ChatbotAnalyzer();
+        $sensitiveAnalysis = $analyzer->analyzeSensitiveContent($messages);
+        $topics = $analyzer->detectTopics($messages);
+        $sentiment = $analyzer->analyzeSentiment($messages);
+        $summary = $analyzer->generateSummary($messages, [
+            'topics' => $topics,
+            'sentiment' => $sentiment,
+            'alert_level' => $sensitiveAnalysis['alert_level']
+        ]);
+        
+        // Create a "session" record for this shared conversation
+        $sharedConversation = AiConversation::create([
+            'user_id' => $user->id,
+            'role' => 'user', // Changed from 'system' to 'user' - ENUM only allows 'user' or 'assistant'
+            'message' => $summary,
+            'messages' => $messages,
+            'message_count' => count($messages),
+            'is_shared_with_guru_bk' => true,
+            'shared_at' => now(),
+            'sharing_note' => $request->note,
+            'has_sensitive_content' => $sensitiveAnalysis['has_sensitive_content'],
+            'detected_keywords' => $sensitiveAnalysis['detected_keywords'],
+            'alert_level' => $sensitiveAnalysis['alert_level'],
+            'topics' => $topics,
+            'sentiment' => $sentiment,
+            'status' => 'shared'
+        ]);
+        
+        // Notify all Guru BK
+        $this->notifyGuruBK($user, $sharedConversation, $sensitiveAnalysis['alert_level']);
+        
+        // If critical or high alert, also send alert notification
+        if (in_array($sensitiveAnalysis['alert_level'], ['critical', 'high'])) {
+            $sharedConversation->update(['alert_sent_at' => now()]);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Percakapan berhasil dibagikan dengan Guru BK. Mereka akan segera meninjau dan menghubungimu jika diperlukan.',
+            'alert_level' => $sensitiveAnalysis['alert_level']
+        ]);
+        
+        } catch (\Exception $e) {
+            \Log::error('Error sharing conversation with Guru BK: ' . $e->getMessage(), [
+                'user_id' => Auth::id(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat membagikan percakapan. Silakan coba lagi.'
+            ], 500);
+        }
+    }
+    
+    /**
+     * Get shareable conversation preview
+     */
+    public function getShareableConversation()
+    {
+        $user = Auth::user();
+        
+        // Get recent conversation (last 2 hours)
+        $conversations = AiConversation::where('user_id', $user->id)
+            ->where('created_at', '>=', now()->subHours(2))
+            ->orderBy('created_at', 'asc')
+            ->get();
+        
+        if ($conversations->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada percakapan aktif untuk dibagikan'
+            ]);
+        }
+        
+        $messages = $conversations->map(function($conv) {
+            return [
+                'role' => $conv->role,
+                'content' => $conv->message,
+                'time' => $conv->created_at->format('H:i')
+            ];
+        })->toArray();
+        
+        // Quick analysis
+        $analyzer = new \App\Services\ChatbotAnalyzer();
+        $topics = $analyzer->detectTopics($messages);
+        $sentiment = $analyzer->analyzeSentiment($messages);
+        
+        return response()->json([
+            'success' => true,
+            'conversation' => [
+                'message_count' => count($messages),
+                'topics' => $topics,
+                'sentiment' => $sentiment,
+                'messages' => $messages
+            ]
+        ]);
+    }
+    
+    /**
+     * Notify Guru BK about shared conversation
+     */
+    private function notifyGuruBK($student, $conversation, $alertLevel)
+    {
+        $guruBKs = \App\Models\User::where('peran', 'guru_bk')->get();
+        
+        $analyzer = new \App\Services\ChatbotAnalyzer();
+        $message = $analyzer->getAlertMessage($alertLevel, $student->nama);
+        
+        foreach ($guruBKs as $guruBK) {
+            \App\Models\Notification::create([
+                'user_id' => $guruBK->id,
+                'type' => $alertLevel === 'critical' || $alertLevel === 'high' ? 'chatbot_alert' : 'chatbot_shared',
+                'title' => $alertLevel === 'critical' ? '🚨 DARURAT: Siswa Butuh Bantuan' : ($alertLevel === 'high' ? '⚠️ PERHATIAN: Chat Siswa' : '💬 Chat Dibagikan'),
+                'message' => $message,
+                'data' => json_encode([
+                    'conversation_id' => $conversation->id,
+                    'student_id' => $student->id,
+                    'student_name' => $student->nama,
+                    'alert_level' => $alertLevel,
+                    'topics' => $conversation->topics,
+                    'sentiment' => $conversation->sentiment
+                ]),
+                'is_read' => false
+            ]);
+        }
+    }
 }

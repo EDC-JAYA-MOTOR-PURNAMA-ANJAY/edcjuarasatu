@@ -5,7 +5,7 @@
 @section('content')
 <div class="min-h-screen bg-white p-4 sm:p-6 pt-20 sm:pt-24">
     <!-- Header -->
-    <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:justify-between">
+    <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:justify-between w-[1044px] h-[144px]">
         <div>
             <div class="flex items-center gap-3 mb-2">
                 <button onclick="window.history.back()" class="p-2 hover:bg-white/50 rounded-lg transition">
@@ -18,9 +18,10 @@
             <p class="text-sm sm:text-base text-gray-600 ml-11">Monitoring & Statistik di halaman ini</p>
         </div>
         <div class="flex-shrink-0 z-10">
-            <img src="{{ asset('images/ilustrasi_chat.png') }}"
+            <img src="{{ asset('images/chat_ilustrasi.svg') }}"
                  alt="Chat Illustration"
-                 class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 object-contain transform hover:scale-105 transition-transform duration-300">
+                 class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 object-contain transform hover:scale-105 transition-transform duration-300"
+                 onerror="this.style.display='none'">
         </div>
     </div>
 

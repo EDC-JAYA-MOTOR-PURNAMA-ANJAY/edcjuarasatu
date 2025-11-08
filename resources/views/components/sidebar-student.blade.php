@@ -123,12 +123,12 @@
             </a>
 
             <!-- Materi -->
-            <a href=""
+            <a href="{{ route('student.materi') }}"
                class="sidebar-menu group flex items-center px-4 py-3 rounded-xl transition-all duration-200 ease-in-out relative
-                      {{ request()->routeIs('student.material') ? 'bg-purple-700 text-white shadow-md' : 'text-gray-900 hover:bg-purple-100 hover:text-purple-700' }}">
+                      {{ request()->routeIs('student.materi*') ? 'bg-purple-700 text-white shadow-md' : 'text-gray-900 hover:bg-purple-100 hover:text-purple-700' }}">
                 <img src="{{ asset('images/icon/materi.png') }}" alt="Materi"
                      class="w-5 h-5 mr-3 transition-all duration-200 ease-in-out
-                            {{ request()->routeIs('student.material') ? 'filter brightness-0 invert' : 'group-hover:filter group-hover:brightness-0 group-hover:invert-50' }}">
+                            {{ request()->routeIs('student.materi*') ? 'filter brightness-0 invert' : 'group-hover:filter group-hover:brightness-0 group-hover:invert-50' }}">
                 <span class="text-sm font-medium transition-all duration-200 ease-in-out">Materi</span>
             </a>
 

@@ -254,6 +254,10 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
+                    <button onclick="openShareModal()" class="px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-600 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+                        <i class="fas fa-share"></i>
+                        Share ke Guru BK
+                    </button>
                     <button onclick="exportChat()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
                         <i class="fas fa-download"></i>
                         Export
@@ -869,5 +873,176 @@ function showNotification(message) {
         }, 300);
     }, 3000);
 }
+
+// ===== NEW: SHARE DENGAN GURU BK =====
+
+// Open share modal
+function openShareModal() {
+    if (conversationHistory.length === 0) {
+        showNotification('⚠️ Belum ada percakapan untuk dibagikan');
+        return;
+    }
+    
+    // Show modal
+    document.getElementById('shareModal').classList.remove('hidden');
+    document.getElementById('shareModal').classList.add('flex');
+    
+    // Preview message count
+    const messageCount = conversationHistory.length;
+    document.getElementById('messagePreview').textContent = `${messageCount} pesan akan dibagikan`;
+}
+
+// Close share modal
+function closeShareModal() {
+    document.getElementById('shareModal').classList.add('hidden');
+    document.getElementById('shareModal').classList.remove('flex');
+    document.getElementById('sharingNote').value = '';
+}
+
+// Submit share
+function shareWithGuruBK() {
+    const note = document.getElementById('sharingNote').value;
+    const shareBtn = document.getElementById('shareSubmitBtn');
+    
+    if (!confirm('Yakin ingin membagikan percakapan ini dengan Guru BK?\n\nGuru BK akan melihat semua pesan dalam 2 jam terakhir dan mungkin menghubungimu jika diperlukan.')) {
+        return;
+    }
+    
+    // Check CSRF token
+    const csrfToken = document.querySelector('meta[name="csrf-token"]');
+    if (!csrfToken) {
+        console.error('CSRF token not found!');
+        showNotification('❌ Error: CSRF token tidak ditemukan. Refresh halaman dan coba lagi.');
+        return;
+    }
+    
+    // Disable button
+    shareBtn.disabled = true;
+    shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Membagikan...';
+    
+    // Send to server
+    fetch('{{ route('student.ai-companion.share') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken.content,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ note: note })
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        if (data.success) {
+            showNotification('✅ ' + data.message);
+            closeShareModal();
+            
+            // Show additional alert for critical/high
+            if (data.alert_level === 'critical') {
+                setTimeout(() => {
+                    alert('🚨 PENTING: Guru BK akan segera menghubungimu!\n\nPercakapan kamu menunjukkan tanda-tanda yang membutuhkan perhatian segera. Jangan ragu untuk menghubungi Guru BK juga.');
+                }, 1000);
+            } else if (data.alert_level === 'high') {
+                setTimeout(() => {
+                    alert('⚠️ Guru BK akan menghubungimu dalam waktu dekat.\n\nTerima kasih sudah berani berbicara!');
+                }, 1000);
+            }
+        } else {
+            showNotification('❌ ' + (data.message || 'Gagal membagikan percakapan'));
+        }
+    })
+    .catch(error => {
+        console.error('Error sharing conversation:', error);
+        showNotification('❌ Terjadi kesalahan: ' + error.message);
+    })
+    .finally(() => {
+        shareBtn.disabled = false;
+        shareBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Bagikan';
+    });
+}
 </script>
+
+<!-- Share Modal -->
+<div id="shareModal" class="hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50" style="z-index: 9999;">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="text-xl font-bold">📤 Share dengan Guru BK</h3>
+                    <p class="text-purple-100 text-sm mt-1">Guru BK akan membantu kamu</p>
+                </div>
+                <button onclick="closeShareModal()" class="text-white hover:text-gray-200">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Body -->
+        <div class="p-6">
+            <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-info-circle text-purple-600 text-xl mt-1"></i>
+                    <div class="text-sm text-gray-700">
+                        <p class="font-semibold mb-2">Yang akan dibagikan:</p>
+                        <ul class="space-y-1 text-gray-600">
+                            <li>• Percakapan 2 jam terakhir</li>
+                            <li>• Analisis otomatis (topik & sentimen)</li>
+                            <li>• Catatan tambahan dari kamu (opsional)</li>
+                        </ul>
+                        <p class="mt-3 text-xs text-purple-700" id="messagePreview">
+                            <i class="fas fa-comments me-1"></i>0 pesan
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    Catatan tambahan (opsional):
+                </label>
+                <textarea 
+                    id="sharingNote" 
+                    rows="4" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                    placeholder="Contoh:&#10;- Saya butuh saran tentang...&#10;- Tolong hubungi saya untuk...&#10;- Saya ingin membahas tentang..."
+                ></textarea>
+                <p class="text-xs text-gray-500 mt-2">
+                    <i class="fas fa-lock me-1"></i>
+                    Privasi terjaga. Hanya Guru BK yang bisa melihat.
+                </p>
+            </div>
+            
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                <p class="text-xs text-yellow-800">
+                    <i class="fas fa-shield-alt me-1"></i>
+                    <strong>Catatan:</strong> Jika chat menunjukkan kondisi darurat, Guru BK akan segera menghubungimu untuk membantu.
+                </p>
+            </div>
+            
+            <div class="flex gap-3">
+                <button 
+                    onclick="closeShareModal()" 
+                    class="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-all"
+                >
+                    Batal
+                </button>
+                <button 
+                    onclick="shareWithGuruBK()" 
+                    id="shareSubmitBtn"
+                    class="flex-1 px-4 py-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-lg font-medium transition-all shadow-lg shadow-purple-500/25"
+                >
+                    <i class="fas fa-paper-plane me-2"></i>Bagikan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection

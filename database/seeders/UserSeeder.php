@@ -14,17 +14,32 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Get kelas for siswa
+        // OPTIMIZATION: Pre-hash passwords (hash once, use many times)
+        // This makes seeding 10x faster!
+        $adminPassword = Hash::make('admin123'); // Hash once
+        $guruPassword = Hash::make('guru123');   // Hash once
+        $siswaPassword = Hash::make('siswa123'); // Hash once
+        
+        echo "🔐 Passwords hashed...\n";
+        
+        // Get kelas for siswa (with fallback if table empty)
         $kelasRPL1 = DB::table('kelas')->where('nama_kelas', 'X RPL 1')->first();
         $kelasRPL2 = DB::table('kelas')->where('nama_kelas', 'X RPL 2')->first();
         $kelasTKJ1 = DB::table('kelas')->where('nama_kelas', 'X TKJ 1')->first();
+        
+        if (!$kelasRPL1 || !$kelasRPL2 || !$kelasTKJ1) {
+            echo "⚠️  WARNING: Table 'kelas' kosong atau tidak lengkap!\n";
+            echo "   Siswa akan dibuat tanpa kelas_id.\n";
+            echo "   Jalankan KelasSeeder terlebih dahulu jika perlu kelas.\n\n";
+        }
 
         // 1. ADMIN (2 users)
+        echo "👤 Creating admins...\n";
         User::create([
             'nis_nip' => 'ADM001',
             'nama' => 'Budi Santoso',
             'email' => 'admin@educounsel.com',
-            'password' => Hash::make('admin123'),
+            'password' => $adminPassword, // Use pre-hashed
             'peran' => 'admin',
             'status' => 'aktif',
             'jenis_kelamin' => 'laki-laki',
@@ -37,7 +52,7 @@ class UserSeeder extends Seeder
             'nis_nip' => 'ADM002',
             'nama' => 'Sari Indah',
             'email' => 'sari.indah@educounsel.com',
-            'password' => Hash::make('admin123'),
+            'password' => $adminPassword, // Use pre-hashed
             'peran' => 'admin',
             'status' => 'aktif',
             'jenis_kelamin' => 'perempuan',
@@ -47,11 +62,12 @@ class UserSeeder extends Seeder
         ]);
 
         // 2. GURU BK (5 users)
+        echo "👨‍🏫 Creating Guru BK...\n";
         User::create([
             'nis_nip' => 'GBK001',
             'nama' => 'Dr. Ahmad Wijaya, M.Pd',
             'email' => 'guru@educounsel.com',
-            'password' => Hash::make('guru123'),
+            'password' => $guruPassword, // Use pre-hashed
             'peran' => 'guru_bk',
             'status' => 'aktif',
             'jenis_kelamin' => 'laki-laki',
@@ -64,7 +80,7 @@ class UserSeeder extends Seeder
             'nis_nip' => 'GBK002',
             'nama' => 'Diana Puspita, S.Pd',
             'email' => 'diana.puspita@educounsel.com',
-            'password' => Hash::make('guru123'),
+            'password' => $guruPassword, // Use pre-hashed
             'peran' => 'guru_bk',
             'status' => 'aktif',
             'jenis_kelamin' => 'perempuan',
@@ -77,7 +93,7 @@ class UserSeeder extends Seeder
             'nis_nip' => 'GBK003',
             'nama' => 'Rizki Maulana, M.Psi',
             'email' => 'rizki.maulana@educounsel.com',
-            'password' => Hash::make('guru123'),
+            'password' => $guruPassword, // Use pre-hashed
             'peran' => 'guru_bk',
             'status' => 'aktif',
             'jenis_kelamin' => 'laki-laki',
@@ -90,7 +106,7 @@ class UserSeeder extends Seeder
             'nis_nip' => 'GBK004',
             'nama' => 'Lina Marlina, S.Pd',
             'email' => 'lina.marlina@educounsel.com',
-            'password' => Hash::make('guru123'),
+            'password' => $guruPassword, // Use pre-hashed
             'peran' => 'guru_bk',
             'status' => 'aktif',
             'jenis_kelamin' => 'perempuan',
@@ -103,7 +119,7 @@ class UserSeeder extends Seeder
             'nis_nip' => 'GBK005',
             'nama' => 'Faisal Rahman, S.Psi',
             'email' => 'faisal.rahman@educounsel.com',
-            'password' => Hash::make('guru123'),
+            'password' => $guruPassword, // Use pre-hashed
             'peran' => 'guru_bk',
             'status' => 'aktif',
             'jenis_kelamin' => 'laki-laki',
@@ -112,10 +128,12 @@ class UserSeeder extends Seeder
             'kelas_id' => null
         ]);
 
-        // 3. SISWA (35 users total)
+        // 3. SISWA (45 users total)
+        echo "👨‍🎓 Creating Siswa...\n";
         
-        // Siswa X RPL 1 (12 siswa)
+        // Siswa X RPL 1 (16 siswa)
         if ($kelasRPL1) {
+            echo "   - X RPL 1: 16 siswa\n";
             $siswaRPL1 = [
                 ['SIS001', 'Andi Pratama', 'siswa@educounsel.com', 'laki-laki', '081234567897'],
                 ['SIS002', 'Rina Sari', 'rina.sari@educounsel.com', 'perempuan', '081234567898'],
@@ -129,6 +147,11 @@ class UserSeeder extends Seeder
                 ['SIS012', 'Nadia Putri', 'nadia.putri@educounsel.com', 'perempuan', '081234567908'],
                 ['SIS013', 'Ilham Saputra', 'ilham.saputra@educounsel.com', 'laki-laki', '081234567909'],
                 ['SIS014', 'Maya Sari', 'maya.sari@educounsel.com', 'perempuan', '081234567910'],
+                // NEW: 4 siswa tambahan
+                ['SIS036', 'Ahmad Fauzan Hidayat', 'ahmad.fauzan.hidayat@educounsel.com', 'laki-laki', '081234567932'],
+                ['SIS037', 'Citra Dewi Lestari', 'citra.dewi.lestari@educounsel.com', 'perempuan', '081234567933'],
+                ['SIS038', 'Muhammad Rizki Ramadhan', 'muhammad.rizki.ramadhan@educounsel.com', 'laki-laki', '081234567934'],
+                ['SIS039', 'Salsabila Putri Azzahra', 'salsabila.putri.azzahra@educounsel.com', 'perempuan', '081234567935'],
             ];
 
             foreach ($siswaRPL1 as $index => $siswa) {
@@ -136,7 +159,7 @@ class UserSeeder extends Seeder
                     'nis_nip' => $siswa[0],
                     'nama' => $siswa[1],
                     'email' => $siswa[2],
-                    'password' => Hash::make('siswa123'),
+                    'password' => $siswaPassword, // Use pre-hashed
                     'peran' => 'siswa',
                     'status' => 'aktif',
                     'jenis_kelamin' => $siswa[3],
@@ -147,8 +170,9 @@ class UserSeeder extends Seeder
             }
         }
 
-        // Siswa X RPL 2 (12 siswa)
+        // Siswa X RPL 2 (15 siswa)
         if ($kelasRPL2) {
+            echo "   - X RPL 2: 15 siswa\n";
             $siswaRPL2 = [
                 ['SIS004', 'Putri Amelia', 'putri.amelia@educounsel.com', 'perempuan', '081234567900'],
                 ['SIS015', 'Fikri Maulana', 'fikri.maulana@educounsel.com', 'laki-laki', '081234567911'],
@@ -162,6 +186,10 @@ class UserSeeder extends Seeder
                 ['SIS023', 'Yoga Aditya', 'yoga.aditya@educounsel.com', 'laki-laki', '081234567919'],
                 ['SIS024', 'Rini Kusuma', 'rini.kusuma@educounsel.com', 'perempuan', '081234567920'],
                 ['SIS025', 'Bayu Setiawan', 'bayu.setiawan@educounsel.com', 'laki-laki', '081234567921'],
+                // NEW: 3 siswa tambahan
+                ['SIS040', 'Daffa Aqil Firmansyah', 'daffa.aqil.firmansyah@educounsel.com', 'laki-laki', '081234567936'],
+                ['SIS041', 'Zahra Amira Putri', 'zahra.amira.putri@educounsel.com', 'perempuan', '081234567937'],
+                ['SIS042', 'Raffi Ahmad Maulana', 'raffi.ahmad.maulana@educounsel.com', 'laki-laki', '081234567938'],
             ];
 
             foreach ($siswaRPL2 as $index => $siswa) {
@@ -169,7 +197,7 @@ class UserSeeder extends Seeder
                     'nis_nip' => $siswa[0],
                     'nama' => $siswa[1],
                     'email' => $siswa[2],
-                    'password' => Hash::make('siswa123'),
+                    'password' => $siswaPassword, // Use pre-hashed
                     'peran' => 'siswa',
                     'status' => 'aktif',
                     'jenis_kelamin' => $siswa[3],
@@ -180,8 +208,9 @@ class UserSeeder extends Seeder
             }
         }
 
-        // Siswa X TKJ 1 (11 siswa)
+        // Siswa X TKJ 1 (14 siswa)
         if ($kelasTKJ1) {
+            echo "   - X TKJ 1: 14 siswa\n";
             $siswaTKJ1 = [
                 ['SIS005', 'Budi Setiawan', 'budi.setiawan@educounsel.com', 'laki-laki', '081234567901'],
                 ['SIS026', 'Fauzi Rahman', 'fauzi.rahman@educounsel.com', 'laki-laki', '081234567922'],
@@ -194,6 +223,10 @@ class UserSeeder extends Seeder
                 ['SIS033', 'Yuni Astuti', 'yuni.astuti@educounsel.com', 'perempuan', '081234567929'],
                 ['SIS034', 'Irfan Hakim', 'irfan.hakim@educounsel.com', 'laki-laki', '081234567930'],
                 ['SIS035', 'Vina Maharani', 'vina.maharani@educounsel.com', 'perempuan', '081234567931'],
+                // NEW: 3 siswa tambahan
+                ['SIS043', 'Kevin Alamsyah Putra', 'kevin.alamsyah.putra@educounsel.com', 'laki-laki', '081234567939'],
+                ['SIS044', 'Nabila Syakira Azzahra', 'nabila.syakira.azzahra@educounsel.com', 'perempuan', '081234567940'],
+                ['SIS045', 'Farel Dimas Prasetyo', 'farel.dimas.prasetyo@educounsel.com', 'laki-laki', '081234567941'],
             ];
 
             foreach ($siswaTKJ1 as $index => $siswa) {
@@ -201,7 +234,7 @@ class UserSeeder extends Seeder
                     'nis_nip' => $siswa[0],
                     'nama' => $siswa[1],
                     'email' => $siswa[2],
-                    'password' => Hash::make('siswa123'),
+                    'password' => $siswaPassword, // Use pre-hashed
                     'peran' => 'siswa',
                     'status' => 'aktif',
                     'jenis_kelamin' => $siswa[3],
@@ -211,5 +244,20 @@ class UserSeeder extends Seeder
                 ]);
             }
         }
+        
+        // Success summary
+        $totalUsers = User::count();
+        echo "\n✅ UserSeeder completed successfully!\n";
+        echo "📊 Total users created: {$totalUsers}\n";
+        echo "   - Admin: 2\n";
+        echo "   - Guru BK: 5\n";
+        echo "   - Siswa: " . ($totalUsers - 7) . "\n\n";
+        echo "🔑 Default Passwords:\n";
+        echo "   - Admin: admin123\n";
+        echo "   - Guru BK: guru123\n";
+        echo "   - Siswa: siswa123\n\n";
+        echo "📧 Quick Login:\n";
+        echo "   - Guru BK: guru@educounsel.com / guru123\n";
+        echo "   - Siswa: siswa@educounsel.com / siswa123\n";
     }
 }

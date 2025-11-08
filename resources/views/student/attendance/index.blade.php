@@ -110,9 +110,9 @@
 
 @section('content')
 <div class="min-h-screen bg-gray-50 pt-16">
-    <!-- Hero Header - GAMBAR DIPERBESAR -->
+    <!-- Hero Header -->
     <div class="px-6 py-3">
-        <div class="bg-[#F1E6FA] rounded-xl p-4 relative overflow-hidden">
+        <div class="bg-[#F1E6FA] rounded-xl p-4 relative overflow-hidden w-[1044px] h-[144px]">
             <div class="flex items-center justify-between">
                 <!-- Left Side - Text Content with Back Button -->
                 <div class="flex-1 z-10">
@@ -130,11 +130,12 @@
                     </p>
                 </div>
 
-                <!-- Right Side - Chat Illustration - DIPERBESAR -->
+                <!-- Right Side - Chat Illustration -->
                 <div class="flex-shrink-0 z-10">
-                    <img src="{{ asset('images/ilustrasi_chat.png') }}"
+                    <img src="{{ asset('images/chat_ilustrasi.svg') }}"
                          alt="Chat Illustration"
-                         class="w-24 h-24 object-contain transform hover:scale-105 transition-transform duration-300">
+                         class="w-24 h-24 object-contain transform hover:scale-105 transition-transform duration-300"
+                         onerror="this.style.display='none'">
                 </div>
             </div>
 

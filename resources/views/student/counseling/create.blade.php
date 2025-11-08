@@ -71,18 +71,18 @@
 
 @section('content')
 <div class="min-h-screen bg-[#F9FAFB] pt-16 font-['Roboto']">
-    <!-- Header Section - Diperkecil -->
-    <div class="px-6 py-4 flex justify-center">
-        <div class="bg-[#E9D7FF] rounded-xl p-4 w-full max-w-[1024px] flex flex-col md:flex-row items-center justify-between gap-4">
+    <!-- Header Section -->
+    <div class="px-6 py-4">
+        <div class="bg-[#E9D7FF] rounded-xl p-4 w-[1044px] h-[144px] flex flex-col md:flex-row items-center justify-between gap-4">
             <!-- Title Section -->
             <div class="flex flex-col">
                 <h1 class="text-lg font-bold text-gray-900">Ajukan Konseling</h1>
                 <p class="text-xs text-gray-500 mt-1">Ajukan konseling dengan guru BK di halaman ini</p>
             </div>
 
-            <!-- Chat Illustration - Diperkecil -->
+            <!-- Chat Illustration -->
             <div class="w-[100px] h-[100px] flex-shrink-0">
-                <img src="/images/ilustrasi_chat.png" alt="Ilustrasi Chat" class="w-full h-full object-contain">
+                <img src="{{ asset('images/chat_ilustrasi.svg') }}" alt="Ilustrasi Chat" class="w-full h-full object-contain" onerror="this.style.display='none'">
             </div>
         </div>
     </div>

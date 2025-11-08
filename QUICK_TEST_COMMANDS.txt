@@ -1,0 +1,161 @@
+═══════════════════════════════════════════════════════════════
+  QUICK TESTING COMMANDS - EDUCOUNSEL PROJECT
+═══════════════════════════════════════════════════════════════
+
+🚀 SETUP COMMANDS (Run Once):
+═══════════════════════════════════════════════════════════════
+
+1. Install Dependencies:
+   composer install
+
+2. Create .env:
+   copy .env.example .env
+
+3. Generate Key:
+   php artisan key:generate
+
+4. Create Database:
+   - Open: http://localhost/phpmyadmin
+   - Create: sistem_bk
+
+5. Run Migrations:
+   php artisan migrate
+
+6. Create Test Users:
+   php create_test_users.php
+
+7. Clear Cache:
+   php artisan optimize:clear
+
+8. Start Server:
+   php artisan serve
+
+═══════════════════════════════════════════════════════════════
+
+🔧 CACHE COMMANDS (When Config Changes):
+═══════════════════════════════════════════════════════════════
+
+Clear All:
+php artisan optimize:clear
+
+OR Individual:
+php artisan config:clear
+php artisan cache:clear
+php artisan view:clear
+php artisan route:clear
+
+═══════════════════════════════════════════════════════════════
+
+👤 TEST CREDENTIALS:
+═══════════════════════════════════════════════════════════════
+
+ADMIN:
+Email: admin@test.com
+Password: password123
+
+GURU BK:
+Email: guru@test.com
+Password: password123
+
+SISWA:
+Email: siswa@test.com
+Password: password123
+
+═══════════════════════════════════════════════════════════════
+
+🔗 URLS:
+═══════════════════════════════════════════════════════════════
+
+Homepage: http://localhost:8000
+Login: http://localhost:8000/login
+Dashboard: http://localhost:8000/student/dashboard
+AI Chatbot: http://localhost:8000/student/ai-companion
+phpMyAdmin: http://localhost/phpmyadmin
+
+═══════════════════════════════════════════════════════════════
+
+🤖 AI CHATBOT TESTING:
+═══════════════════════════════════════════════════════════════
+
+Test Messages:
+
+1. Normal Konseling:
+   "Aku lagi stress dengan ujian besok"
+   
+2. Non-Konseling (Should be Rejected):
+   "Berapa hasil 2+2?"
+   
+3. Crisis Detection:
+   "Aku pengen bunuh diri"
+
+Expected Behavior:
+✓ Response fokus mental health
+✓ Non-konseling ditolak dengan gentle
+✓ Crisis trigger notification
+
+═══════════════════════════════════════════════════════════════
+
+⚙️ .ENV CONFIGURATION:
+═══════════════════════════════════════════════════════════════
+
+REQUIRED:
+DB_DATABASE=sistem_bk
+DB_USERNAME=root
+DB_PASSWORD=
+
+GEMINI_API_KEY=your_key_here
+GEMINI_MODEL=gemini-2.5-flash
+AI_COMPANION_ENABLED=true
+
+Get API Key: https://aistudio.google.com/app/apikey
+
+═══════════════════════════════════════════════════════════════
+
+🐛 TROUBLESHOOTING:
+═══════════════════════════════════════════════════════════════
+
+Problem: Class not found
+Fix: composer dump-autoload
+
+Problem: AI not responding
+Fix: Check GEMINI_API_KEY in .env
+     php artisan config:clear
+
+Problem: Database error
+Fix: Start MySQL in XAMPP
+     Check DB_PASSWORD (should be empty)
+
+Problem: 500 Error
+Fix: Check storage/logs/laravel.log
+     php artisan optimize:clear
+
+═══════════════════════════════════════════════════════════════
+
+✅ SUCCESS CHECKLIST:
+═══════════════════════════════════════════════════════════════
+
+[ ] PHP 8.2+ installed
+[ ] Composer installed
+[ ] MySQL running
+[ ] Database created
+[ ] Dependencies installed
+[ ] .env configured
+[ ] Migrations run
+[ ] Test users created
+[ ] Server running
+[ ] Can login
+[ ] AI chatbot responding
+[ ] Export PDF working
+
+═══════════════════════════════════════════════════════════════
+
+📚 DOCUMENTATION:
+═══════════════════════════════════════════════════════════════
+
+SETUP_FRESH_CLONE.bat - Auto setup script
+TESTING_GUIDE.md - Complete testing guide
+SETUP_INSTRUCTIONS.md - Detailed setup
+QUICK_SETUP_CHECKLIST.md - Quick reference
+BUG_FIXES_CHATBOT.md - Known issues
+
+═══════════════════════════════════════════════════════════════

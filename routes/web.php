@@ -88,10 +88,36 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
 // Guru BK Routes
 Route::prefix('guru_bk')->name('guru_bk.')->middleware(['auth', 'role:guru_bk'])->group(function () {
-    // Dashboard
-    Route::get('/dashboard', function () {
-        return view('guru_bk.dashboard.index');
-    })->name('dashboard');
+    // Dashboard with Analytics
+    Route::get('/dashboard', [\App\Http\Controllers\GuruBK\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/export', [\App\Http\Controllers\GuruBK\DashboardController::class, 'exportAnalytics'])->name('dashboard.export');
+
+    // Chatbot Reports
+    Route::prefix('chatbot')->name('chatbot.')->group(function () {
+        Route::get('/reports', [\App\Http\Controllers\GuruBK\ChatbotController::class, 'reports'])->name('reports');
+        Route::get('/student/{id}', [\App\Http\Controllers\GuruBK\ChatbotController::class, 'studentHistory'])->name('student.history');
+        Route::get('/export', [\App\Http\Controllers\GuruBK\ChatbotController::class, 'exportReport'])->name('export');
+        
+        // NEW: Shared conversations & analytics
+        Route::get('/shared-conversations', [\App\Http\Controllers\GuruBK\ChatbotController::class, 'sharedConversations'])->name('shared');
+        Route::get('/conversation/{id}', [\App\Http\Controllers\GuruBK\ChatbotController::class, 'viewSharedConversation'])->name('conversation.view');
+        Route::post('/conversation/{id}/notes', [\App\Http\Controllers\GuruBK\ChatbotController::class, 'addNotes'])->name('conversation.notes');
+        Route::get('/analytics', [\App\Http\Controllers\GuruBK\ChatbotController::class, 'analytics'])->name('analytics');
+    });
+
+    // Appointments Management
+    Route::prefix('appointments')->name('appointments.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\GuruBK\AppointmentController::class, 'index'])->name('index');
+        Route::get('/calendar', [\App\Http\Controllers\GuruBK\AppointmentController::class, 'calendar'])->name('calendar');
+        Route::get('/{appointment}', [\App\Http\Controllers\GuruBK\AppointmentController::class, 'show'])->name('show');
+        Route::post('/{appointment}/approve', [\App\Http\Controllers\GuruBK\AppointmentController::class, 'approve'])->name('approve');
+        Route::post('/{appointment}/reject', [\App\Http\Controllers\GuruBK\AppointmentController::class, 'reject'])->name('reject');
+        Route::post('/{appointment}/complete', [\App\Http\Controllers\GuruBK\AppointmentController::class, 'complete'])->name('complete');
+        Route::post('/{appointment}/cancel', [\App\Http\Controllers\GuruBK\AppointmentController::class, 'cancel'])->name('cancel');
+    });
+    
+    // Notifications
+    Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
 
     // Management Konseling
     Route::prefix('konseling')->name('konseling.')->group(function () {
@@ -104,7 +130,7 @@ Route::prefix('guru_bk')->name('guru_bk.')->middleware(['auth', 'role:guru_bk'])
         })->name('jadwal');
         
         Route::get('/hasil', function () {
-            // Get konseling data for dropdown (dummy data for now)
+            // Get konseling data for dropdown (pending konseling)
             $konselings = collect([
                 (object)[
                     'id' => 1,
@@ -120,7 +146,27 @@ Route::prefix('guru_bk')->name('guru_bk.')->middleware(['auth', 'role:guru_bk'])
                 ]
             ]);
             
-            return view('guru_bk.konseling.hasil', compact('konselings'));
+            // Get hasil konseling data (completed konseling with results)
+            $hasilKonselings = collect([
+                (object)[
+                    'id' => 1,
+                    'created_at' => now()->subDays(2),
+                    'kategori' => 'Akademik',
+                    'konseling' => (object)[
+                        'siswa' => (object)['nama' => 'Ahmad Rizki']
+                    ]
+                ],
+                (object)[
+                    'id' => 2,
+                    'created_at' => now()->subDays(5),
+                    'kategori' => 'Pribadi',
+                    'konseling' => (object)[
+                        'siswa' => (object)['nama' => 'Siti Nurhaliza']
+                    ]
+                ]
+            ]);
+            
+            return view('guru_bk.konseling.hasil', compact('konselings', 'hasilKonselings'));
         })->name('hasil');
         
         Route::post('/hasil/store', function (Illuminate\Http\Request $request) {
@@ -156,6 +202,13 @@ Route::prefix('guru_bk')->name('guru_bk.')->middleware(['auth', 'role:guru_bk'])
     Route::get('/analisis', function () {
         return view('guru_bk.analisis.index');
     })->name('analisis');
+    
+    // Materi Management - Resource Routes
+    Route::resource('materi', \App\Http\Controllers\MateriController::class);
+    
+    // Materi Toggle Status
+    Route::post('/materi/{materi}/toggle-status', [\App\Http\Controllers\MateriController::class, 'toggleStatus'])
+        ->name('materi.toggle-status');
 });
 
 // Student Routes
@@ -184,6 +237,15 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'role:siswa'])->
         })->name('schedule');
     });
 
+    // Appointments (Student Booking)
+    Route::prefix('appointments')->name('appointments.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Student\AppointmentController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Student\AppointmentController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Student\AppointmentController::class, 'store'])->name('store');
+        Route::get('/{appointment}', [\App\Http\Controllers\Student\AppointmentController::class, 'show'])->name('show');
+        Route::post('/{appointment}/cancel', [\App\Http\Controllers\Student\AppointmentController::class, 'cancel'])->name('cancel');
+    });
+
     // Violation
     Route::get('/violation', function () {
         return view('student.violation.index');
@@ -202,6 +264,13 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'role:siswa'])->
         return view('student.questionnaire.result');
     })->name('questionnaire.result');
 
+    // Materi (Educational Materials) - Connected to Database
+    Route::get('/materi', [\App\Http\Controllers\MateriController::class, 'studentIndex'])->name('materi');
+    Route::get('/materi/{materi}', [\App\Http\Controllers\MateriController::class, 'studentShow'])->name('materi.show');
+
+    // Notifications
+    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications');
+
     // AI Companion
     Route::prefix('ai-companion')->name('ai-companion.')->group(function () {
         Route::get('/', [App\Http\Controllers\Student\AiCompanionController::class, 'index'])->name('index');
@@ -211,6 +280,10 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'role:siswa'])->
         Route::post('/clear', [App\Http\Controllers\Student\AiCompanionController::class, 'clearHistory'])->name('clear');
         Route::get('/stats', [App\Http\Controllers\Student\AiCompanionController::class, 'stats'])->name('stats');
         Route::get('/export-pdf', [App\Http\Controllers\Student\AiCompanionController::class, 'exportPdf'])->name('export-pdf');
+        
+        // NEW: Sharing features
+        Route::post('/share-with-guru-bk', [App\Http\Controllers\Student\AiCompanionController::class, 'shareWithGuruBK'])->name('share');
+        Route::get('/shareable-conversation', [App\Http\Controllers\Student\AiCompanionController::class, 'getShareableConversation'])->name('shareable');
         
         // Alternatif UI
         Route::get('/cortex-new', function () {

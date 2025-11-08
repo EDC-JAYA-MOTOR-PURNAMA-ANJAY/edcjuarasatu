@@ -1,0 +1,304 @@
+=================================================================
+✅ SISTEM NOTIFIKASI REAL-TIME - TEST CHECKLIST
+=================================================================
+
+📅 Date: 6 November 2025
+🎯 Objective: Verify semua fitur berjalan dengan baik
+
+-----------------------------------------------------------------
+PERSIAPAN AWAL
+-----------------------------------------------------------------
+
+[ ] Server running: php artisan serve (http://127.0.0.1:8000)
+[ ] Migrations completed: php artisan migrate
+[ ] Database tables exist: materi, notifications
+[ ] Browser sound enabled (volume tidak mute)
+
+-----------------------------------------------------------------
+TEST 1: GURU BK - INPUT MATERI + VOICE ALERT
+-----------------------------------------------------------------
+
+[ ] Login sebagai Guru BK
+[ ] Navigate ke /guru_bk/materi
+[ ] Klik "Tambah Data"
+[ ] Isi form:
+    [ ] Jenis: Artikel atau Video Link
+    [ ] Judul: [isi]
+    [ ] Konten: [isi minimal 50 karakter]
+    [ ] Thumbnail: [upload atau skip]
+    [ ] Kategori: pilih salah satu
+    [ ] Target Kelas: pilih salah satu
+[ ] Klik "Simpan"
+
+✅ EXPECTED RESULTS:
+[ ] Success flash message muncul
+[ ] Success sound terdengar (3-tone chime)
+[ ] Voice berbicara: "Materi berhasil ditambahkan..."
+[ ] Redirect ke /guru_bk/materi
+[ ] Materi muncul di tabel
+
+❌ JIKA GAGAL:
+[ ] Check console (F12) untuk errors
+[ ] Check network tab untuk 500 errors
+[ ] Pastikan form validation passed
+[ ] Pastikan file upload size < 2MB
+
+-----------------------------------------------------------------
+TEST 2: SISWA - TERIMA NOTIFIKASI REAL-TIME
+-----------------------------------------------------------------
+
+SETUP:
+[ ] Buka browser baru/incognito
+[ ] Login sebagai Siswa
+[ ] Buka /student/dashboard atau /student/materi
+[ ] JANGAN CLOSE TAB INI
+
+ACTION:
+[ ] Dari browser Guru BK: Input materi baru (Test 1)
+[ ] Tunggu maksimal 30 detik
+
+✅ EXPECTED RESULTS (pada browser Siswa):
+[ ] Browser notification muncul (jika permission granted)
+[ ] In-app toast slide dari kanan
+[ ] Notification sound terdengar (bell chime)
+[ ] Badge counter bertambah (jika ada)
+[ ] Toast auto-close setelah 5 detik
+
+❌ JIKA GAGAL SETELAH 30 DETIK:
+[ ] Check console (F12):
+    [ ] Ada "Polling started"?
+    [ ] Ada "New notifications found"?
+    [ ] Ada errors?
+[ ] Check network tab:
+    [ ] Request ke /api/notifications/check-new setiap 30s?
+    [ ] Status 200 OK?
+[ ] Check database:
+    SELECT * FROM notifications WHERE type='materi' ORDER BY id DESC;
+    [ ] Ada record baru?
+[ ] Pastikan user login sebagai siswa (role='siswa')
+
+-----------------------------------------------------------------
+TEST 3: BROWSER NOTIFICATION PERMISSION
+-----------------------------------------------------------------
+
+[ ] Clear browser notification permission:
+    Chrome: Settings → Site Settings → Notifications → Reset
+    Firefox: Padlock icon → Clear
+[ ] Refresh halaman siswa
+[ ] Permission dialog muncul: "Allow notifications?"
+[ ] Klik "Allow"
+[ ] Test lagi dengan input materi baru
+[ ] Browser notification muncul
+
+-----------------------------------------------------------------
+TEST 4: DATABASE VERIFICATION
+-----------------------------------------------------------------
+
+[ ] Open database client (phpMyAdmin, TablePlus, etc.)
+
+CHECK materi table:
+[ ] SELECT * FROM materi ORDER BY id DESC LIMIT 1;
+    [ ] Record baru ada?
+    [ ] dibuat_oleh = Guru BK user ID?
+    [ ] status = 'Aktif'?
+
+CHECK notifications table:
+[ ] SELECT COUNT(*) FROM notifications WHERE type='materi';
+    [ ] Count = jumlah siswa?
+[ ] SELECT * FROM notifications WHERE type='materi' ORDER BY id DESC;
+    [ ] related_id = materi ID yang baru dibuat?
+    [ ] user_id = siswa ID?
+    [ ] is_read = 0 (false)?
+    [ ] message berisi judul materi?
+
+-----------------------------------------------------------------
+TEST 5: SOUND & VOICE MANUAL TEST
+-----------------------------------------------------------------
+
+[ ] Buka console browser (F12)
+[ ] Test sound:
+    window.notificationManager.notificationSound.play();
+    [ ] Sound terdengar?
+[ ] Test voice:
+    const u = new SpeechSynthesisUtterance('Test suara');
+    u.lang = 'id-ID';
+    speechSynthesis.speak(u);
+    [ ] Suara berbicara?
+
+-----------------------------------------------------------------
+TEST 6: API ENDPOINTS MANUAL TEST
+-----------------------------------------------------------------
+
+[ ] Open browser, test these URLs manually:
+
+GET http://127.0.0.1:8000/api/notifications/check-new
+[ ] Response JSON: {success: true, has_new: ..., ...}
+[ ] No errors
+
+GET http://127.0.0.1:8000/api/notifications/count
+[ ] Response JSON: {success: true, count: ...}
+[ ] No errors
+
+GET http://127.0.0.1:8000/api/notifications/unread
+[ ] Response JSON: {success: true, notifications: [...]}
+[ ] No errors
+
+-----------------------------------------------------------------
+TEST 7: MULTIPLE STUDENTS
+-----------------------------------------------------------------
+
+[ ] Pastikan ada minimal 2-3 siswa di database
+[ ] Guru BK input materi baru
+[ ] Login sebagai Siswa 1: terima notifikasi?
+[ ] Login sebagai Siswa 2: terima notifikasi?
+[ ] Login sebagai Siswa 3: terima notifikasi?
+
+CHECK DATABASE:
+SELECT user_id, COUNT(*) 
+FROM notifications 
+WHERE type='materi' AND created_at >= NOW() - INTERVAL 1 MINUTE
+GROUP BY user_id;
+
+[ ] Setiap siswa punya 1 notification?
+
+-----------------------------------------------------------------
+TEST 8: MARK AS READ
+-----------------------------------------------------------------
+
+[ ] Login sebagai Siswa
+[ ] Klik notification toast
+[ ] Navigate ke materi detail
+[ ] Check database:
+    SELECT is_read, read_at FROM notifications WHERE id = [notification_id];
+    [ ] is_read = 1 (true)?
+    [ ] read_at = timestamp?
+
+-----------------------------------------------------------------
+TEST 9: CONSOLE LOGS
+-----------------------------------------------------------------
+
+[ ] Login sebagai Siswa
+[ ] Open console (F12)
+[ ] Refresh page
+
+✅ EXPECTED LOGS:
+[ ] "🔔 Initializing Notification Manager..."
+[ ] "✅ Notification Manager initialized"
+[ ] "🔄 Polling started (every 30s)"
+[ ] No errors (red text)
+
+After Guru BK creates materi:
+[ ] (Within 30s) "📬 New notifications found: [...]"
+
+-----------------------------------------------------------------
+TROUBLESHOOTING CHECKLIST
+-----------------------------------------------------------------
+
+❌ NO SOUND:
+[ ] Click page first (browser autoplay policy)
+[ ] Check volume (browser & system)
+[ ] Check console for errors
+[ ] Test: window.notificationManager.notificationSound.play()
+
+❌ NO VOICE:
+[ ] Wait 1-2 seconds (voice loading)
+[ ] Check console: speechSynthesis.getVoices()
+[ ] Try different browser (Chrome recommended)
+[ ] Test: speechSynthesis.speak(new SpeechSynthesisUtterance('test'))
+
+❌ NO NOTIFICATION AFTER 30s:
+[ ] Check console for "Polling started"
+[ ] Check network tab for /api/notifications/check-new requests
+[ ] Check database for notification records
+[ ] Verify user role = 'siswa'
+[ ] Check MateriController@store fired event
+
+❌ BROWSER NOTIFICATION NOT SHOWING:
+[ ] Check permission granted
+[ ] Check console for permission errors
+[ ] Try on localhost (not 127.0.0.1)
+[ ] Reset permission and try again
+
+❌ 500 ERROR:
+[ ] Check storage/logs/laravel.log
+[ ] Check .env database config
+[ ] Run: php artisan optimize:clear
+[ ] Check migrations: php artisan migrate:status
+
+=================================================================
+FINAL VERIFICATION
+=================================================================
+
+✅ ALL TESTS PASSED IF:
+
+Backend:
+[ ] Materi saved to database
+[ ] Notifications created for all students
+[ ] API endpoints return 200 OK
+[ ] No errors in laravel.log
+
+Frontend:
+[ ] No console errors
+[ ] Polling active (check every 30s)
+[ ] Scripts loaded (notification-manager.js, notification.js)
+[ ] Styles applied (notifications.css)
+
+Integration:
+[ ] Guru BK hears voice on success
+[ ] Siswa receives notification within 30s
+[ ] All notification types work (sound, voice, browser, toast)
+[ ] Database records created correctly
+
+Performance:
+[ ] API response < 500ms
+[ ] Toast animation smooth
+[ ] No memory leaks
+[ ] No console warnings
+
+=================================================================
+NOTES
+=================================================================
+
+✅ System uses POLLING by default (30s interval)
+   - Works immediately without additional config
+   - Reliable fallback mechanism
+
+🚀 For INSTANT notifications, configure broadcasting:
+   - Install Pusher or Laravel Reverb
+   - Update .env with credentials
+   - System will auto-detect and use broadcasting
+
+📱 Browser compatibility:
+   - Chrome: ✅ Full support
+   - Firefox: ✅ Full support
+   - Safari: ✅ Full support
+   - Edge: ✅ Full support
+   - Mobile: ✅ Works (with limitations)
+
+🔐 Security:
+   - CSRF protection enabled
+   - Role-based authorization
+   - Ownership checks
+   - File upload validation
+
+=================================================================
+📞 NEED HELP?
+=================================================================
+
+1. Read: QUICK_START_NOTIFICATION_SYSTEM.md
+2. Read: NOTIFICATION_SYSTEM_DOCUMENTATION.md
+3. Read: IMPLEMENTATION_SUMMARY.md
+4. Check: storage/logs/laravel.log
+5. Check: Browser console (F12)
+6. Check: Network tab (F12)
+7. Check: Database records
+
+=================================================================
+
+🎉 GOOD LUCK WITH TESTING!
+
+Start with TEST 1 and work through each test sequentially.
+
+If all tests pass, your system is PRODUCTION READY! 🚀
+
+=================================================================

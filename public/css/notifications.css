@@ -1,0 +1,409 @@
+/**
+ * Notification System Styles
+ * Toast notifications, badges, and notification UI
+ */
+
+/* ==========================================
+   NOTIFICATION TOAST
+   ========================================== */
+
+.notification-toast {
+    position: fixed;
+    top: 80px;
+    right: -400px;
+    width: 360px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    z-index: 9999;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-left: 4px solid #4CAF50;
+}
+
+.notification-toast.show {
+    right: 20px;
+}
+
+.notification-toast:hover {
+    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.notification-toast-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.notification-toast-icon i {
+    color: #FFFFFF;
+    font-size: 18px;
+}
+
+.notification-toast-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-toast-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 4px;
+}
+
+.notification-toast-message {
+    font-size: 12px;
+    color: #666666;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.notification-toast-close {
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.notification-toast-close:hover {
+    background: #F5F5F5;
+}
+
+.notification-toast-close i {
+    font-size: 12px;
+    color: #999999;
+}
+
+/* ==========================================
+   NOTIFICATION BADGE
+   ========================================== */
+
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    min-width: 20px;
+    height: 20px;
+    background: #FF4444;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #FFFFFF;
+    padding: 0 6px;
+    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.3);
+    animation: notificationPulse 2s ease-in-out infinite;
+}
+
+@keyframes notificationPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.9;
+    }
+}
+
+/* Badge on sidebar */
+.sidebar-notification-badge {
+    position: relative;
+    display: inline-block;
+}
+
+.sidebar-notification-badge .notification-badge {
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    font-size: 10px;
+}
+
+/* ==========================================
+   NOTIFICATION BUTTON (NAVBAR)
+   ========================================== */
+
+.notification-button {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background: #F5F5F5;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.notification-button:hover {
+    background: #E0E0E0;
+}
+
+.notification-button i {
+    font-size: 18px;
+    color: #333333;
+}
+
+.notification-button.has-notifications i {
+    animation: notificationShake 0.5s ease;
+}
+
+@keyframes notificationShake {
+    0%, 100% { transform: rotate(0deg); }
+    10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); }
+    20%, 40%, 60%, 80% { transform: rotate(10deg); }
+}
+
+/* ==========================================
+   NOTIFICATION DROPDOWN
+   ========================================== */
+
+.notification-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 360px;
+    max-height: 480px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    display: none;
+    z-index: 1000;
+}
+
+.notification-dropdown.show {
+    display: block;
+    animation: notificationDropdownSlide 0.3s ease;
+}
+
+@keyframes notificationDropdownSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.notification-dropdown-header {
+    padding: 16px;
+    border-bottom: 1px solid #E5E5E5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notification-dropdown-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333333;
+}
+
+.notification-dropdown-mark-all {
+    font-size: 12px;
+    color: #4CAF50;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.notification-dropdown-mark-all:hover {
+    background: #F0F9F0;
+}
+
+.notification-dropdown-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-dropdown-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #F5F5F5;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.notification-dropdown-item:hover {
+    background: #F9F9F9;
+}
+
+.notification-dropdown-item.unread {
+    background: #F0F9FF;
+    border-left: 3px solid #4CAF50;
+}
+
+.notification-dropdown-item-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 4px;
+}
+
+.notification-dropdown-item-message {
+    font-size: 12px;
+    color: #666666;
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+
+.notification-dropdown-item-time {
+    font-size: 11px;
+    color: #999999;
+}
+
+.notification-dropdown-empty {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.notification-dropdown-empty i {
+    font-size: 48px;
+    color: #E0E0E0;
+    margin-bottom: 12px;
+}
+
+.notification-dropdown-empty p {
+    font-size: 14px;
+    color: #999999;
+}
+
+.notification-dropdown-footer {
+    padding: 12px 16px;
+    border-top: 1px solid #E5E5E5;
+    text-align: center;
+}
+
+.notification-dropdown-view-all {
+    font-size: 13px;
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.notification-dropdown-view-all:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================
+   NOTIFICATION SETTINGS
+   ========================================== */
+
+.notification-settings {
+    padding: 12px 16px;
+    border-top: 1px solid #E5E5E5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.notification-settings-label {
+    font-size: 12px;
+    color: #666666;
+}
+
+.notification-toggle {
+    position: relative;
+    width: 40px;
+    height: 20px;
+    background: #E0E0E0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.notification-toggle.active {
+    background: #4CAF50;
+}
+
+.notification-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.notification-toggle.active::after {
+    transform: translateX(20px);
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+
+@media (max-width: 768px) {
+    .notification-toast {
+        width: calc(100% - 40px);
+        right: -100%;
+    }
+
+    .notification-toast.show {
+        right: 20px;
+    }
+
+    .notification-dropdown {
+        width: calc(100vw - 40px);
+        right: -100px;
+    }
+}
+
+/* ==========================================
+   LOADING STATE
+   ========================================== */
+
+.notification-loading {
+    padding: 20px;
+    text-align: center;
+}
+
+.notification-loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #F3F3F3;
+    border-top: 3px solid #4CAF50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

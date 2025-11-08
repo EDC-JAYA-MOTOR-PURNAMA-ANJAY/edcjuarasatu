@@ -16,10 +16,10 @@
 
             <!-- Dashboard -->
             <a href="{{ route('guru_bk.dashboard') }}"
-               class="dashboard-menu flex items-center px-3 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-700 rounded-lg mb-1 transition-colors duration-200 group">
-                <img src="{{ asset('images/icon/dash.png') }}" alt="Dashboard" class="w-4 h-4 mr-3">
+               class="dashboard-menu flex items-center px-3 py-3 text-gray-700 rounded-lg mb-1 transition-all duration-200 group hover:bg-purple-50 hover:text-purple-700 hover:rounded-xl hover:shadow-sm active:bg-purple-600 active:text-white">
+                <img src="{{ asset('images/icon/board.svg') }}" alt="Dashboard" class="w-4 h-4 mr-3 group-hover:brightness-0 group-hover:invert group-hover:sepia-0 group-hover:hue-rotate-90 group-hover:saturate-10000 group-active:brightness-0 group-active:invert">
                 <span class="text-sm font-medium flex-1">Dashboard</span>
-                <span class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-1 rounded-full">
+                <span class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-1 rounded-full group-hover:bg-purple-600 group-hover:text-white group-active:bg-white group-active:text-purple-700">
                     3
                 </span>
             </a>
@@ -28,8 +28,8 @@
         <!-- Manajemen Konseling -->
         <div class="mb-2">
             <a href="{{ route('guru_bk.konseling.hasil') }}"
-               class="konseling-menu flex items-center px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg mb-1 transition-colors duration-200 group">
-                <img src="{{ asset('images/icon/konseling.png') }}" alt="Manajemen Konseling" class="w-4 h-4 mr-3">
+               class="konseling-menu flex items-center px-3 py-3 text-gray-700 rounded-lg mb-1 transition-all duration-200 group hover:bg-purple-50 hover:text-purple-700 hover:rounded-xl hover:shadow-sm active:bg-purple-600 active:text-white">
+                <img src="{{ asset('images/icon/MK.svg') }}" alt="Manajemen Konseling" class="w-4 h-4 mr-3 group-hover:brightness-0 group-hover:invert group-hover:sepia-0 group-hover:hue-rotate-90 group-hover:saturate-10000 group-active:brightness-0 group-active:invert">
                 <span class="text-sm font-medium">Manajemen Konseling</span>
             </a>
         </div>
@@ -37,8 +37,8 @@
         <!-- Data Siswa -->
         <div class="mb-2">
             <a href="{{ route('guru_bk.data-siswa') }}"
-               class="data-siswa-menu flex items-center px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg mb-1 transition-colors duration-200 group">
-                <img src="{{ asset('images/icon/graduation.png') }}" alt="Data Siswa" class="w-4 h-4 mr-3">
+               class="data-siswa-menu flex items-center px-3 py-3 text-gray-700 rounded-lg mb-1 transition-all duration-200 group hover:bg-purple-50 hover:text-purple-700 hover:rounded-xl hover:shadow-sm active:bg-purple-600 active:text-white">
+                <img src="{{ asset('images/icon/DS.svg') }}" alt="Data Siswa" class="w-4 h-4 mr-3 group-hover:brightness-0 group-hover:invert group-hover:sepia-0 group-hover:hue-rotate-90 group-hover:saturate-10000 group-active:brightness-0 group-active:invert">
                 <span class="text-sm font-medium">Data Siswa</span>
             </a>
         </div>
@@ -46,17 +46,17 @@
         <!-- Laporan Bulanan -->
         <div class="mb-2">
             <a href="#"
-               class="laporan-menu flex items-center px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg mb-1 transition-colors duration-200 group">
-                <img src="{{ asset('images/icon/moni.png') }}" alt="Laporan Bulanan" class="w-4 h-4 mr-3">
+               class="laporan-menu flex items-center px-3 py-3 text-gray-700 rounded-lg mb-1 transition-all duration-200 group hover:bg-purple-50 hover:text-purple-700 hover:rounded-xl hover:shadow-sm active:bg-purple-600 active:text-white">
+                <img src="{{ asset('images/icon/LB.svg') }}" alt="Laporan Bulanan" class="w-4 h-4 mr-3 group-hover:brightness-0 group-hover:invert group-hover:sepia-0 group-hover:hue-rotate-90 group-hover:saturate-10000 group-active:brightness-0 group-active:invert">
                 <span class="text-sm font-medium">Laporan Bulanan</span>
             </a>
         </div>
 
         <!-- Materi -->
         <div class="mb-2">
-            <a href="#"
-               class="materi-menu flex items-center px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg mb-1 transition-colors duration-200 group">
-                <img src="{{ asset('images/icon/list.png') }}" alt="Materi" class="w-4 h-4 mr-3">
+            <a href="{{ route('guru_bk.materi.index') }}"
+               class="materi-menu flex items-center px-3 py-3 text-gray-700 rounded-lg mb-1 transition-all duration-200 group hover:bg-purple-50 hover:text-purple-700 hover:rounded-xl hover:shadow-sm active:bg-purple-600 active:text-white">
+                <img src="{{ asset('images/icon/MT.svg') }}" alt="Materi" class="w-4 h-4 mr-3 group-hover:brightness-0 group-hover:invert group-hover:sepia-0 group-hover:hue-rotate-90 group-hover:saturate-10000 group-active:brightness-0 group-active:invert">
                 <span class="text-sm font-medium">Materi</span>
             </a>
         </div>
@@ -64,8 +64,8 @@
         <!-- Analisis Angket -->
         <div class="mb-2">
             <a href="{{ route('guru_bk.analisis') }}"
-               class="analisis-menu flex items-center px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg mb-1 transition-colors duration-200 group">
-                <img src="{{ asset('images/icon/sistem.png') }}" alt="Analisis Angket" class="w-4 h-4 mr-3">
+               class="analisis-menu flex items-center px-3 py-3 text-gray-700 rounded-lg mb-1 transition-all duration-200 group hover:bg-purple-50 hover:text-purple-700 hover:rounded-xl hover:shadow-sm active:bg-purple-600 active:text-white">
+                <img src="{{ asset('images/icon/AA.svg') }}" alt="Analisis Angket" class="w-4 h-4 mr-3 group-hover:brightness-0 group-hover:invert group-hover:sepia-0 group-hover:hue-rotate-90 group-hover:saturate-10000 group-active:brightness-0 group-active:invert">
                 <span class="text-sm font-medium">Analisis Angket</span>
             </a>
         </div>
@@ -75,21 +75,21 @@
             <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Setting</div>
 
             <a href=""
-               class="panduan-menu flex items-center px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg mb-1 transition-colors duration-200 group">
-                <img src="{{ asset('images/icon/tanya.png') }}" alt="Panduan Bantuan" class="w-4 h-4 mr-3">
+               class="panduan-menu flex items-center px-3 py-3 text-gray-700 rounded-lg mb-1 transition-all duration-200 group hover:bg-purple-50 hover:text-purple-700 hover:rounded-xl hover:shadow-sm active:bg-purple-600 active:text-white">
+                <img src="{{ asset('images/icon/tanya.png') }}" alt="Panduan Bantuan" class="w-4 h-4 mr-3 group-hover:brightness-0 group-hover:invert group-hover:sepia-0 group-hover:hue-rotate-90 group-hover:saturate-10000 group-active:brightness-0 group-active:invert">
                 <span class="text-sm font-medium">Panduan Bantuan</span>
             </a>
 
             <a href=""
-               class="pengaturan-menu flex items-center px-3 py-3 text-gray-700 hover:bg-gray-100 rounded-lg mb-1 transition-colors duration-200 group">
-                <img src="{{ asset('images/icon/setting.png') }}" alt="Pengaturan" class="w-4 h-4 mr-3">
+               class="pengaturan-menu flex items-center px-3 py-3 text-gray-700 rounded-lg mb-1 transition-all duration-200 group hover:bg-purple-50 hover:text-purple-700 hover:rounded-xl hover:shadow-sm active:bg-purple-600 active:text-white">
+                <img src="{{ asset('images/icon/setting.png') }}" alt="Pengaturan" class="w-4 h-4 mr-3 group-hover:brightness-0 group-hover:invert group-hover:sepia-0 group-hover:hue-rotate-90 group-hover:saturate-10000 group-active:brightness-0 group-active:invert">
                 <span class="text-sm font-medium">Pengaturan</span>
             </a>
 
             <!-- Logout Button -->
             <form action="{{ route('logout') }}" method="POST" class="mt-2">
                 @csrf
-                <button type="submit" class="w-full flex items-center px-3 py-3 text-red-600 hover:bg-red-50 rounded-lg mb-1 transition-colors duration-200 group">
+                <button type="submit" class="w-full flex items-center px-3 py-3 text-red-600 rounded-lg mb-1 transition-all duration-200 group hover:bg-red-50 hover:rounded-xl hover:shadow-sm">
                     <i class="fas fa-sign-out-alt w-4 h-4 mr-3"></i>
                     <span class="text-sm font-medium">Keluar</span>
                 </button>
@@ -104,8 +104,8 @@
 <script>
     // Dropdown toggle functionality - FIXED: Tidak menutup dropdown lainnya
     function toggleDropdown(menu) {
-        const dropdown = document.getElementById(${menu}-dropdown);
-        const arrow = document.getElementById(${menu}-arrow);
+        const dropdown = document.getElementById(`${menu}-dropdown`);
+        const arrow = document.getElementById(`${menu}-arrow`);
 
         // Hanya toggle dropdown yang diklik, tidak menutup yang lain
         dropdown.classList.toggle('hidden');
@@ -138,19 +138,26 @@
         // Remove active class from all menus
         document.querySelectorAll('.dashboard-menu, .konseling-menu, .data-siswa-menu, .laporan-menu, .materi-menu, .analisis-menu, .panduan-menu, .pengaturan-menu').forEach(menu => {
             menu.classList.remove('bg-purple-600', 'text-white', 'shadow-md');
-            menu.classList.add('text-gray-700', 'hover:bg-gray-100');
+            menu.classList.add('text-gray-700');
             
             // Reset semua ikon ke state normal
             const icons = menu.querySelectorAll('img');
             icons.forEach(icon => {
                 if (!icon.id.includes('arrow')) {
-                    icon.classList.remove('brightness-0', 'invert-0');
+                    icon.classList.remove('brightness-0', 'invert');
                 }
             });
+            
+            // Reset badge
+            const badge = menu.querySelector('span.bg-purple-100');
+            if (badge) {
+                badge.classList.remove('bg-white', 'text-purple-700');
+                badge.classList.add('bg-purple-100', 'text-purple-700');
+            }
         });
 
         // Add active class to clicked menu
-        menuElement.classList.remove('text-gray-700', 'hover:bg-gray-100');
+        menuElement.classList.remove('text-gray-700');
         menuElement.classList.add('bg-purple-600', 'text-white', 'shadow-md');
 
         // Update icon color - FIXED: Menggunakan filter CSS yang benar
@@ -160,6 +167,13 @@
                 icon.classList.add('brightness-0', 'invert');
             }
         });
+        
+        // Update badge
+        const badge = menuElement.querySelector('span.bg-purple-100');
+        if (badge) {
+            badge.classList.remove('bg-purple-100', 'text-purple-700');
+            badge.classList.add('bg-white', 'text-purple-700');
+        }
 
         currentActiveMenu = menuElement;
     }
@@ -235,5 +249,26 @@
     /* Font family */
     * {
         font-family: 'Roboto', sans-serif;
+    }
+    
+    /* Custom styles untuk efek hover dan active */
+    .group:hover .group-hover\:brightness-0 {
+        filter: brightness(0);
+    }
+    
+    .group:hover .group-hover\:invert {
+        filter: invert(1);
+    }
+    
+    .group:hover .group-hover\:sepia-0 {
+        filter: sepia(0);
+    }
+    
+    .group:hover .group-hover\:hue-rotate-90 {
+        filter: hue-rotate(90deg);
+    }
+    
+    .group:hover .group-hover\:saturate-10000 {
+        filter: saturate(10000%);
     }
 </style>

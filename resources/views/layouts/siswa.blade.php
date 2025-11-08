@@ -264,6 +264,14 @@
             }
         }
     </style>
+    
+    <!-- CSRF Token for API requests -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <!-- Notification System CSS -->
+    <link href="{{ asset('css/notifications.css') }}" rel="stylesheet">
+    
+    @stack('styles')
 </head>
 <body>
     <!-- Sidebar -->
@@ -417,5 +425,29 @@
         });
     </script>
     @endif
+    
+    <!-- Notification System Scripts -->
+    <script src="{{ asset('sounds/notification.js') }}"></script>
+    <script src="{{ asset('js/notification-manager.js') }}"></script>
+    
+    <!-- Initialize Notification System for Students Only -->
+    @auth
+    @if(auth()->user()->role === 'siswa')
+    <script>
+        // Initialize notification manager when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            window.notificationManager = new NotificationManager({
+                pollingInterval: 30000, // 30 seconds
+                soundEnabled: true,
+                browserNotificationEnabled: true,
+            });
+            
+            console.log('✅ Notification system initialized for student');
+        });
+    </script>
+    @endif
+    @endauth
+    
+    @stack('scripts')
 </body>
 </html>
