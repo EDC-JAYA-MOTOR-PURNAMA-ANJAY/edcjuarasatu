@@ -125,45 +125,64 @@
     <!-- Konten Kuisioner -->
     <div class="px-6 pb-8 flex justify-center mt-8">
         <div class="w-full max-w-[1200px]">
+            @if(session('success'))
+            <div class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+                <i class="fas fa-check-circle mr-2"></i>{{ session('success') }}
+            </div>
+            @endif
+
+            @if(session('info'))
+            <div class="mb-6 p-4 bg-blue-100 border border-blue-400 text-blue-700 rounded-lg">
+                <i class="fas fa-info-circle mr-2"></i>{{ session('info') }}
+            </div>
+            @endif
+
+            @if(session('error'))
+            <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                <i class="fas fa-exclamation-circle mr-2"></i>{{ session('error') }}
+            </div>
+            @endif
+
             <!-- Grid 2 Kolom -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                <!-- Card 1: Hubungan Sosial Dan Lingkungan -->
-                <div class="questionnaire-card" data-id="1">
-                    <h3 class="text-lg font-bold text-black mb-3">Hubungan Sosial Dan Lingkungan</h3>
-                    <p class="text-sm text-[#555555] leading-relaxed mb-6">
-                        Kuisioner ini bertujuan untuk menggali lebih dalam bagaimana hubungan antara interaksi sosial dan kondisi lingkungan membentuk pengalaman dan kesejahteraan kita.
-                    </p>
-                    
-                    <!-- Bottom Section -->
-                    <div class="flex items-center justify-between">
-                        <span class="badge-soal">18 Soal</span>
-                        <div class="btn-container">
-                            <button class="btn-kerjakan">
-                                Kerjakan
-                            </button>
+                @forelse($kuesionerList as $kuesioner)
+                    <!-- Card Kuesioner -->
+                    <div class="questionnaire-card" data-id="{{ $kuesioner->id }}">
+                        <div class="flex items-start justify-between mb-3">
+                            <h3 class="text-lg font-bold text-black flex-1">{{ $kuesioner->judul }}</h3>
+                            @if($kuesioner->jenisKuesioner)
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium ml-2">
+                                {{ $kuesioner->jenisKuesioner->nama_kuesioner }}
+                            </span>
+                            @endif
+                        </div>
+                        
+                        <p class="text-sm text-[#555555] leading-relaxed mb-6">
+                            {{ Str::limit($kuesioner->deskripsi ?? 'Silakan kerjakan kuesioner ini untuk membantu kami memahami kebutuhan Anda.', 120) }}
+                        </p>
+                        
+                        <!-- Bottom Section -->
+                        <div class="flex items-center justify-between">
+                            <span class="badge-soal">{{ $kuesioner->pertanyaan_count ?? 0 }} Soal</span>
+                            <div class="btn-container">
+                                <button class="btn-kerjakan">
+                                    Kerjakan
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Card 2: Minat & Bakat -->
-                <div class="questionnaire-card" data-id="2">
-                    <h3 class="text-lg font-bold text-black mb-3">Minat & Bakat</h3>
-                    <p class="text-sm text-[#555555] leading-relaxed mb-6">
-                        Kuisioner ini dirancang untuk membantu Anda mengidentifikasi minat dan bakat yang Anda miliki, serta memberikan wawasan tentang potensi karir yang sesuai dengan kepribadian Anda.
-                    </p>
-                    
-                    <!-- Bottom Section -->
-                    <div class="flex items-center justify-between">
-                        <span class="badge-soal">30 Soal</span>
-                        <div class="btn-container">
-                            <button class="btn-kerjakan">
-                                Kerjakan
-                            </button>
+                @empty
+                    <!-- Empty State -->
+                    <div class="col-span-2 text-center py-12">
+                        <div class="flex flex-col items-center gap-4">
+                            <i class="fas fa-clipboard-question text-6xl text-gray-300"></i>
+                            <div>
+                                <p class="text-lg font-semibold text-gray-700">Belum Ada Kuesioner</p>
+                                <p class="text-sm text-gray-500 mt-1">Saat ini belum ada kuesioner yang tersedia.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-
+                @endforelse
             </div>
         </div>
     </div>
@@ -181,10 +200,9 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             const card = this.closest('.questionnaire-card');
             const questionnaireId = card.dataset.id;
-            const cardTitle = card.querySelector('h3').textContent;
             
-            // Navigate to questionnaire page
-            window.location.href = '{{ route("student.questionnaire") }}/start/' + questionnaireId;
+            // Navigate to questionnaire detail/show page
+            window.location.href = '{{ route("student.questionnaire") }}/' + questionnaireId;
         });
     });
 

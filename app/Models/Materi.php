@@ -23,6 +23,9 @@ class Materi extends Model
         'target_kelas',
         'dibuat_oleh',
         'status',
+        'durasi_menit',
+        'total_halaman',
+        'deskripsi_singkat',
     ];
 
     protected $casts = [
@@ -44,6 +47,22 @@ class Materi extends Model
     public function notifications()
     {
         return $this->hasMany(Notification::class, 'related_id')->where('related_type', 'Materi');
+    }
+    
+    /**
+     * Relationship: Materi has many Progress records
+     */
+    public function progresses()
+    {
+        return $this->hasMany(MateriProgress::class);
+    }
+    
+    /**
+     * Get progress for specific user
+     */
+    public function getProgressForUser($userId)
+    {
+        return $this->progresses()->where('user_id', $userId)->first();
     }
 
     /**

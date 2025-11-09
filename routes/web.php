@@ -194,9 +194,10 @@ Route::prefix('guru_bk')->name('guru_bk.')->middleware(['auth', 'role:guru_bk'])
     });
     
     // Data Siswa
-    Route::get('/data-siswa', function () {
-        return view('guru_bk.data-siswa.index');
-    })->name('data-siswa');
+    Route::get('/data-siswa', [\App\Http\Controllers\GuruBK\DataSiswaController::class, 'index'])->name('data-siswa');
+    
+    // Profile Lengkap Siswa
+    Route::get('/data-siswa/{id}', [\App\Http\Controllers\GuruBK\DataSiswaController::class, 'show'])->name('data-siswa.show');
     
     // Analisis Angket
     Route::get('/analisis', function () {
@@ -209,14 +210,21 @@ Route::prefix('guru_bk')->name('guru_bk.')->middleware(['auth', 'role:guru_bk'])
     // Materi Toggle Status
     Route::post('/materi/{materi}/toggle-status', [\App\Http\Controllers\MateriController::class, 'toggleStatus'])
         ->name('materi.toggle-status');
+    
+    // Rekap Absensi
+    Route::get('/rekap-absensi', [\App\Http\Controllers\GuruBK\AbsensiController::class, 'rekapAbsensi'])->name('rekap-absensi');
+    
+    // Detail Absensi
+    Route::get('/detail-absensi/{id}', [\App\Http\Controllers\GuruBK\AbsensiController::class, 'detailAbsensi'])->name('detail-absensi');
+    
+    // Kuesioner Management - Resource Routes
+    Route::resource('kuesioner', \App\Http\Controllers\GuruBK\KuesionerController::class);
 });
 
 // Student Routes
 Route::prefix('student')->name('student.')->middleware(['auth', 'role:siswa'])->group(function () {
     // Dashboard
-    Route::get('/dashboard', function () {
-        return view('student.dashboard.index');
-    })->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\Student\DashboardController::class, 'index'])->name('dashboard');
 
     // Attendance
     Route::get('/attendance', [App\Http\Controllers\Student\AttendanceController::class, 'index'])->name('attendance');
@@ -224,17 +232,10 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'role:siswa'])->
 
     // Counseling
     Route::prefix('counseling')->name('counseling.')->group(function () {
-        Route::get('/', function () {
-            return view('student.counseling.index');
-        })->name('index');
-        
-        Route::get('/create', function () {
-            return view('student.counseling.create');
-        })->name('create');
-        
-        Route::get('/schedule', function () {
-            return view('student.counseling.schedule');
-        })->name('schedule');
+        Route::get('/', [\App\Http\Controllers\Student\CounselingController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Student\CounselingController::class, 'create'])->name('create');
+        Route::post('/store', [\App\Http\Controllers\Student\CounselingController::class, 'store'])->name('store');
+        Route::get('/schedule', [\App\Http\Controllers\Student\CounselingController::class, 'schedule'])->name('schedule');
     });
 
     // Appointments (Student Booking)
@@ -247,22 +248,12 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'role:siswa'])->
     });
 
     // Violation
-    Route::get('/violation', function () {
-        return view('student.violation.index');
-    })->name('violation');
+    Route::get('/violation', [\App\Http\Controllers\Student\ViolationController::class, 'index'])->name('violation');
 
-    // Questionnaire
-    Route::get('/questionnaire', function () {
-        return view('student.questionnaire.index');
-    })->name('questionnaire');
-    
-    Route::get('/questionnaire/start/{id}', function ($id) {
-        return view('student.questionnaire.take', ['questionnaireId' => $id]);
-    })->name('questionnaire.start');
-    
-    Route::get('/questionnaire/result', function () {
-        return view('student.questionnaire.result');
-    })->name('questionnaire.result');
+    // Questionnaire - Connected to Database
+    Route::get('/questionnaire', [\App\Http\Controllers\Student\QuestionnaireController::class, 'index'])->name('questionnaire');
+    Route::get('/questionnaire/{id}', [\App\Http\Controllers\Student\QuestionnaireController::class, 'show'])->name('questionnaire.show');
+    Route::post('/questionnaire/{id}', [\App\Http\Controllers\Student\QuestionnaireController::class, 'store'])->name('questionnaire.store');
 
     // Materi (Educational Materials) - Connected to Database
     Route::get('/materi', [\App\Http\Controllers\MateriController::class, 'studentIndex'])->name('materi');
@@ -326,6 +317,15 @@ Route::get('/debug-user', function() {
     }
     return response()->json(['logged_in' => false]);
 })->name('debug-user');
+
+// API Routes untuk Notifications
+Route::prefix('api')->middleware('auth')->group(function () {
+    Route::get('/notifications/unread', [\App\Http\Controllers\NotificationController::class, 'getUnread'])->name('api.notifications.unread');
+    Route::get('/notifications/count', [\App\Http\Controllers\NotificationController::class, 'getUnreadCount'])->name('api.notifications.count');
+    Route::get('/notifications/check-new', [\App\Http\Controllers\NotificationController::class, 'checkNew'])->name('api.notifications.check-new');
+    Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('api.notifications.read');
+    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('api.notifications.read-all');
+});
 
 // Fallback route
 Route::fallback(function () {

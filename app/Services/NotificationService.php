@@ -14,7 +14,7 @@ class NotificationService
     public function notifyStudentsAboutNewMateri($materi): void
     {
         // Get all students (siswa)
-        $students = User::where('role', 'siswa')->get();
+        $students = User::where('peran', 'siswa')->get();
 
         foreach ($students as $student) {
             // Build message based on jenis

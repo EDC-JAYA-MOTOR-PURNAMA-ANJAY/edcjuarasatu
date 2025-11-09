@@ -4,8 +4,12 @@
         <div class="flex items-center space-x-4 relative">
             <!-- Notification Bell -->
             <button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors relative shadow-sm">
-                <i class="fas fa-bell text-gray-600"></i>
-                <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center shadow-sm">3</span>
+                <img src="{{ asset('images/icon/bell-ring.svg') }}" alt="Notifications" class="w-5 h-5 object-contain transition-all duration-300 hover:scale-110">
+                @if(isset($badges['total_notifications']) && $badges['total_notifications'] > 0)
+                <span class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-gradient-to-br from-red-500 to-red-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-md px-1 animate-pulse">
+                    {{ $badges['total_notifications'] }}
+                </span>
+                @endif
             </button>
 
             <!-- User Profile -->

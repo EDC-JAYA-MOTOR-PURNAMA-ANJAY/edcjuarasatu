@@ -483,10 +483,17 @@
                 <label class="form-label" for="jenis">Jenis Konten</label>
                 <select class="form-select" id="jenis" name="jenis" required onchange="toggleFileUpload()">
                     <option value="" disabled selected>Memilih</option>
-                    <option value="Artikel">Artikel</option>
-                    <option value="Video Link">Video Link</option>
-                    <option value="File/Dokumen">File/Dokumen (PDF, Word, Excel, PowerPoint)</option>
+                    <option value="Artikel">📝 Artikel (Text/HTML)</option>
+                    <option value="Video Link">🔗 Video Link (YouTube/Vimeo/Google Drive)</option>
+                    <option value="Video Upload">🎥 Video Upload (MP4, WebM, OGG - Max 100MB)</option>
+                    <option value="PDF">📄 PDF (Dokumen PDF)</option>
+                    <option value="Gambar">🖼️ Gambar/Infografis (JPG, PNG, GIF, SVG)</option>
+                    <option value="Audio">🎵 Audio/Podcast (MP3, WAV, OGG)</option>
+                    <option value="Dokumen Office">📊 Dokumen Office (Word, Excel, PowerPoint)</option>
                 </select>
+                <small class="form-hint" style="margin-top: 8px; display: block; color: #6B7280;">
+                    💡 Tip: Semua file yang diupload bisa langsung diakses siswa tanpa perlu download!
+                </small>
             </div>
 
             <!-- Judul -->
@@ -517,15 +524,35 @@
                 </div>
             </div>
 
-            <!-- File Upload (Conditional - only for File/Dokumen) -->
+            <!-- File Upload (Conditional) -->
             <div class="form-group" id="fileUploadGroup" style="display: none;">
-                <label class="form-label" for="file">Upload File <span style="font-size: 12px; color: #666;">(PDF, Word, Excel, PowerPoint - Max 10MB)</span></label>
+                <label class="form-label" for="file">
+                    Upload File 
+                    <span id="fileTypeHint" style="font-size: 12px; color: #666;"></span>
+                </label>
                 <div class="file-upload-container">
-                    <label for="file" class="file-upload-btn"><i class="fas fa-file-upload"></i> Pilih File</label>
-                    <input type="file" class="file-upload-input" id="file" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" onchange="updateFileNameDisplay(this, 'fileNameDisplay')">
-                    <span class="file-name" id="fileNameDisplay">No file chosen</span>
+                    <label for="file" class="file-upload-btn">
+                        <i class="fas fa-cloud-upload-alt"></i> Pilih File
+                    </label>
+                    <input type="file" class="file-upload-input" id="file" name="file" onchange="updateFileNameDisplay(this, 'fileNameDisplay')">
+                    <span class="file-name" id="fileNameDisplay">Belum ada file dipilih</span>
                 </div>
-                <small class="form-hint">Format yang didukung: PDF, Word, Excel, PowerPoint, Text</small>
+                <small class="form-hint" id="fileFormatHint">Pilih jenis konten terlebih dahulu</small>
+                
+                <!-- File Size Preview -->
+                <div id="fileSizePreview" style="display: none; margin-top: 12px; padding: 12px; background: #F0F9FF; border-radius: 8px; border-left: 4px solid #3B82F6;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-info-circle" style="color: #3B82F6;"></i>
+                        <div>
+                            <p style="margin: 0; font-size: 13px; color: #1F2937;">
+                                <strong>File dipilih:</strong> <span id="selectedFileName"></span>
+                            </p>
+                            <p style="margin: 4px 0 0 0; font-size: 12px; color: #6B7280;">
+                                Ukuran: <span id="selectedFileSize"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Thumbnail -->
@@ -537,6 +564,24 @@
                     <span class="file-name" id="fileName">No file chosen</span>
                 </div>
                 <small class="form-hint">Gambar thumbnail akan ditampilkan di daftar materi siswa</small>
+            </div>
+            
+            <!-- Durasi Video (Conditional - only for Video) -->
+            <div class="form-group" id="durasiGroup" style="display: none;">
+                <label class="form-label" for="durasi_menit">
+                    <i class="fas fa-clock"></i> Durasi Video (Menit)
+                </label>
+                <input type="number" class="form-input" id="durasi_menit" name="durasi_menit" min="1" placeholder="Contoh: 30 (untuk 30 menit)">
+                <small class="form-hint">Masukkan durasi video dalam menit. Contoh: 90 untuk 1 jam 30 menit</small>
+            </div>
+            
+            <!-- Total Halaman (Conditional - only for PDF) -->
+            <div class="form-group" id="halamanGroup" style="display: none;">
+                <label class="form-label" for="total_halaman">
+                    <i class="fas fa-file-alt"></i> Total Halaman
+                </label>
+                <input type="number" class="form-input" id="total_halaman" name="total_halaman" min="1" placeholder="Contoh: 15">
+                <small class="form-hint">Masukkan jumlah halaman PDF</small>
             </div>
 
             <!-- Kategori & Target Kelas (Grid 2 Kolom) -->
@@ -569,11 +614,14 @@
 
         <!-- Action Buttons -->
         <div class="form-actions">
-            <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+            <button type="button" class="btn btn-secondary" onclick="window.history.back()" id="btnBack">
                 Kembali
             </button>
-            <button type="submit" class="btn btn-primary">
-                Simpan
+            <button type="submit" class="btn btn-primary" id="btnSubmit">
+                <span id="btnText">Simpan</span>
+                <span id="btnLoading" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i> Menyimpan...
+                </span>
             </button>
         </div>
     </form>
@@ -582,34 +630,205 @@
 
 @push('scripts')
 <script>
+// Handle form submit with loading state
+const materiForm = document.querySelector('form');
+const btnSubmit = document.getElementById('btnSubmit');
+const btnBack = document.getElementById('btnBack');
+const btnText = document.getElementById('btnText');
+const btnLoading = document.getElementById('btnLoading');
+
+materiForm.addEventListener('submit', function(e) {
+    // Disable button to prevent double submission
+    btnSubmit.disabled = true;
+    btnBack.disabled = true;
+    
+    // Show loading
+    btnText.style.display = 'none';
+    btnLoading.style.display = 'inline';
+    
+    // Form will continue to submit
+});
+
 // Toggle file upload field based on jenis selection
 function toggleFileUpload() {
     const jenisSelect = document.getElementById('jenis');
     const fileUploadGroup = document.getElementById('fileUploadGroup');
     const fileInput = document.getElementById('file');
+    const fileTypeHint = document.getElementById('fileTypeHint');
+    const fileFormatHint = document.getElementById('fileFormatHint');
+    const kontenGroup = document.getElementById('konten').closest('.form-group');
+    const kontenInput = document.getElementById('konten');
     
-    if (jenisSelect.value === 'File/Dokumen') {
-        fileUploadGroup.style.display = 'block';
-        fileInput.setAttribute('required', 'required');
-    } else {
-        fileUploadGroup.style.display = 'none';
-        fileInput.removeAttribute('required');
-        fileInput.value = ''; // Clear file input
-        document.getElementById('fileNameDisplay').textContent = 'No file chosen';
+    const jenis = jenisSelect.value;
+    
+    // Reset
+    fileInput.value = '';
+    document.getElementById('fileNameDisplay').textContent = 'Belum ada file dipilih';
+    document.getElementById('fileSizePreview').style.display = 'none';
+    
+    // Configure based on jenis
+    const config = {
+        'Video Upload': {
+            show: true,
+            required: true,
+            accept: '.mp4,.webm,.ogg,.mov,.avi',
+            hint: '(MP4, WebM, OGG - Max 100MB)',
+            format: 'Video: MP4, WebM, OGG, MOV, AVI',
+            hideKonten: false,
+            kontenPlaceholder: 'Deskripsi video (opsional)'
+        },
+        'PDF': {
+            show: true,
+            required: true,
+            accept: '.pdf',
+            hint: '(PDF - Max 10MB)',
+            format: 'Dokumen PDF',
+            hideKonten: false,
+            kontenPlaceholder: 'Deskripsi PDF (opsional)'
+        },
+        'Gambar': {
+            show: true,
+            required: true,
+            accept: '.jpg,.jpeg,.png,.gif,.svg,.webp',
+            hint: '(JPG, PNG, GIF, SVG, WebP - Max 5MB)',
+            format: 'Gambar: JPG, PNG, GIF, SVG, WebP',
+            hideKonten: false,
+            kontenPlaceholder: 'Deskripsi gambar (opsional)'
+        },
+        'Audio': {
+            show: true,
+            required: true,
+            accept: '.mp3,.wav,.ogg,.m4a',
+            hint: '(MP3, WAV, OGG - Max 20MB)',
+            format: 'Audio: MP3, WAV, OGG, M4A',
+            hideKonten: false,
+            kontenPlaceholder: 'Deskripsi audio (opsional)'
+        },
+        'Dokumen Office': {
+            show: true,
+            required: true,
+            accept: '.doc,.docx,.ppt,.pptx,.xls,.xlsx',
+            hint: '(Word, PowerPoint, Excel - Max 10MB)',
+            format: 'Office: DOC, DOCX, PPT, PPTX, XLS, XLSX',
+            hideKonten: false,
+            kontenPlaceholder: 'Deskripsi dokumen (opsional)'
+        },
+        'Artikel': {
+            show: false,
+            required: false,
+            hideKonten: false,
+            kontenPlaceholder: 'Tulis konten artikel Anda di sini...'
+        },
+        'Video Link': {
+            show: false,
+            required: false,
+            hideKonten: false,
+            kontenPlaceholder: 'Paste link YouTube/Vimeo/Google Drive di sini... (contoh: https://youtube.com/watch?v=xxxxx)'
+        }
+    };
+    
+    const settings = config[jenis];
+    
+    if (settings) {
+        // File upload visibility
+        if (settings.show) {
+            fileUploadGroup.style.display = 'block';
+            fileInput.setAttribute('accept', settings.accept);
+            fileTypeHint.textContent = settings.hint;
+            fileFormatHint.textContent = settings.format;
+            
+            if (settings.required) {
+                fileInput.setAttribute('required', 'required');
+            } else {
+                fileInput.removeAttribute('required');
+            }
+        } else {
+            fileUploadGroup.style.display = 'none';
+            fileInput.removeAttribute('required');
+        }
+        
+        // Konten field
+        kontenInput.placeholder = settings.kontenPlaceholder;
+        
+        if (settings.hideKonten) {
+            kontenGroup.style.display = 'none';
+            kontenInput.removeAttribute('required');
+        } else {
+            kontenGroup.style.display = 'block';
+            // Make konten optional for file uploads
+            if (settings.show) {
+                kontenInput.removeAttribute('required');
+            } else {
+                kontenInput.setAttribute('required', 'required');
+            }
+        }
+        
+        // Show/hide metadata fields
+        const durasiGroup = document.getElementById('durasiGroup');
+        const halamanGroup = document.getElementById('halamanGroup');
+        const durasiInput = document.getElementById('durasi_menit');
+        const halamanInput = document.getElementById('total_halaman');
+        
+        // Reset visibility
+        durasiGroup.style.display = 'none';
+        halamanGroup.style.display = 'none';
+        durasiInput.removeAttribute('required');
+        halamanInput.removeAttribute('required');
+        
+        // Show based on jenis
+        if (jenis === 'Video Upload' || jenis === 'Video Link') {
+            durasiGroup.style.display = 'block';
+        } else if (jenis === 'PDF') {
+            halamanGroup.style.display = 'block';
+        }
     }
 }
 
 // Update file name display (generic function)
 function updateFileNameDisplay(input, displayId) {
     const displayElement = document.getElementById(displayId);
+    const previewDiv = document.getElementById('fileSizePreview');
+    const fileNameSpan = document.getElementById('selectedFileName');
+    const fileSizeSpan = document.getElementById('selectedFileSize');
+    
     if (input.files && input.files[0]) {
         const file = input.files[0];
         const fileSize = (file.size / 1024 / 1024).toFixed(2); // Convert to MB
-        displayElement.textContent = `${file.name} (${fileSize} MB)`;
-        displayElement.style.color = '#333333';
+        
+        displayElement.textContent = file.name;
+        displayElement.style.color = '#10B981';
+        displayElement.style.fontWeight = '500';
+        
+        // Show preview
+        if (previewDiv && fileNameSpan && fileSizeSpan) {
+            fileNameSpan.textContent = file.name;
+            fileSizeSpan.textContent = fileSize + ' MB';
+            previewDiv.style.display = 'block';
+            
+            // Validate file size based on type
+            const jenis = document.getElementById('jenis').value;
+            let maxSize = 10; // Default 10MB
+            
+            if (jenis === 'Video Upload') maxSize = 100;
+            else if (jenis === 'Audio') maxSize = 20;
+            else if (jenis === 'Gambar') maxSize = 5;
+            
+            if (parseFloat(fileSize) > maxSize) {
+                previewDiv.style.background = '#FEF2F2';
+                previewDiv.style.borderLeftColor = '#EF4444';
+                fileSizeSpan.style.color = '#EF4444';
+                fileSizeSpan.textContent += ` (Maksimal ${maxSize}MB!)`;
+            } else {
+                previewDiv.style.background = '#F0F9FF';
+                previewDiv.style.borderLeftColor = '#3B82F6';
+                fileSizeSpan.style.color = '#6B7280';
+            }
+        }
     } else {
-        displayElement.textContent = 'No file chosen';
+        displayElement.textContent = 'Belum ada file dipilih';
         displayElement.style.color = '#999999';
+        displayElement.style.fontWeight = 'normal';
+        if (previewDiv) previewDiv.style.display = 'none';
     }
 }
 

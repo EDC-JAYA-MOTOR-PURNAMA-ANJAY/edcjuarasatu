@@ -558,40 +558,34 @@ function tambahMateri() {
     window.location.href = '{{ route("guru_bk.materi.create") }}';
 }
 
-// Voice Notification for Success Message
+// Voice Notification for Success/Error Messages (CHEERFUL for Guru BK)
 @if(session('success'))
 document.addEventListener('DOMContentLoaded', function() {
-    // Play success sound
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    // Success sound (higher pitch, pleasant)
-    oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
-    oscillator.frequency.setValueAtTime(900, audioContext.currentTime + 0.1);
-    oscillator.frequency.setValueAtTime(1200, audioContext.currentTime + 0.2);
-    
-    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-    gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.6);
-    
-    // Voice announcement
-    if ('speechSynthesis' in window) {
-        setTimeout(() => {
+    setTimeout(() => {
+        if ('speechSynthesis' in window) {
             const utterance = new SpeechSynthesisUtterance('{{ session("success") }}');
             utterance.lang = 'id-ID';
-            utterance.rate = 1.0;
-            utterance.pitch = 1.2;
+            utterance.rate = 1.05;   // ⚡ Energik
+            utterance.pitch = 1.45;  // 🎵 Extra Ceria untuk Success!
             utterance.volume = 1.0;
             window.speechSynthesis.speak(utterance);
-        }, 300);
-    }
+        }
+    }, 800);
+});
+@endif
+
+@if(session('error'))
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance('{{ session("error") }}');
+            utterance.lang = 'id-ID';
+            utterance.rate = 0.95;   // Lebih lambat untuk error
+            utterance.pitch = 1.15;  // Nada lebih rendah untuk error
+            utterance.volume = 1.0;
+            window.speechSynthesis.speak(utterance);
+        }
+    }, 800);
 });
 @endif
 </script>

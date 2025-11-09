@@ -18,10 +18,12 @@
                      class="w-5 h-5 mr-3 transition-all duration-200 ease-in-out
                             {{ request()->routeIs('student.dashboard') ? 'filter brightness-0 invert' : 'group-hover:filter group-hover:brightness-0 group-hover:invert-50' }}">
                 <span class="text-sm font-medium flex-1 transition-all duration-200 ease-in-out">Dashboard</span>
+                @if(isset($badges['total_notifications']) && $badges['total_notifications'] > 0)
                 <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-200 ease-in-out
                             {{ request()->routeIs('student.dashboard') ? 'bg-purple-100 text-purple-700' : 'bg-purple-100 text-purple-700 group-hover:bg-purple-700 group-hover:text-white' }}">
-                    3
+                    {{ $badges['total_notifications'] }}
                 </span>
+                @endif
             </a>
 
             <!-- Absensi -->
@@ -52,10 +54,12 @@
                      class="w-5 h-5 mr-3 transition-all duration-200 ease-in-out
                             {{ request()->routeIs('student.counseling.schedule') ? 'filter brightness-0 invert' : 'group-hover:filter group-hover:brightness-0 group-hover:invert-50' }}">
                 <span class="text-sm font-medium flex-1 transition-all duration-200 ease-in-out">Jadwal Konseling</span>
+                @if(isset($badges['jadwal_konseling']) && $badges['jadwal_konseling'] > 0)
                 <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-200 ease-in-out
-                            {{ request()->routeIs('student.counseling.schedule') ? 'bg-purple-100 text-purple-700' : 'bg-purple-100 text-purple-700 group-hover:bg-purple-700 group-hover:text-white' }}">
-                    3
+                            {{ request()->routeIs('student.counseling.schedule') ? 'bg-purple-100 text-purple-700' : 'bg-red-100 text-red-600 group-hover:bg-red-600 group-hover:text-white' }}">
+                    {{ $badges['jadwal_konseling'] }}
                 </span>
+                @endif
             </a>
 
             <!-- Riwayat Konseling -->
@@ -73,11 +77,16 @@
                 <button @click="open = !open"
                         class="sidebar-menu group flex items-center justify-between w-full px-4 py-3 rounded-xl transition-all duration-200 ease-in-out relative
                                {{ request()->routeIs('student.violation.*') ? 'bg-purple-700 text-white shadow-md' : 'text-gray-900 hover:bg-purple-100 hover:text-purple-700' }}">
-                    <div class="flex items-center">
+                    <div class="flex items-center flex-1">
                         <img src="{{ asset('images/icon/pelanggaran.png') }}" alt="Pelanggaran"
                              class="w-5 h-5 mr-3 transition-all duration-200 ease-in-out
                                     {{ request()->routeIs('student.violation.*') ? 'filter brightness-0 invert' : 'group-hover:filter group-hover:brightness-0 group-hover:invert-50' }}">
                         <span class="text-sm font-medium transition-all duration-200 ease-in-out">Pelanggaran</span>
+                        @if(isset($badges['pelanggaran']) && $badges['pelanggaran'] > 0)
+                        <span class="ml-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-red-100 text-red-600">
+                            {{ $badges['pelanggaran'] }}
+                        </span>
+                        @endif
                     </div>
                     <svg class="w-4 h-4 transition-all duration-200 ease-in-out"
                          :class="{ 'rotate-180': open, 'text-purple-700': open || $el.parentElement.classList.contains('bg-purple-700') }"

@@ -13,7 +13,12 @@ class Konseling extends Model
 
     protected $fillable = [
         'siswa_id',
+        'nama_siswa',
+        'kelas',
+        'jurusan_id',
         'guru_bk_id',
+        'metode_konseling',
+        'jenis_konseling',
         'kategori_masalah_id',
         'judul',
         'deskripsi',
@@ -46,6 +51,14 @@ class Konseling extends Model
     public function guruBK(): BelongsTo
     {
         return $this->belongsTo(User::class, 'guru_bk_id');
+    }
+
+    /**
+     * Relationship: Konseling belongs to Jurusan
+     */
+    public function jurusan(): BelongsTo
+    {
+        return $this->belongsTo(Jurusan::class, 'jurusan_id');
     }
 
     /**

@@ -145,9 +145,8 @@
     
     /* Card Styling - Diubah ukuran menjadi 300x390 */
     .materi-card {
-        background: #FFFFFF;
+        background: white;
         border-radius: 12px;
-        padding: 20px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         display: flex;
@@ -155,28 +154,72 @@
         height: 390px;
         width: 300px;
         position: relative;
-        overflow: hidden;
-        margin: 0 auto; /* Center card jika perlu */
+        overflow: visible;
+        margin: 0 auto;
     }
     
-    /* Efek Glassmorphism dan Shadow saat hover */
-    .materi-card::before {
-        content: '';
+    /* Glossy Shine Effect - Sweep dari kanan atas ke kiri bawah */
+    .glossy-shine {
         position: absolute;
         top: 0;
         left: 0;
-        right: 0;
-        bottom: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 3;
+    }
+    
+    /* Glossy Sweep Animation */
+    .glossy-reflection {
+        position: absolute;
+        top: -100%;
+        right: -100%;
+        width: 150%;
+        height: 150%;
         background: linear-gradient(
-            135deg, 
-            rgba(255, 255, 255, 0.1) 0%, 
-            rgba(255, 255, 255, 0) 50%, 
-            rgba(255, 255, 255, 0.2) 100%
+            135deg,
+            transparent 0%,
+            transparent 30%,
+            rgba(255, 255, 255, 0.6) 45%,
+            rgba(255, 255, 255, 0.8) 50%,
+            rgba(255, 255, 255, 0.6) 55%,
+            transparent 70%,
+            transparent 100%
+        );
+        transform: translateX(0) translateY(0);
+        opacity: 0;
+        transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        pointer-events: none;
+    }
+    
+    /* Trigger glossy sweep saat hover */
+    .materi-card:hover .glossy-reflection {
+        opacity: 1;
+        transform: translateX(-120%) translateY(120%);
+    }
+    
+    /* Shadow di sisi kanan card saat hover */
+    .materi-card::before {
+        content: '';
+        position: absolute;
+        top: 5%;
+        right: -12px;
+        width: 12px;
+        height: 90%;
+        background: linear-gradient(
+            to right,
+            transparent 0%,
+            rgba(128, 0, 255, 0.15) 50%,
+            rgba(128, 0, 255, 0.25) 100%
         );
         opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: 1;
-        border-radius: 12px;
+        transition: opacity 0.4s ease, right 0.4s ease;
+        z-index: -1;
+        border-radius: 0 8px 8px 0;
+        pointer-events: none;
+        filter: blur(4px);
     }
     
     .materi-card:hover {
@@ -188,25 +231,26 @@
     
     .materi-card:hover::before {
         opacity: 1;
+        right: -10px;
     }
     
-    /* Efek cahaya glassmorphism */
+    /* Additional subtle shine layer */
     .materi-card::after {
         content: '';
         position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         background: linear-gradient(
-            45deg,
-            transparent,
-            rgba(255, 255, 255, 0.1),
-            transparent
+            135deg, 
+            rgba(255, 255, 255, 0.1) 0%, 
+            rgba(255, 255, 255, 0) 50%
         );
-        transform: rotate(45deg);
-        transition: all 0.6s ease;
         opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 12px;
+        pointer-events: none;
     }
     
     .materi-card:hover::after {
@@ -292,39 +336,77 @@
         color: #999999;
     }
     
-    /* Progress Section */
-    .card-progress {
+    /* Info Badges (Duration/Pages) */
+    .card-info-row {
+        display: flex;
+        gap: 12px;
         margin-bottom: 16px;
+        flex-wrap: wrap;
     }
     
-    .progress-label {
+    .info-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: #F9FAFB;
+        border-radius: 8px;
+        font-size: 13px;
+        color: #6B7280;
+        border: 1px solid #E5E7EB;
+    }
+    
+    .info-badge i {
         font-size: 12px;
-        color: #999999;
-        margin-bottom: 8px;
+        color: #9CA3AF;
+    }
+    
+    /* Progress Section */
+    .progress-section {
+        margin-bottom: 16px;
+        padding: 12px;
+        background: #F9FAFB;
+        border-radius: 8px;
+        border: 1px solid #E5E7EB;
+    }
+    
+    .progress-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 8px;
+    }
+    
+    .progress-label {
+        font-size: 13px;
+        color: #6B7280;
+        font-weight: 500;
     }
     
     .progress-percentage {
-        font-weight: 600;
+        font-size: 14px;
+        font-weight: 700;
         color: #8000FF;
     }
     
     .progress-bar-container {
         width: 100%;
-        height: 6px;
-        background: #EAEAEA;
+    }
+    
+    .progress-bar-bg {
+        width: 100%;
+        height: 8px;
+        background: #E5E7EB;
         border-radius: 10px;
         overflow: hidden;
-        margin-bottom: 16px;
     }
     
     .progress-bar-fill {
         height: 100%;
         background: linear-gradient(90deg, #8000FF 0%, #A855F7 100%);
         border-radius: 10px;
-        transition: width 0.6s ease;
+        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 8px rgba(128, 0, 255, 0.3);
     }
     
     /* Card Author Info */
@@ -464,7 +546,12 @@
     <div class="materi-grid">
         @forelse($materiList as $materi)
         <!-- Dynamic Materi Cards -->
-        <div class="materi-card">
+        <div class="materi-card" data-card-id="{{ $materi->id }}">
+            <!-- Glossy Shine Effect -->
+            <div class="glossy-shine">
+                <div class="glossy-reflection"></div>
+            </div>
+            
             <div class="card-illustration">
                 @if($materi->thumbnail)
                     <img src="{{ asset('storage/' . $materi->thumbnail) }}" alt="{{ $materi->judul }}">
@@ -483,41 +570,54 @@
             <div class="card-content">
                 <h3 class="card-title">{{ $materi->judul }}</h3>
                 <p class="card-description">
-                    {{ Str::limit($materi->konten, 120) }}
+                    {{ $materi->deskripsi_singkat ?? Str::limit($materi->konten, 100) }}
                 </p>
                 
-                <div class="card-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-tag"></i>
-                        <span>{{ $materi->kategori }}</span>
+                <!-- Duration/Pages & Progress Info -->
+                <div class="card-info-row">
+                    @if($materi->total_halaman)
+                    <div class="info-badge">
+                        <i class="fas fa-file-alt"></i>
+                        <span>{{ $materi->total_halaman }} Halaman</span>
                     </div>
-                    <div class="meta-item">
-                        <i class="fas fa-{{ $materi->jenis === 'Artikel' ? 'file-alt' : ($materi->jenis === 'Video Link' ? 'video' : 'file-pdf') }}"></i>
-                        <span>{{ $materi->jenis }}</span>
-                    </div>
-                    @if($materi->file_path)
-                    <div class="meta-item">
-                        <i class="fas fa-download"></i>
-                        <span>{{ $materi->file_extension }} - {{ $materi->file_size }}</span>
+                    @endif
+                    
+                    @if($materi->durasi_menit)
+                    <div class="info-badge">
+                        <i class="fas fa-clock"></i>
+                        <span>
+                            @if($materi->durasi_menit >= 60)
+                                {{ floor($materi->durasi_menit / 60) }} jam {{ $materi->durasi_menit % 60 }} menit
+                            @else
+                                {{ $materi->durasi_menit }} menit
+                            @endif
+                        </span>
                     </div>
                     @endif
                 </div>
                 
-                <div class="card-author">
-                    <i class="fas fa-user-tie"></i>
-                    <span>Oleh: {{ $materi->guruBK->name ?? 'Guru BK' }}</span>
+                @php
+                    $progress = $materi->getProgressForUser(auth()->id());
+                    $progressPercent = $progress ? $progress->progress_percent : 0;
+                @endphp
+                
+                <!-- Progress Section -->
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span class="progress-label">Progress</span>
+                        <span class="progress-percentage">{{ $progressPercent }}%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: {{ $progressPercent }}%"></div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="card-action">
-                    @if($materi->file_path)
-                    <a href="{{ $materi->file_url }}" class="btn-download" download>
-                        <i class="fas fa-download"></i>
-                        Download
-                    </a>
-                    @endif
-                    <button class="btn-baca" onclick="readMateri({{ $materi->id }})">
+                    <button class="btn-baca" onclick="window.location.href='{{ route('student.materi.show', $materi->id) }}'">
                         <i class="fas fa-book-open"></i>
-                        Baca
+                        {{ $progressPercent > 0 ? 'Lanjutkan' : 'Baca' }}
                     </button>
                 </div>
             </div>

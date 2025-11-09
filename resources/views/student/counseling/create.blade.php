@@ -123,11 +123,9 @@
                             <select id="jurusan" name="jurusan"
                                     class="w-full px-4 py-3 border border-[#E0E0E0] rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-[#7000CC] focus:border-transparent bg-white dropdown-select">
                                 <option value="" disabled selected>Pilih Jurusan</option>
-                                <option value="rpl">RPL</option>
-                                <option value="tkj">TKJ</option>
-                                <option value="mm">MM</option>
-                                <option value="tjkt">TJKT</option>
-                                <option value="dkv">DKV</option>
+                                @foreach($jurusan as $j)
+                                    <option value="{{ $j->id }}">{{ $j->kode_jurusan }} - {{ $j->nama_jurusan }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -138,9 +136,9 @@
                         <select id="guru_bk" name="guru_bk"
                                 class="w-full px-4 py-3 border border-[#E0E0E0] rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-[#7000CC] focus:border-transparent bg-white dropdown-select">
                             <option value="" disabled selected>Pilih Guru BK</option>
-                            <option value="eka">Bu Eka</option>
-                            <option value="prapti">Bu Prapti</option>
-                            <option value="seto">Pak Seto</option>
+                            @foreach($guruBK as $guru)
+                                <option value="{{ $guru->id }}">{{ $guru->nama }}</option>
+                            @endforeach
                         </select>
                     </div>
 
@@ -269,12 +267,13 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
 
         // Validation: all required fields must be filled
-        const requiredFields = ['nama', 'kelas', 'jurusan', 'guru_bk', 'jenis_konseling', 'tanggal', 'jam'];
+        const requiredFields = ['nama', 'kelas', 'guru_bk', 'jenis_konseling', 'tanggal', 'jam'];
         const metodeSelected = document.querySelector('input[name="metode"]:checked');
 
         let isValid = true;
         requiredFields.forEach(id => {
-            if (!document.getElementById(id).value.trim()) isValid = false;
+            const element = document.getElementById(id);
+            if (element && !element.value.trim()) isValid = false;
         });
         if (!metodeSelected) isValid = false;
 
@@ -284,28 +283,54 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Show loading
-        submitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Mengirim...';
+        submitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Mengirim...';
         submitBtn.disabled = true;
 
-        // Simulate API delay
-        setTimeout(() => {
-            popup.classList.remove('hidden');
-            popup.classList.add('popup-show');
-            form.reset();
-            // Reset radio
-            document.querySelectorAll('.radio-custom').forEach(el => {
-                el.style.backgroundColor = '';
-                el.style.borderColor = '';
-                el.style.boxShadow = '';
-            });
-            document.getElementById('offline').checked = true;
-            document.querySelector('label[for="offline"] .radio-custom').style.backgroundColor = '#7000CC';
-            document.querySelector('label[for="offline"] .radio-custom').style.borderColor = '#7000CC';
-            document.querySelector('label[for="offline"] .radio-custom').style.boxShadow = 'inset 0 0 0 3px white';
+        // Get form data
+        const formData = new FormData(form);
 
+        // Submit via AJAX
+        fetch('{{ route("student.counseling.store") }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success popup
+                popup.classList.remove('hidden');
+                popup.classList.add('popup-show');
+                
+                // Reset form
+                form.reset();
+                
+                // Reset radio
+                document.querySelectorAll('.radio-custom').forEach(el => {
+                    el.style.backgroundColor = '';
+                    el.style.borderColor = '';
+                    el.style.boxShadow = '';
+                });
+                document.getElementById('offline').checked = true;
+                document.querySelector('label[for="offline"] .radio-custom').style.backgroundColor = '#7000CC';
+                document.querySelector('label[for="offline"] .radio-custom').style.borderColor = '#7000CC';
+                document.querySelector('label[for="offline"] .radio-custom').style.boxShadow = 'inset 0 0 0 3px white';
+            } else {
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan. Silakan coba lagi.');
+        })
+        .finally(() => {
             submitBtn.innerHTML = '<span class="relative z-10">Kirim</span><div class="absolute inset-0 overflow-hidden rounded-full"><div class="absolute -inset-full top-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform skew-x-12 group-hover:animate-shine group-hover:duration-700"></div></div>';
             submitBtn.disabled = false;
-        }, 1200);
+        });
     });
 
     // Close popup
@@ -320,6 +345,8 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             popup.classList.add('hidden');
             popup.classList.remove('popup-hide');
+            // Redirect to jadwal konseling
+            window.location.href = '{{ route("student.counseling.schedule") }}';
         }, 300);
     }
 });

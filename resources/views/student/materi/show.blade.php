@@ -495,36 +495,141 @@
             </div>
             @endif
             
+            <!-- Video Embed (if jenis is Video Link) -->
+            @if($materi->jenis === 'Video Link' && $materi->konten)
+            <div class="video-container" style="margin-bottom: 32px;">
+                <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; background: #000;">
+                    @php
+                        $videoUrl = $materi->konten;
+                        $embedUrl = '';
+                        
+                        // YouTube
+                        if (preg_match('/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/', $videoUrl, $matches)) {
+                            $embedUrl = 'https://www.youtube.com/embed/' . $matches[1];
+                        } elseif (preg_match('/youtu\.be\/([a-zA-Z0-9_-]+)/', $videoUrl, $matches)) {
+                            $embedUrl = 'https://www.youtube.com/embed/' . $matches[1];
+                        } 
+                        // Vimeo
+                        elseif (preg_match('/vimeo\.com\/([0-9]+)/', $videoUrl, $matches)) {
+                            $embedUrl = 'https://player.vimeo.com/video/' . $matches[1];
+                        }
+                        // Google Drive
+                        elseif (preg_match('/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/', $videoUrl, $matches)) {
+                            $embedUrl = 'https://drive.google.com/file/d/' . $matches[1] . '/preview';
+                        }
+                        // Already embed URL
+                        elseif (strpos($videoUrl, 'embed') !== false || strpos($videoUrl, 'player') !== false) {
+                            $embedUrl = $videoUrl;
+                        }
+                    @endphp
+                    
+                    @if($embedUrl)
+                        <iframe 
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+                            src="{{ $embedUrl }}" 
+                            title="{{ $materi->judul }}"
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    @else
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white;">
+                            <i class="fas fa-exclamation-circle" style="font-size: 48px; margin-bottom: 16px;"></i>
+                            <p>Format video link tidak didukung</p>
+                            <a href="{{ $videoUrl }}" target="_blank" style="color: #8000FF; text-decoration: underline;">Buka di tab baru</a>
+                        </div>
+                    @endif
+                </div>
+                <div style="margin-top: 16px; padding: 16px; background: #F9FAFB; border-radius: 8px;">
+                    <p style="margin: 0; color: #6B7280; font-size: 14px;">
+                        <i class="fas fa-link" style="margin-right: 8px;"></i>
+                        Link: <a href="{{ $materi->konten }}" target="_blank" style="color: #8000FF;">{{ $materi->konten }}</a>
+                    </p>
+                </div>
+            </div>
+            @endif
+            
             <!-- Tab Content: Text Content -->
             <div class="tab-content active" id="content-tab">
                 <div class="materi-body">
-                    {!! nl2br(e($materi->konten)) !!}
+                    @if($materi->jenis !== 'Video Link')
+                        {!! nl2br(e($materi->konten)) !!}
+                    @else
+                        <div style="text-align: center; padding: 40px; color: #6B7280;">
+                            <i class="fas fa-video" style="font-size: 48px; color: #8000FF; margin-bottom: 16px;"></i>
+                            <p>Video ditampilkan di atas. Nikmati pembelajaran Anda!</p>
+                        </div>
+                    @endif
                 </div>
             </div>
             
-            <!-- Tab Content: PDF Viewer (if file exists) -->
+            <!-- Tab Content: File Viewer (if file exists) -->
             @if($materi->file_path)
             <div class="tab-content" id="file-tab">
                 <div class="pdf-viewer-container">
-                    @if(strtolower($materi->file_extension) === 'PDF')
+                    @php
+                        $extension = strtolower($materi->file_extension ?? pathinfo($materi->file_path, PATHINFO_EXTENSION));
+                    @endphp
+                    
+                    @if($extension === 'pdf')
                         <!-- PDF Viewer using iframe -->
                         <iframe class="pdf-viewer" 
-                                src="{{ $materi->file_url }}" 
+                                src="{{ asset('storage/' . $materi->file_path) }}" 
                                 type="application/pdf"
                                 title="{{ $materi->judul }}">
                             <p>Browser Anda tidak mendukung PDF viewer. 
-                               <a href="{{ $materi->file_url }}" download>Download file</a> untuk melihat.</p>
+                               <a href="{{ asset('storage/' . $materi->file_path) }}" download>Download file</a> untuk melihat.</p>
                         </iframe>
+                    @elseif(in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp']))
+                        <!-- Image Viewer -->
+                        <div style="padding: 24px; text-align: center;">
+                            <img src="{{ asset('storage/' . $materi->file_path) }}" 
+                                 alt="{{ $materi->judul }}" 
+                                 style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        </div>
+                    @elseif(in_array($extension, ['mp3', 'wav', 'ogg']))
+                        <!-- Audio Player -->
+                        <div style="padding: 40px; text-align: center;">
+                            <i class="fas fa-music" style="font-size: 64px; color: #8000FF; margin-bottom: 24px;"></i>
+                            <audio controls style="width: 100%; max-width: 600px;">
+                                <source src="{{ asset('storage/' . $materi->file_path) }}" type="audio/{{ $extension }}">
+                                Browser Anda tidak mendukung audio player.
+                            </audio>
+                        </div>
+                    @elseif(in_array($extension, ['mp4', 'webm', 'ogg']))
+                        <!-- Video Player (uploaded file) -->
+                        <div style="padding: 24px;">
+                            <video controls style="width: 100%; max-width: 100%; border-radius: 12px;">
+                                <source src="{{ asset('storage/' . $materi->file_path) }}" type="video/{{ $extension }}">
+                                Browser Anda tidak mendukung video player.
+                            </video>
+                        </div>
                     @else
-                        <!-- For other file types (DOC, DOCX, etc) -->
+                        <!-- For other file types (DOC, DOCX, etc) - Show Google Docs Viewer -->
                         <div style="padding: 40px; text-align: center;">
                             <i class="fas fa-file-alt" style="font-size: 64px; color: #8000FF; margin-bottom: 16px;"></i>
-                            <p style="font-size: 16px; color: #6B7280; margin-bottom: 24px;">
-                                File tipe {{ $materi->file_extension }} tidak bisa ditampilkan langsung di browser.
+                            <p style="font-size: 16px; color: #374151; margin-bottom: 8px; font-weight: 600;">
+                                {{ strtoupper($extension) }} - Preview dengan Google Docs Viewer
                             </p>
-                            <a href="{{ $materi->file_url }}" class="btn-download" download>
+                            <p style="font-size: 14px; color: #6B7280; margin-bottom: 24px;">
+                                Klik tombol di bawah untuk membuka preview
+                            </p>
+                            
+                            <!-- Google Docs Viewer Button -->
+                            <a href="https://docs.google.com/viewer?url={{ urlencode(asset('storage/' . $materi->file_path)) }}&embedded=true" 
+                               target="_blank" 
+                               class="btn-download" 
+                               style="display: inline-flex; margin-bottom: 16px;">
+                                <i class="fas fa-eye"></i>
+                                Buka Preview (Google Docs)
+                            </a>
+                            
+                            <br>
+                            
+                            <!-- Download Button as alternative -->
+                            <a href="{{ asset('storage/' . $materi->file_path) }}" class="btn-download" download style="display: inline-flex; background: #6B7280;">
                                 <i class="fas fa-download"></i>
-                                Download untuk Membaca
+                                atau Download File
                             </a>
                         </div>
                     @endif

@@ -86,4 +86,20 @@ class Notification extends Model
         }
         return null;
     }
+
+    /**
+     * Get related link (accessor)
+     */
+    public function getRelatedLinkAttribute()
+    {
+        if ($this->related_type === 'Materi' && $this->related_id) {
+            return route('student.materi.show', $this->related_id);
+        }
+        
+        if ($this->related_type === 'Konseling' && $this->related_id) {
+            return route('student.konseling.show', $this->related_id);
+        }
+        
+        return null;
+    }
 }

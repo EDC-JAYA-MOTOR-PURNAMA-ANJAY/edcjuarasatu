@@ -15,12 +15,12 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-    <!-- Google Fonts: Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 
     <style>
         * {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
         
         body {
@@ -199,6 +199,56 @@
         .catch(error => console.error('Error:', error));
     }
     </script>
+    
+    <!-- Voice Helper JS (Same as Admin & Siswa) -->
+    <script src="{{ asset('js/voice-helper.js') }}"></script>
+    
+    <!-- Welcome Voice Script (Same as Admin & Siswa) -->
+    @if(session('login_success_voice') && session('user_name_voice'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let femaleVoice = null;
+            let voicesReady = false;
+            
+            function loadFemaleVoice() {
+                const voices = window.speechSynthesis.getVoices();
+                if (voices.length > 0 && !voicesReady) {
+                    femaleVoice = voices.find(v => (v.lang === 'id-ID' || v.lang.startsWith('id-')) && v.name.toLowerCase().includes('gadis')) ||
+                                  voices.find(v => (v.lang === 'id-ID' || v.lang.startsWith('id-')) && v.name.toLowerCase().includes('damayanti')) ||
+                                  voices.find(v => (v.lang === 'id-ID' || v.lang.startsWith('id-')) && v.name.toLowerCase().includes('female')) ||
+                                  voices.find(v => v.lang === 'id-ID');
+                    voicesReady = true;
+                }
+            }
+            
+            function speakWelcome(text) {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    if (!voicesReady) loadFemaleVoice();
+                    setTimeout(() => {
+                        const utterance = new SpeechSynthesisUtterance(text);
+                        utterance.lang = 'id-ID';
+                        utterance.rate = 1.05;  // ⚡ Lebih cepat & energik!
+                        utterance.pitch = 1.4;   // 🎵 SUPER CERIA untuk Guru BK!
+                        utterance.volume = 1.0;
+                        if (femaleVoice) utterance.voice = femaleVoice;
+                        window.speechSynthesis.speak(utterance);
+                    }, 50);
+                }
+            }
+            
+            if ('speechSynthesis' in window) {
+                loadFemaleVoice();
+                window.speechSynthesis.onvoiceschanged = loadFemaleVoice;
+            }
+            
+            setTimeout(() => {
+                const message = `Selamat! Anda berhasil login. Halo {{ session('user_name_voice') }}, selamat datang kembali!`;
+                speakWelcome(message);
+            }, 200);
+        });
+    </script>
+    @endif
     
     <!-- Scripts -->
     @stack('scripts')

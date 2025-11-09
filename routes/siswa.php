@@ -42,14 +42,15 @@ Route::prefix('absensi')->name('absensi.')->group(function () {
         Route::get('/stats', [AiCompanionController::class, 'stats'])->name('stats');
     });
     
-    // Routes lainnya...
-    Route::get('/kuesioner', function () {
-        return view('student.questionnaire.index');
-    })->name('kuesioner');
+    // Kuesioner Routes
+    Route::prefix('kuesioner')->name('kuesioner')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Student\QuestionnaireController::class, 'index']);
+        Route::get('/{id}', [\App\Http\Controllers\Student\QuestionnaireController::class, 'show'])->name('.show');
+        Route::post('/{id}', [\App\Http\Controllers\Student\QuestionnaireController::class, 'store'])->name('.store');
+    });
     
-    Route::get('/materi', function () {
-        return view('siswa.materi.index');
-    })->name('materi');
+    Route::get('/materi', [\App\Http\Controllers\MateriController::class, 'studentIndex'])->name('materi');
+    Route::get('/materi/{materi}', [\App\Http\Controllers\MateriController::class, 'studentShow'])->name('materi.show');
     
     Route::get('/panduan', function () {
         return view('siswa.panduan.index');

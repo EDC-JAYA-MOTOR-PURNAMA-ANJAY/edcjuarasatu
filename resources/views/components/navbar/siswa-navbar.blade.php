@@ -3,7 +3,10 @@
         <div class="header-right">
             <!-- Notification Bell -->
             <button class="notification-btn">
-                <i class="fas fa-bell"></i>
+                <img src="{{ asset('images/icon/bell-ring.svg') }}" alt="Notifications" class="notification-icon">
+                @if(isset($badges['total_notifications']) && $badges['total_notifications'] > 0)
+                <span class="notification-badge">{{ $badges['total_notifications'] }}</span>
+                @endif
             </button>
 
             <!-- User Profile -->
@@ -114,15 +117,53 @@
     width: 24px;
     height: 24px;
     cursor: pointer;
-    color: var(--text-primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
-.notification-btn:hover {
-    color: var(--primary-blue);
+.notification-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+.notification-btn:hover .notification-icon {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+    animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.6);
+    }
 }
 
 /* User Profile Styles */
