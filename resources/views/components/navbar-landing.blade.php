@@ -4,11 +4,15 @@
             <!-- Logo -->
             <div class="flex-shrink-0 flex items-center">
                 <div class="flex items-center space-x-2">
-                    <!-- Text Logo -->
-                    <span class="text-2xl font-bold">
-                        <span class="text-[#6A00B8]">edu</span>
-                        <span class="text-[#FBBF24]">counsel</span>
-                    </span>
+                    <!-- Image Logo -->
+                    @if(file_exists(public_path('images/logo1.svg')))
+                        <img src="{{ asset('images/logo1.svg') }}" alt="EduCounsel Logo" class="h-8 w-auto">
+                    @else
+                        <span class="text-2xl font-bold">
+                            <span class="text-[#6A00B8]">edu</span>
+                            <span class="text-[#FBBF24]">counsel</span>
+                        </span>
+                    @endif
                 </div>
             </div>
 

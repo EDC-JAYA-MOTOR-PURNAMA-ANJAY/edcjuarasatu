@@ -2,7 +2,7 @@
     <!-- Logo -->
     <div class="p-6">
         <div class="flex items-center justify-center">
-            <img src="{{ asset('images/EDClogo.svg') }}" alt="EduCounsel" class="h-8 w-auto">
+            <img src="{{ asset('images/logo1.svg') }}" alt="EduCounsel" class="h-8 w-auto">
         </div>
     </div>
 

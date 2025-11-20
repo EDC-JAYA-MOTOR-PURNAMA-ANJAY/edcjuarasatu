@@ -1,7 +1,7 @@
 <nav class="sidebar">
     <!-- Logo -->
     <div class="logo">
-        <img src="{{ asset('images/EDClogo.svg') }}" alt="EduCounsel" class="EduCounsel">
+        <img src="{{ asset('images/logo1.svg') }}" alt="EduCounsel" class="EduCounsel">
     </div>
 
     <!-- General Menu Section -->

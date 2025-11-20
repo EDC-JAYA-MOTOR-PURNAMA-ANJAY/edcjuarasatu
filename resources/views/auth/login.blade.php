@@ -31,8 +31,8 @@
     <div class="login-container flex h-screen w-full">
         <div class="left-side w-3/5 bg-[#BBCBE3] flex flex-col items-center justify-center relative overflow-hidden">
             <div class="logo-container absolute top-10 left-14 z-30">
-                @if(file_exists(public_path('images/EDClogo.svg')))
-                    <img src="{{ asset('images/EDClogo.svg') }}" alt="EduCounsel Logo" class="h-10 w-auto">
+                @if(file_exists(public_path('images/logo1.svg')))
+                    <img src="{{ asset('images/logo1.svg') }}" alt="EduCounsel Logo" class="h-10 w-auto">
                 @else
                     <div class="h-10 w-32 bg-[#3949AB] rounded flex items-center justify-center">
                         <span class="text-white font-bold text-lg">EDUCOUNSEL</span>
